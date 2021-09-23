@@ -1,9 +1,9 @@
 // [[Rcpp::depends(RcppParallel)]]
 // [[Rcpp::depends(RcppArmadillo)]]
+#include <boost/heap/priority_queue.hpp>
 #include <RcppArmadillo.h>
 #include <Rcpp.h>
 #include <RcppParallel.h>
-#include <boost/heap/priority_queue.hpp>
 
 struct Bounds {
   double lower, upper, value, error;
