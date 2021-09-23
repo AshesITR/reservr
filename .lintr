@@ -1,0 +1,8 @@
+linters: with_defaults(
+    line_length_linter(120L),
+    object_length_linter = NULL, # long method names caused by S3 methods
+    object_name_linter = NULL, # lower.tail, log.p are not avoidable names
+    cyclocomp_linter = NULL, # Complex R6 classes
+    closed_curly_linter = closed_curly_linter(allow_single_line = TRUE),
+    open_curly_linter = open_curly_linter(allow_single_line = TRUE)
+  )

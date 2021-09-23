@@ -1,0 +1,7 @@
+*_files
+*_cache
+*.html
+# Temporary knitr files
+*.knit.md
+*.utf8.md
+*.R

@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.idea
+inst/doc
+/lib/
+*-coverage.html
+
+# JRE Error logs
+hs_err_pid*
