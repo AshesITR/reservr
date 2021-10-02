@@ -131,6 +131,7 @@
 <span class="co">#&gt;  [7] -1.0377321 -1.1915002 -1.0847006 -0.9655696</span>
 <span class="va">norm</span><span class="op">$</span><span class="fu">is_discrete_at</span><span class="op">(</span><span class="va">x</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">3</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</span>
+
 <span class="co"># A discrete distribution with mass only at point = x[1].</span>
 <span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span>point <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>
 <span class="va">dd</span><span class="op">$</span><span class="fu">density</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
@@ -159,6 +160,7 @@
 <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="va">x</span>, mean <span class="op">=</span> <span class="fl">3</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="co">#&gt;  [1] 0.2655087 0.5728534 0.2016819 0.9446753 0.6291140 0.2059746 0.6870228</span>
 <span class="co">#&gt;  [8] 0.7698414 0.7176185 0.3800352</span>
+
 <span class="va">dd</span><span class="op">$</span><span class="fu">probability</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt;  [1] 1 1 0 1 1 0 1 1 1 1</span>
 <span class="va">dd</span><span class="op">$</span><span class="fu">probability</span><span class="op">(</span><span class="va">x</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span>, log.p <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
@@ -211,6 +213,7 @@
 <span class="va">fit3</span><span class="op">$</span><span class="va">params</span>
 <span class="co">#&gt; $sd</span>
 <span class="co">#&gt; [1] 0.752237</span>
+
 <span class="co"># log-Likelihoods can be computed on</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/AIC.html">AIC</a></span><span class="op">(</span><span class="va">fit1</span><span class="op">$</span><span class="va">logLik</span><span class="op">)</span>
 <span class="co">#&gt; [1] 26.37096</span>
@@ -218,6 +221,7 @@
 <span class="co">#&gt; [1] 25.8626</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/AIC.html">AIC</a></span><span class="op">(</span><span class="va">fit3</span><span class="op">$</span><span class="va">logLik</span><span class="op">)</span>
 <span class="co">#&gt; [1] 24.68469</span>
+
 <span class="co"># Convergence checks</span>
 <span class="va">fit1</span><span class="op">$</span><span class="va">opt</span><span class="op">$</span><span class="va">message</span>
 <span class="co">#&gt; [1] "NLOPT_SUCCESS: Generic success return value."</span>
@@ -309,6 +313,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $logLik</span>
 <span class="co">#&gt; 'log Lik.' -203.8095 (df=2)</span>
+
 <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">trunc_fit</span><span class="op">$</span><span class="va">logLik</span>, <span class="st">"nobs"</span><span class="op">)</span>
 <span class="co">#&gt; [1] 62</span></code></pre></div>
 </div>
@@ -334,7 +339,8 @@
 <span class="op">)</span></code></pre></div>
 <p><img src="distributions_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Plot fitted densities, c.d.f.s and hazard rates</span>
+<code class="sourceCode R">
+<span class="co"># Plot fitted densities, c.d.f.s and hazard rates</span>
 <span class="fu"><a href="../reference/plot_distributions.html">plot_distributions</a></span><span class="op">(</span>
   true <span class="op">=</span> <span class="va">norm</span>,
   cens_fit <span class="op">=</span> <span class="va">norm</span>,
@@ -348,7 +354,8 @@
 <span class="op">)</span></code></pre></div>
 <p><img src="distributions_files/figure-html/unnamed-chunk-10-2.png" width="700"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># More complex distributions</span>
+<code class="sourceCode R">
+<span class="co"># More complex distributions</span>
 <span class="fu"><a href="../reference/plot_distributions.html">plot_distributions</a></span><span class="op">(</span>
   bdegp <span class="op">=</span> <span class="fu"><a href="../reference/dist_bdegp.html">dist_bdegp</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">10</span>, <span class="fl">3</span><span class="op">)</span>,
   .x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, length.out <span class="op">=</span> <span class="fl">121</span><span class="op">)</span>, <span class="fl">1.5</span> <span class="op">-</span> <span class="fl">1e-6</span><span class="op">)</span>,
