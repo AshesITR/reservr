@@ -1,6 +1,6 @@
 #' Pareto Distribution
 #'
-#' See [actuar::Pareto]
+#' See [Pareto]
 #'
 #' Both parameters can be overridden with
 #' `with_params = list(shape = ..., scale = ...)`.
@@ -12,8 +12,6 @@
 #' @export
 #'
 #' @examples
-#' library(actuar) # so fitdistrplus finds it
-#'
 #' d_pareto <- dist_pareto(shape = 3, scale = 1)
 #' x <- d_pareto$sample(100)
 #' d_emp <- dist_empirical(x)
@@ -35,6 +33,7 @@ dist_pareto <- function(shape = NULL, scale = NULL) {
   ParetoDistribution$new(shape = shape, scale = scale)
 }
 
+#' @include pareto.R
 ParetoDistribution <- distribution_class_simple(
   name = "Pareto",
   fun_name = "pareto",
@@ -51,7 +50,7 @@ ParetoDistribution <- distribution_class_simple(
         1.0 / params$shape + log(params$scale) - log(x + params$scale)
       } else {
         (1.0 / params$shape + log(params$scale) - log(x + params$scale)) *
-          actuar::dpareto(x, shape = params$shape, scale = params$scale)
+          dpareto(x, shape = params$shape, scale = params$scale)
       }
     }
 
@@ -61,7 +60,7 @@ ParetoDistribution <- distribution_class_simple(
       } else {
         (params$shape / params$scale -
           (params$shape + 1.0) / (x + params$scale)) *
-          actuar::dpareto(x, shape = params$shape, scale = params$scale)
+          dpareto(x, shape = params$shape, scale = params$scale)
       }
     }
 
@@ -77,15 +76,15 @@ ParetoDistribution <- distribution_class_simple(
       res$shape <- if (log.p) {
         if (lower.tail) {
           (log(params$scale) - log(q + params$scale)) *
-            actuar::ppareto(q, shape = params$shape, scale = params$scale,
+            ppareto(q, shape = params$shape, scale = params$scale,
                             lower.tail = FALSE) /
-            actuar::ppareto(q, shape = params$shape, scale = params$scale)
+            ppareto(q, shape = params$shape, scale = params$scale)
         } else {
           log(params$scale) - log(q + params$scale)
         }
       } else {
         (log(params$scale) - log(q + params$scale)) *
-          actuar::ppareto(
+          ppareto(
             q, shape = params$shape, scale = params$scale, lower.tail = FALSE
           )
       }
@@ -99,16 +98,16 @@ ParetoDistribution <- distribution_class_simple(
       res$scale <- if (log.p) {
         if (lower.tail) {
           params$shape / params$scale * q / (q + params$scale) *
-            actuar::ppareto(
+            ppareto(
               q, shape = params$shape, scale = params$scale, lower.tail = FALSE
             ) /
-            actuar::ppareto(q, shape = params$shape, scale = params$scale)
+            ppareto(q, shape = params$shape, scale = params$scale)
         } else {
           params$shape / params$scale * q / (q + params$scale)
         }
       } else {
         (params$shape / params$scale * q / (q + params$scale)) *
-          actuar::ppareto(
+          ppareto(
             q, shape = params$shape, scale = params$scale, lower.tail = FALSE
           )
       }
@@ -160,8 +159,7 @@ ParetoDistribution <- distribution_class_simple(
         -shape * log(qmin_sc)
       )
     )
-  },
-  envir = getNamespace("actuar")
+  }
 )
 
 #' @export

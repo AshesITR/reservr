@@ -6,9 +6,9 @@ test_that("pareto distribution works", {
 
   expect_silent(fit(dist, x))
   expect_identical(dist$get_type(), "continuous")
-  expect_density(dist, actuar::dpareto, params, x)
-  expect_probability(dist, actuar::ppareto, params, x)
-  expect_quantile(dist, actuar::qpareto, params)
+  expect_density(dist, dpareto, params, x)
+  expect_probability(dist, ppareto, params, x)
+  expect_quantile(dist, qpareto, params)
   expect_identical(dist$is_in_support(x), rep_len(TRUE, length(x)))
   expect_diff_density(dist, x, params)
   expect_diff_density(dist, x, list(shape = 3, scale = 2))

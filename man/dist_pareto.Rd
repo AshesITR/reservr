@@ -15,15 +15,13 @@ dist_pareto(shape = NULL, scale = NULL)
 A \code{ParetoDistribution} object.
 }
 \description{
-See \link[actuar:Pareto]{actuar::Pareto}
+See \link{Pareto}
 }
 \details{
 Both parameters can be overridden with
 \code{with_params = list(shape = ..., scale = ...)}.
 }
 \examples{
-library(actuar) # so fitdistrplus finds it
-
 d_pareto <- dist_pareto(shape = 3, scale = 1)
 x <- d_pareto$sample(100)
 d_emp <- dist_empirical(x)
