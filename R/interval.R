@@ -325,7 +325,7 @@ interval_union <- function(..., intervals = list()) {
 
   dat <- vapply(
     intervals,
-    function(i)c(i$range, i$include_lowest, i$include_highest),
+    function(i) c(i$range, i$include_lowest, i$include_highest),
     numeric(4)
   )
 
@@ -384,7 +384,7 @@ interval_intersection <- function(..., intervals = list()) {
 
   dat <- vapply(
     intervals,
-    function(i)c(i$range, i$include_lowest, i$include_highest),
+    function(i) c(i$range, i$include_lowest, i$include_highest),
     numeric(4)
   )
 

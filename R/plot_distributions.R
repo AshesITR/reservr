@@ -143,7 +143,7 @@ plot_distributions <- function(..., distributions = list(), .x,
 
     p <- switch(
       plot,
-      density =,
+      density = ,
       hazard = {
         plot_data_cont <- plot_data
         plot_data_cont[[plot_sym]][plot_data$discrete] <- 0.0
@@ -153,7 +153,10 @@ plot_distributions <- function(..., distributions = list(), .x,
           ggplot2::geom_line(data = plot_data_cont) +
           ggplot2::geom_point(data = plot_data_disc, show.legend = FALSE) +
           ggplot2::geom_linerange(
-            ggplot2::aes(ymax = {{ plot_sym }}, ymin = rep_len(0, nrow(plot_data_disc))), # fixes continuous distributions
+            ggplot2::aes(
+              ymax = {{ plot_sym }},
+              ymin = rep_len(0, nrow(plot_data_disc)) # fixes continuous distributions
+            ),
             data = plot_data_disc, linetype = 2L, show.legend = FALSE
           ) +
           ggplot2::theme_bw() +
