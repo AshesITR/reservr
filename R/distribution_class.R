@@ -665,16 +665,24 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
         general_params <- c(list(x = as.name(first_param)), general_params)
         names(general_params)[1L] <- first_param
 
-        fbody <- substituteDirect(bquote({
+        # Can't use bquote(..., splice = TRUE) for backward compatibility with R < 4.0
+        # Instead we construct the spliced call manually
+        spliced_call <- as.call(c(
+          substitute(self$func_name, list(func_name = func_name)),
+          general_params,
+          alist(with_params = params)
+        ))
+
+        fbody <- bquote({
           params <- .(param_list)
           tryCatch(
-            self$func_name(..(general_params), with_params = params),
+            .(spliced_call),
             error = function(e) {
               warning("Error during evaluation; returning NaNs.\n", e)
               rep_len(NaN, length(first_param))
             }
           )
-        }, splice = TRUE), list(func_name = func_name))
+        })
 
         fun <- as.function(c(ffmls, fbody))
         fun_name <- paste0(prefix, name)
