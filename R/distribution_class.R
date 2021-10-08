@@ -937,6 +937,7 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
   )
 )
 
+# nocov start
 distribution_class <- function(
   name,
   type = c("continuous", "discrete"),
@@ -1167,6 +1168,7 @@ distribution_class_simple <- function(name,
     )
   ))
 }
+# nocov end
 
 #' Test if object is a Distribution
 #'
