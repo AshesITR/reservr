@@ -177,25 +177,27 @@ The strategy uses two steps:</p><ol>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># With quantiles available</span>
-<span class='va'>dist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dist_normal.html'>dist_normal</a></span><span class='op'>(</span>sd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>qqs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>dist</span>, probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>3</span><span class='op'>)</span>, with_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span><span class='op'>(</span><span class='va'>qqs</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Without quantiles available</span>
-<span class='va'>dist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dist_erlangmix.html'>dist_erlangmix</a></span><span class='op'>(</span>shapes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span><span class='op'>)</span>, scale <span class='op'>=</span> <span class='fl'>1.0</span><span class='op'>)</span>
-<span class='va'>my_probs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0.01</span>, <span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>0.75</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>qqs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span>
-  <span class='va'>dist</span>, probs <span class='op'>=</span> <span class='va'>my_probs</span>,
-  with_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.3</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span>, .start <span class='op'>=</span> <span class='fl'>2</span>
-<span class='op'>)</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span><span class='op'>(</span><span class='va'>dist</span><span class='op'>$</span><span class='fu'>probability</span><span class='op'>(</span><span class='va'>qqs</span>, with_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.3</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>, <span class='va'>my_probs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "Mean relative difference: 2.890015e-06"</div><div class='input'><span class='co'># Careful: Numerical estimation of extreme quantiles can result in out-of-bounds values.</span>
-<span class='co'># The correct 0-quantile would be 0 in this case, but it was estimated &lt; 0.</span>
-<span class='va'>qqs</span><span class='op'>[</span><span class='fl'>1L</span><span class='op'>]</span>
-</div><div class='output co'>#&gt; [1] -1.138089</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># With quantiles available</span></span>
+<span class='r-in'><span class='va'>dist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dist_normal.html'>dist_normal</a></span><span class='op'>(</span>sd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>qqs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>dist</span>, probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>3</span><span class='op'>)</span>, with_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span><span class='op'>(</span><span class='va'>qqs</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Without quantiles available</span></span>
+<span class='r-in'><span class='va'>dist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dist_erlangmix.html'>dist_erlangmix</a></span><span class='op'>(</span>shapes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span><span class='op'>)</span>, scale <span class='op'>=</span> <span class='fl'>1.0</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>my_probs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0.01</span>, <span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>0.75</span>, <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>qqs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='va'>dist</span>, probs <span class='op'>=</span> <span class='va'>my_probs</span>,</span>
+<span class='r-in'>  with_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.3</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span>, .start <span class='op'>=</span> <span class='fl'>2</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span><span class='op'>(</span><span class='va'>dist</span><span class='op'>$</span><span class='fu'>probability</span><span class='op'>(</span><span class='va'>qqs</span>, with_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.3</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>, <span class='va'>my_probs</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Mean relative difference: 2.890015e-06"</span>
+<span class='r-in'><span class='co'># Careful: Numerical estimation of extreme quantiles can result in out-of-bounds values.</span></span>
+<span class='r-in'><span class='co'># The correct 0-quantile would be 0 in this case, but it was estimated &lt; 0.</span></span>
+<span class='r-in'><span class='va'>qqs</span><span class='op'>[</span><span class='fl'>1L</span><span class='op'>]</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] -1.138089</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

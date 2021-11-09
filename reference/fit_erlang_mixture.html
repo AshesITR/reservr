@@ -214,51 +214,52 @@ If <code>TRUE</code>, additional tracing information will be added to the result
 <code><a href='fit_mixture.html'>fit_mixture</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>dist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dist_erlangmix.html'>dist_erlangmix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='cn'>NULL</span>, <span class='cn'>NULL</span>, <span class='cn'>NULL</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-  shapes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1L</span>, <span class='fl'>4L</span>, <span class='fl'>12L</span><span class='op'>)</span>,
-  scale <span class='op'>=</span> <span class='fl'>2.0</span>,
-  probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.3</span>, <span class='fl'>0.2</span><span class='op'>)</span>
-<span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='va'>dist</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span><span class='fl'>100L</span>, with_params <span class='op'>=</span> <span class='va'>params</span><span class='op'>)</span>
-<span class='fu'>fit_erlang_mixture</span><span class='op'>(</span><span class='va'>dist</span>, <span class='va'>x</span>, init <span class='op'>=</span> <span class='st'>"kmeans"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $params
-#&gt; $params$probs
-#&gt; $params$probs[[1]]
-#&gt; [1] 0.43
-#&gt; 
-#&gt; $params$probs[[2]]
-#&gt; [1] 0.35
-#&gt; 
-#&gt; $params$probs[[3]]
-#&gt; [1] 0.22
-#&gt; 
-#&gt; 
-#&gt; $params$shapes
-#&gt; $params$shapes[[1]]
-#&gt; [1] 1
-#&gt; 
-#&gt; $params$shapes[[2]]
-#&gt; [1] 3
-#&gt; 
-#&gt; $params$shapes[[3]]
-#&gt; [1] 10
-#&gt; 
-#&gt; 
-#&gt; $params$scale
-#&gt; [1] 1.840251
-#&gt; 
-#&gt; 
-#&gt; $params_hist
-#&gt; list()
-#&gt; 
-#&gt; $iter
-#&gt; [1] 1
-#&gt; 
-#&gt; $logLik
-#&gt; 'log Lik.' -280.8698 (df=6)
-#&gt; </div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>dist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dist_erlangmix.html'>dist_erlangmix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='cn'>NULL</span>, <span class='cn'>NULL</span>, <span class='cn'>NULL</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>  shapes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1L</span>, <span class='fl'>4L</span>, <span class='fl'>12L</span><span class='op'>)</span>,</span>
+<span class='r-in'>  scale <span class='op'>=</span> <span class='fl'>2.0</span>,</span>
+<span class='r-in'>  probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.3</span>, <span class='fl'>0.2</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='va'>dist</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span><span class='fl'>100L</span>, with_params <span class='op'>=</span> <span class='va'>params</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>fit_erlang_mixture</span><span class='op'>(</span><span class='va'>dist</span>, <span class='va'>x</span>, init <span class='op'>=</span> <span class='st'>"kmeans"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $params</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $params$probs</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $params$probs[[1]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.43</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $params$probs[[2]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.35</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $params$probs[[3]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.22</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $params$shapes</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $params$shapes[[1]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $params$shapes[[2]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $params$shapes[[3]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $params$scale</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1.840251</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $params_hist</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> list()</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $iter</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $logLik</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 'log Lik.' -280.8698 (df=6)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -148,19 +148,21 @@
     <p>A nested list of vectors suitable as distribution parameters</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'>keras</span><span class='fu'>::</span><span class='fu'><a href='https://keras.rstudio.com/reference/is_keras_available.html'>is_keras_available</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='va'>tf_params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-    probs <span class='op'>=</span> <span class='fu'><a href='k_matrix.html'>k_matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.3</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,
-    shapes <span class='op'>=</span> <span class='fu'><a href='k_matrix.html'>k_matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1L</span>, <span class='fl'>2L</span>, <span class='fl'>3L</span><span class='op'>)</span><span class='op'>)</span>, dtype <span class='op'>=</span> <span class='st'>"int32"</span><span class='op'>)</span>,
-    scale <span class='op'>=</span> <span class='fu'>keras</span><span class='fu'>::</span><span class='fu'><a href='https://keras.rstudio.com/reference/k_constant.html'>k_constant</a></span><span class='op'>(</span><span class='fl'>1.0</span><span class='op'>)</span>
-  <span class='op'>)</span>
-  <span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'>as_params</span><span class='op'>(</span><span class='va'>tf_params</span><span class='op'>)</span>
-  <span class='va'>dist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dist_erlangmix.html'>dist_erlangmix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/vector.html'>vector</a></span><span class='op'>(</span><span class='st'>"list"</span>, <span class='fl'>3L</span><span class='op'>)</span><span class='op'>)</span>
-  <span class='va'>dist</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span><span class='fl'>10L</span>, with_params <span class='op'>=</span> <span class='va'>params</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div><div class='output co'>#&gt;  [1] 1.2200649 1.1372465 0.4722382 0.1538060 1.5848047 2.4697506 0.4213395
-#&gt;  [8] 0.4605219 0.6089661 5.4465435</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'>keras</span><span class='fu'>::</span><span class='fu'><a href='https://keras.rstudio.com/reference/is_keras_available.html'>is_keras_available</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>  <span class='va'>tf_params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>    probs <span class='op'>=</span> <span class='fu'><a href='k_matrix.html'>k_matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.3</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>    shapes <span class='op'>=</span> <span class='fu'><a href='k_matrix.html'>k_matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1L</span>, <span class='fl'>2L</span>, <span class='fl'>3L</span><span class='op'>)</span><span class='op'>)</span>, dtype <span class='op'>=</span> <span class='st'>"int32"</span><span class='op'>)</span>,</span>
+<span class='r-in'>    scale <span class='op'>=</span> <span class='fu'>keras</span><span class='fu'>::</span><span class='fu'><a href='https://keras.rstudio.com/reference/k_constant.html'>k_constant</a></span><span class='op'>(</span><span class='fl'>1.0</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'>as_params</span><span class='op'>(</span><span class='va'>tf_params</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>dist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dist_erlangmix.html'>dist_erlangmix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/vector.html'>vector</a></span><span class='op'>(</span><span class='st'>"list"</span>, <span class='fl'>3L</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>dist</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span><span class='fl'>10L</span>, with_params <span class='op'>=</span> <span class='va'>params</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loaded Tensorflow version 2.7.0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] 1.2200649 1.1372465 0.4722382 0.1538060 1.5848047 2.4697506 0.4213395</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8] 0.4605219 0.6089661 5.4465435</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -158,8 +158,8 @@ If <code>w</code> is missing the result is equivalent to
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A vector with length <code>nbins</code> where the <code>i</code>th result is equal to
-<code><a href='https://rdrr.io/r/base/sum.html'>sum(w[bin == i])</a></code> or <code><a href='https://rdrr.io/r/base/sum.html'>sum(bin == i)</a></code> if <code>w</code> is missing.
-For integer weights, this is equivalent to <code><a href='https://rdrr.io/r/base/tabulate.html'>tabulate(rep(bin, w), nbins)</a></code>.</p>
+<code>sum(w[bin == i])</code> or <code>sum(bin == i)</code> if <code>w</code> is missing.
+For integer weights, this is equivalent to <code>tabulate(rep(bin, w), nbins)</code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other weighted statistics: 
@@ -167,10 +167,13 @@ For integer weights, this is equivalent to <code><a href='https://rdrr.io/r/base
 <code><a href='weighted_quantile.html'>weighted_quantile</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>weighted_tabulate</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 2 1</div><div class='input'><span class='fu'>weighted_tabulate</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, nbins <span class='op'>=</span> <span class='fl'>3L</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 2 1 0</div><div class='input'><span class='fu'>weighted_tabulate</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, w <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>, nbins <span class='op'>=</span> <span class='fl'>3L</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 1 1 0</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>weighted_tabulate</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 2 1</span>
+<span class='r-in'><span class='fu'>weighted_tabulate</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, nbins <span class='op'>=</span> <span class='fl'>3L</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 2 1 0</span>
+<span class='r-in'><span class='fu'>weighted_tabulate</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, w <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>, nbins <span class='op'>=</span> <span class='fl'>3L</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1 1 0</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
