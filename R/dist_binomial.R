@@ -108,8 +108,8 @@ BinomialDistribution <- distribution_class_simple(
     res
   },
   tf_logdensity = function() function(x, args) {
-    size <- tf$broadcast_to(args[["size"]], x$shape)
-    prob <- tf$broadcast_to(args[["prob"]], x$shape)
+    size <- tf$broadcast_to(tf$squeeze(args[["size"]]), x$shape)
+    prob <- tf$broadcast_to(tf$squeeze(args[["prob"]]), x$shape)
 
     ok <- tf_is_integerish(x) & x >= K$zero & x <= size
     x_safe <- tf$where(ok, x, K$zero)
@@ -123,8 +123,8 @@ BinomialDistribution <- distribution_class_simple(
     )
   },
   tf_logprobability = function() function(qmin, qmax, args) {
-    size <- tf$broadcast_to(args[["size"]], qmin$shape)
-    prob <- tf$broadcast_to(args[["prob"]], qmin$shape)
+    size <- tf$broadcast_to(tf$squeeze(args[["size"]]), qmin$shape)
+    prob <- tf$broadcast_to(tf$squeeze(args[["prob"]]), qmin$shape)
 
     qmin0 <- qmin <= K$zero
     qmax_ok <- qmax >= K$zero & qmax < size
@@ -149,7 +149,7 @@ BinomialDistribution <- distribution_class_simple(
     )
   },
   tf_is_discrete_at = function() function(x, args) {
-    size <- tf$broadcast_to(args[["size"]], x$shape)
+    size <- tf$broadcast_to(tf$squeeze(args[["size"]]), x$shape)
 
     tf_is_integerish(x) & x >= K$zero & x <= size
   }
