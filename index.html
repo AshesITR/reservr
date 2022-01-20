@@ -31,6 +31,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -43,18 +45,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">reservr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -76,7 +72,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/AshesITR/reservr/">
+  <a href="https://github.com/AshesITR/reservr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -93,16 +89,16 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="reservr" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#reservr" class="anchor"></a>reservr</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="reservr">reservr<a class="anchor" aria-label="anchor" href="#reservr"></a>
+</h1></div>
 <!-- badges: start -->
 
 <p>The goal of reservr is to provide a flexible interface for specifying distributions and fitting them to (randomly) truncated and possibly interval-censored data. It provides custom fitting algorithms to fit distributions to i.i.d. samples as well as dynnamic TensorFlow integration to allow training neural networks with arbitrary output distributions. The latter can be used to include explanatory variables in the distributional fits. Reservr also provides some tools relevant for working with its core functionality in an actuarial setting, namely the functions <code><a href="reference/prob_report.html">prob_report()</a></code> and <code><a href="reference/truncate_claims.html">truncate_claims()</a></code>, both of which make assumptions on the type of random truncation applied to the data.</p>
 <p>Please refer to the vignettes <code>distributions.Rmd</code> and <code>tensorflow.Rmd</code> for detailed introductions.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>reservr is not yet on CRAN. You can install the latest development version of reservr via</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"AshesITR/reservr"</span><span class="op">)</span></code></pre></div>
@@ -111,48 +107,48 @@
 install.packages("reservr")
 ```
 --->
-<p>If you want to use all of reservrs features, make sure to also install <a href="https://tensorflow.rstudio.com/installation/">tensorflow</a>.</p>
+<p>If you want to use all of reservrs features, make sure to also install <a href="https://tensorflow.rstudio.com/installation/" class="external-link">tensorflow</a>.</p>
 </div>
-<div id="example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
 <p>This is a basic example which shows how to fit a normal distribution to randomly truncated and censored data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">reservr</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">reservr</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fl">0</span>
 <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fl">1</span>
 <span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
 <span class="va">p_cens</span> <span class="op">&lt;-</span> <span class="fl">0.8</span>
 
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, mean <span class="op">=</span> <span class="va">mu</span>, sd <span class="op">=</span> <span class="va">sigma</span><span class="op">)</span>
-<span class="va">is_censored</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, size <span class="op">=</span> <span class="fl">1L</span>, prob <span class="op">=</span> <span class="va">p_cens</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1L</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span>, mean <span class="op">=</span> <span class="va">mu</span>, sd <span class="op">=</span> <span class="va">sigma</span><span class="op">)</span>
+<span class="va">is_censored</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, size <span class="op">=</span> <span class="fl">1L</span>, prob <span class="op">=</span> <span class="va">p_cens</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1L</span>
 <span class="va">x_lower</span> <span class="op">&lt;-</span> <span class="va">x</span>
-<span class="va">x_lower</span><span class="op">[</span><span class="va">is_censored</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="va">is_censored</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">is_censored</span><span class="op">)</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
+<span class="va">x_lower</span><span class="op">[</span><span class="va">is_censored</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="va">is_censored</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">is_censored</span><span class="op">)</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
 <span class="va">x_upper</span> <span class="op">&lt;-</span> <span class="va">x</span>
-<span class="va">x_upper</span><span class="op">[</span><span class="va">is_censored</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="va">is_censored</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">is_censored</span><span class="op">)</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
+<span class="va">x_upper</span><span class="op">[</span><span class="va">is_censored</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="va">is_censored</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">is_censored</span><span class="op">)</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
 
-<span class="va">t_lower</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">N</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, max <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
-<span class="va">t_upper</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">N</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="va">t_lower</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">N</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, max <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+<span class="va">t_upper</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">N</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 
 <span class="va">is_observed</span> <span class="op">&lt;-</span> <span class="va">t_lower</span> <span class="op">&lt;=</span> <span class="va">x</span> <span class="op">&amp;</span> <span class="va">x</span> <span class="op">&lt;=</span> <span class="va">t_upper</span>
 
 <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/trunc_obs.html">trunc_obs</a></span><span class="op">(</span>
-  xmin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">pmax</a></span><span class="op">(</span><span class="va">x_lower</span>, <span class="va">t_lower</span><span class="op">)</span><span class="op">[</span><span class="va">is_observed</span><span class="op">]</span>,
-  xmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">pmin</a></span><span class="op">(</span><span class="va">x_upper</span>, <span class="va">t_upper</span><span class="op">)</span><span class="op">[</span><span class="va">is_observed</span><span class="op">]</span>,
+  xmin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">x_lower</span>, <span class="va">t_lower</span><span class="op">)</span><span class="op">[</span><span class="va">is_observed</span><span class="op">]</span>,
+  xmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="va">x_upper</span>, <span class="va">t_upper</span><span class="op">)</span><span class="op">[</span><span class="va">is_observed</span><span class="op">]</span>,
   tmin <span class="op">=</span> <span class="va">t_lower</span><span class="op">[</span><span class="va">is_observed</span><span class="op">]</span>,
   tmax <span class="op">=</span> <span class="va">t_upper</span><span class="op">[</span><span class="va">is_observed</span><span class="op">]</span>
 <span class="op">)</span>
 
 <span class="co"># Summary of the simulation</span>
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span>
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span>
   <span class="st">"simulated samples: %d\nobserved samples: %d\ncensored samples: %d\n"</span>, 
-  <span class="va">N</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">obs</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">obs</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">N</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">obs</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">obs</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span><span class="op">)</span>
 
 <span class="co"># Define outcome distribution and perform fit to truncated and (partially) censored sample</span>
 <span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dist_normal.html">dist_normal</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">the_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">dist</span>, <span class="va">obs</span><span class="op">)</span>
+<span class="va">the_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">dist</span>, <span class="va">obs</span><span class="op">)</span>
 
 <span class="co"># Visualize resulting parameters and show a kernel density estimate of the samples.</span>
 <span class="co"># We replace interval-censored samples with their midpoint for the kernel density estimate.</span>
@@ -160,62 +156,73 @@ install.packages("reservr")
   true <span class="op">=</span> <span class="va">dist</span>,
   fitted <span class="op">=</span> <span class="va">dist</span>, 
   empirical <span class="op">=</span> <span class="fu"><a href="reference/dist_empirical.html">dist_empirical</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">*</span> <span class="op">(</span><span class="va">obs</span><span class="op">$</span><span class="va">xmin</span> <span class="op">+</span> <span class="va">obs</span><span class="op">$</span><span class="va">xmax</span><span class="op">)</span><span class="op">)</span>, 
-  .x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span>, length.out <span class="op">=</span> <span class="fl">201</span><span class="op">)</span>, 
+  .x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span>, length.out <span class="op">=</span> <span class="fl">201</span><span class="op">)</span>, 
   plots <span class="op">=</span> <span class="st">"density"</span>, 
-  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    true <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="va">mu</span>, sd <span class="op">=</span> <span class="va">sigma</span><span class="op">)</span>, 
+  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+    true <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="va">mu</span>, sd <span class="op">=</span> <span class="va">sigma</span><span class="op">)</span>, 
     fitted <span class="op">=</span> <span class="va">the_fit</span><span class="op">$</span><span class="va">params</span>
   <span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 </div>
-<div id="code-of-conduct" class="section level2">
-<h2 class="hasAnchor">
-<a href="#code-of-conduct" class="anchor"></a>Code of Conduct</h2>
-<p>Please note that the reservr project is released with a <a href="https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
+<div class="section level2">
+<h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
+</h2>
+<p>Please note that the reservr project is released with a <a href="https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html" class="external-link">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/AshesITR/reservr/">https://​github.com/​AshesITR/​reservr/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/AshesITR/reservr/issues">https://​github.com/​AshesITR/​reservr/​issues</a>
-</li>
+<li><a href="https://github.com/AshesITR/reservr/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/AshesITR/reservr/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>GPL</li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing reservr</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Alexander Rosenstock <br><small class="roles"> Author, maintainer, copyright holder </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://codecov.io/gh/AshesITR/reservr?branch=master"><img src="https://codecov.io/gh/AshesITR/reservr/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://github.com/AshesITR/reservr/actions"><img src="https://github.com/AshesITR/reservr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://codecov.io/gh/AshesITR/reservr?branch=master" class="external-link"><img src="https://codecov.io/gh/AshesITR/reservr/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/AshesITR/reservr/actions" class="external-link"><img src="https://github.com/AshesITR/reservr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Alexander Rosenstock.</p>
+  <p></p>
+<p>Developed by Alexander Rosenstock.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -223,6 +230,8 @@ install.packages("reservr")
 
   
 
+
+  
 
   </body>
 </html>

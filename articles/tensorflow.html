@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">reservr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -64,7 +60,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/AshesITR/reservr/">
+  <a href="https://github.com/AshesITR/reservr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -85,61 +81,61 @@
       <h1 data-toc-skip>TensorFlow Integration</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/AshesITR/reservr/blob/master/vignettes/tensorflow.Rmd"><code>vignettes/tensorflow.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/AshesITR/reservr/blob/HEAD/vignettes/tensorflow.Rmd" class="external-link"><code>vignettes/tensorflow.Rmd</code></a></small>
       <div class="hidden name"><code>tensorflow.Rmd</code></div>
 
     </div>
 
     
     
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p>While <code>{reservr}</code> is capable of fitting distributions to censored and truncated observations, it does not directly allow modelling the influence of exogenous variables observed alongside the primary outcome. This is where the integration with TensorFlow comes in.</p>
 <p>The TensorFlow integration allows to fit a neural network simultaneously to all parameters of a distribution while taking exogenous variables into account.</p>
 <p><code>{reservr}</code> accepts all partial tensorflow networks which yield a single arbitrary-dimension rank 2 tensor (e.g. any dense layer) as output and can connect suitable layers to this <em>intermediate output</em> such that the complete network predicts the parameters of any pre-specified distribution family.</p>
-<p>It also dynamically compiles a suitable conditional likelihood based loss, depending on the type of problem (censoring, truncation), which can be optimized using the <code><a href="https://generics.r-lib.org/reference/fit.html">keras::fit</a></code> implementation out-of-the box. This means there is full flexibility with respect to callbacks, optimizers, mini-batching, etc.</p>
+<p>It also dynamically compiles a suitable conditional likelihood based loss, depending on the type of problem (censoring, truncation), which can be optimized using the <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">keras::fit</a></code> implementation out-of-the box. This means there is full flexibility with respect to callbacks, optimizers, mini-batching, etc.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">reservr</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/tensorflow">tensorflow</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://keras.rstudio.com">keras</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/">tibble</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></code></pre></div>
-<div id="a-simple-linear-model" class="section level3">
-<h3 class="hasAnchor">
-<a href="#a-simple-linear-model" class="anchor"></a>A simple linear model</h3>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">reservr</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/tensorflow" class="external-link">tensorflow</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://keras.rstudio.com" class="external-link">keras</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></code></pre></div>
+<div class="section level3">
+<h3 id="a-simple-linear-model">A simple linear model<a class="anchor" aria-label="anchor" href="#a-simple-linear-model"></a>
+</h3>
 <p>The following example will show the code necessary to fit a simple model with the same assumptions as OLS to data. As a true relationship we use <span class="math inline">\(y = 2 x + \epsilon\)</span> with <span class="math inline">\(\epsilon \sim \mathcal{N}(0, 1)\)</span>. We will not use censoring or truncation.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://keras.rstudio.com/reference/is_keras_available.html">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1431L</span><span class="op">)</span>
-  <span class="fu">tensorflow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tensorflow/man/set_random_seed.html">set_random_seed</a></span><span class="op">(</span><span class="fl">1432L</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://keras.rstudio.com/reference/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1431L</span><span class="op">)</span>
+  <span class="fu">tensorflow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tensorflow/man/set_random_seed.html" class="external-link">set_random_seed</a></span><span class="op">(</span><span class="fl">1432L</span><span class="op">)</span>
 
-  <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">100</span>, min <span class="op">=</span> <span class="fl">10</span>, max <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,
-    y <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>
+  <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>
+    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span>, min <span class="op">=</span> <span class="fl">10</span>, max <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,
+    y <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>
   <span class="op">)</span>
 
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html">qplot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, data <span class="op">=</span> <span class="va">dataset</span><span class="op">)</span>
+  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html" class="external-link">qplot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, data <span class="op">=</span> <span class="va">dataset</span><span class="op">)</span>
 
   <span class="co"># Specify distributional assumption of OLS:</span>
   <span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dist_normal.html">dist_normal</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span> <span class="co"># OLS assumption: homoskedasticity</span>
 
   <span class="co"># Optional: Compute a global fit</span>
-  <span class="va">global_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">dist</span>, <span class="va">dataset</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>
+  <span class="va">global_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">dist</span>, <span class="va">dataset</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>
 
   <span class="co"># Define a neural network</span>
-  <span class="va">nnet_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://keras.rstudio.com/reference/layer_input.html">layer_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">1L</span>, name <span class="op">=</span> <span class="st">"x_input"</span><span class="op">)</span>
+  <span class="va">nnet_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://keras.rstudio.com/reference/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">1L</span>, name <span class="op">=</span> <span class="st">"x_input"</span><span class="op">)</span>
   <span class="co"># in practice, this would be deeper</span>
   <span class="va">nnet_output</span> <span class="op">&lt;-</span> <span class="va">nnet_input</span>
 
-  <span class="va">optimizer</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"keras"</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="st">"2.6.0"</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://keras.rstudio.com/reference/optimizer_adam.html">optimizer_adam</a></span><span class="op">(</span>learning_rate <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
+  <span class="va">optimizer</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"keras"</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="st">"2.6.0"</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu"><a href="https://keras.rstudio.com/reference/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span>learning_rate <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
   <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-    <span class="fu"><a href="https://keras.rstudio.com/reference/optimizer_adam.html">optimizer_adam</a></span><span class="op">(</span>lr <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
+    <span class="fu"><a href="https://keras.rstudio.com/reference/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span>lr <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
   <span class="op">}</span>
 
   <span class="va">nnet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tf_compile_model.html">tf_compile_model</a></span><span class="op">(</span>
-    inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">nnet_input</span><span class="op">)</span>,
+    inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">nnet_input</span><span class="op">)</span>,
     intermediate_output <span class="op">=</span> <span class="va">nnet_output</span>,
     dist <span class="op">=</span> <span class="va">dist</span>,
     optimizer <span class="op">=</span> <span class="va">optimizer</span>,
@@ -147,27 +143,27 @@
     truncation <span class="op">=</span> <span class="cn">FALSE</span>
   <span class="op">)</span>
 
-  <span class="va">nnet_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">nnet</span>, x <span class="op">=</span> <span class="va">dataset</span><span class="op">$</span><span class="va">x</span>, y <span class="op">=</span> <span class="va">dataset</span><span class="op">$</span><span class="va">y</span>, epochs <span class="op">=</span> <span class="fl">100L</span>, batch_size <span class="op">=</span> <span class="fl">100L</span>, shuffle <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+  <span class="va">nnet_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">nnet</span>, x <span class="op">=</span> <span class="va">dataset</span><span class="op">$</span><span class="va">x</span>, y <span class="op">=</span> <span class="va">dataset</span><span class="op">$</span><span class="va">y</span>, epochs <span class="op">=</span> <span class="fl">100L</span>, batch_size <span class="op">=</span> <span class="fl">100L</span>, shuffle <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
-  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">)</span>
 
-  <span class="va">pred_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">nnet</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://keras.rstudio.com/reference/k_constant.html">k_constant</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">pred_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">nnet</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://keras.rstudio.com/reference/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
-  <span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">dataset</span><span class="op">)</span>
+  <span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">dataset</span><span class="op">)</span>
 
   <span class="va">dataset</span><span class="op">$</span><span class="va">y_pred</span> <span class="op">&lt;-</span> <span class="va">pred_params</span><span class="op">$</span><span class="va">mean</span>
-  <span class="va">dataset</span><span class="op">$</span><span class="va">y_lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">lm_fit</span>, newdata <span class="op">=</span> <span class="va">dataset</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span>
+  <span class="va">dataset</span><span class="op">$</span><span class="va">y_lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">lm_fit</span>, newdata <span class="op">=</span> <span class="va">dataset</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span>
 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">dataset</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/gg-add.html">%+%</a></span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/gg-add.html">%+%</a></span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_pred</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/gg-add.html">%+%</a></span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_lm</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dataset</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/gg-add.html" class="external-link">%+%</a></span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/gg-add.html" class="external-link">%+%</a></span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_pred</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/gg-add.html" class="external-link">%+%</a></span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_lm</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span>
 
-  <span class="va">coef_nnet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">nnet</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="fu">get_weights</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-  <span class="va">coef_lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">lm_fit</span><span class="op">)</span>
+  <span class="va">coef_nnet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">nnet</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="fu">get_weights</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">coef_lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm_fit</span><span class="op">)</span>
 
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">coef_nnet</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">coef_lm</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">coef_nnet</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">coef_lm</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="co">#&gt; Loaded Tensorflow version 2.7.0</span>
 <span class="co">#&gt; [1] 0.8800764 1.9325488</span>
@@ -188,11 +184,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Alexander Rosenstock.</p>
+  <p></p>
+<p>Developed by Alexander Rosenstock.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -200,6 +198,8 @@
 
   
 
+
+  
 
   </body>
 </html>
