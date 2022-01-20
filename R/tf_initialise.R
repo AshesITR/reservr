@@ -54,7 +54,7 @@ tf_initialise_model <- function(model, params, mode = c("scale", "perturb", "zer
   tf_params <- model$dist$tf_make_constants(params)
 
   init_list <- function(x, prefix = "") {
-    if (is.list(x)) {
+    if (is.list(x) && length(x) > 0L) {
       nms <- names(x)
       if (is.null(nms)) {
         nms <- as.character(seq_along(x))
