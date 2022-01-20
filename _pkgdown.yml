@@ -1,59 +1,61 @@
+url: https://ashesitr.github.io/reservr/
 destination: docs
 reference:
-  - title: "Distributions"
-    desc: >
-      Specifying families of distributions to use for fitting, simulation or prediction.
-    contents:
-      - Distribution
-      - is.Distribution
-      - starts_with("dist_")
-      - plot_distributions
-      - quantile.Distribution
-  - title: "Work with truncated data"
-    desc: >
-      Specify and work with interval truncated and interval censored data
-    contents:
-      - ends_with("_obs")
-      - truncate_claims
-  - title: "Fit Models on Data"
-    desc: >
-      Fit models to truncated data using maximum likelihood or EM-Algorithms, depending on the selected family.
-    contents:
-      - starts_with("fit_")
-      - fit.reservr_keras_model
-  - title: "Extract predictions from fitted models"
-    desc: >
-      Methods for adding predictions to new data.
-    contents:
-      - prob_report
-      - predict.reservr_keras_model
-  - title: "Work with TensorFlow"
-    desc: >
-      Methods for specifying, compiling and creating input for TensorFlow models using the `{tensorflow}` package.
-    contents:
-      - starts_with("tf_")
-      - starts_with("k_")
-      - starts_with("callback_")
-      - as_params
-  - title: "Miscellaneous"
-    desc: >
-      Miscellaneous functions
-    contents:
-      - blended_transition
-      - blended_transition_inv
-      - starts_with("flatten_")
-      - rgpd
-      - dgpd
-      - pgpd
-      - qgpd
-      - rpareto
-      - dpareto
-      - ppareto
-      - qpareto
-      - inflate_params
-      - integrate_gk
-      - is.Interval
-      - starts_with("interval")
-      - softmax
-      - dsoftmax
-      - starts_with("weighted_")
+- title: Distributions
+  desc: |
+    Specifying families of distributions to use for fitting, simulation or prediction.
+  contents:
+  - Distribution
+  - is.Distribution
+  - starts_with("dist_")
+  - plot_distributions
+  - quantile.Distribution
+- title: Work with truncated data
+  desc: |
+    Specify and work with interval truncated and interval censored data
+  contents:
+  - ends_with("_obs")
+  - truncate_claims
+- title: Fit Models on Data
+  desc: |
+    Fit models to truncated data using maximum likelihood or EM-Algorithms, depending on the selected family.
+  contents:
+  - starts_with("fit_")
+  - fit.reservr_keras_model
+- title: Extract predictions from fitted models
+  desc: |
+    Methods for adding predictions to new data.
+  contents:
+  - prob_report
+  - predict.reservr_keras_model
+- title: Work with TensorFlow
+  desc: |
+    Methods for specifying, compiling and creating input for TensorFlow models using the `{tensorflow}` package.
+  contents:
+  - starts_with("tf_")
+  - starts_with("k_")
+  - starts_with("callback_")
+  - as_params
+- title: Miscellaneous
+  desc: |
+    Miscellaneous functions
+  contents:
+  - blended_transition
+  - blended_transition_inv
+  - starts_with("flatten_")
+  - rgpd
+  - dgpd
+  - pgpd
+  - qgpd
+  - rpareto
+  - dpareto
+  - ppareto
+  - qpareto
+  - inflate_params
+  - integrate_gk
+  - is.Interval
+  - starts_with("interval")
+  - softmax
+  - dsoftmax
+  - starts_with("weighted_")
+
