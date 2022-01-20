@@ -1,186 +1,186 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://ashesitr.github.io/reservr/404.html</loc>
   </url>
   <url>
-    <loc>/articles/distributions.html</loc>
+    <loc>https://ashesitr.github.io/reservr/articles/distributions.html</loc>
   </url>
   <url>
-    <loc>/articles/index.html</loc>
+    <loc>https://ashesitr.github.io/reservr/articles/index.html</loc>
   </url>
   <url>
-    <loc>/articles/tensorflow.html</loc>
+    <loc>https://ashesitr.github.io/reservr/articles/tensorflow.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://ashesitr.github.io/reservr/authors.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://ashesitr.github.io/reservr/index.html</loc>
   </url>
   <url>
-    <loc>/reference/Distribution.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/Distribution.html</loc>
   </url>
   <url>
-    <loc>/reference/GenPareto.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/GenPareto.html</loc>
   </url>
   <url>
-    <loc>/reference/Pareto.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/Pareto.html</loc>
   </url>
   <url>
-    <loc>/reference/as_params.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/as_params.html</loc>
   </url>
   <url>
-    <loc>/reference/blended_transition.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/blended_transition.html</loc>
   </url>
   <url>
-    <loc>/reference/callback_adaptive_lr.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/callback_adaptive_lr.html</loc>
   </url>
   <url>
-    <loc>/reference/callback_debug_dist_gradients.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/callback_debug_dist_gradients.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_bdegp.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_bdegp.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_beta.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_beta.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_binomial.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_binomial.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_blended.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_blended.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_dirac.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_dirac.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_empirical.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_empirical.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_erlangmix.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_erlangmix.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_exponential.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_exponential.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_gamma.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_gamma.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_genpareto.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_genpareto.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_lognormal.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_lognormal.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_mde.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_mde.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_mixture.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_mixture.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_negbinomial.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_negbinomial.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_normal.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_normal.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_pareto.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_pareto.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_poisson.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_poisson.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_translate.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_translate.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_trunc.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_trunc.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_uniform.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_uniform.html</loc>
   </url>
   <url>
-    <loc>/reference/dist_weibull.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/dist_weibull.html</loc>
   </url>
   <url>
-    <loc>/reference/fit.reservr_keras_model.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/fit.reservr_keras_model.html</loc>
   </url>
   <url>
-    <loc>/reference/fit_blended.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/fit_blended.html</loc>
   </url>
   <url>
-    <loc>/reference/fit_dist.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/fit_dist.html</loc>
   </url>
   <url>
-    <loc>/reference/fit_dist_start.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/fit_dist_start.html</loc>
   </url>
   <url>
-    <loc>/reference/fit_erlang_mixture.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/fit_erlang_mixture.html</loc>
   </url>
   <url>
-    <loc>/reference/fit_mixture.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/fit_mixture.html</loc>
   </url>
   <url>
-    <loc>/reference/flatten_params.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/flatten_params.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/integrate_gk.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/integrate_gk.html</loc>
   </url>
   <url>
-    <loc>/reference/interval-operations.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/interval-operations.html</loc>
   </url>
   <url>
-    <loc>/reference/interval.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/interval.html</loc>
   </url>
   <url>
-    <loc>/reference/is.Distribution.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/is.Distribution.html</loc>
   </url>
   <url>
-    <loc>/reference/k_matrix.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/k_matrix.html</loc>
   </url>
   <url>
-    <loc>/reference/plot_distributions.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/plot_distributions.html</loc>
   </url>
   <url>
-    <loc>/reference/predict.reservr_keras_model.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/predict.reservr_keras_model.html</loc>
   </url>
   <url>
-    <loc>/reference/prob_report.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/prob_report.html</loc>
   </url>
   <url>
-    <loc>/reference/quantile.Distribution.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/quantile.Distribution.html</loc>
   </url>
   <url>
-    <loc>/reference/reexports.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/reexports.html</loc>
   </url>
   <url>
-    <loc>/reference/softmax.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/softmax.html</loc>
   </url>
   <url>
-    <loc>/reference/tf_compile_model.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/tf_compile_model.html</loc>
   </url>
   <url>
-    <loc>/reference/tf_initialise_model.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/tf_initialise_model.html</loc>
   </url>
   <url>
-    <loc>/reference/tf_with_disable_graph.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/tf_with_disable_graph.html</loc>
   </url>
   <url>
-    <loc>/reference/trunc_obs.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/trunc_obs.html</loc>
   </url>
   <url>
-    <loc>/reference/truncate_claims.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/truncate_claims.html</loc>
   </url>
   <url>
-    <loc>/reference/weighted_moments.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/weighted_moments.html</loc>
   </url>
   <url>
-    <loc>/reference/weighted_quantile.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/weighted_quantile.html</loc>
   </url>
   <url>
-    <loc>/reference/weighted_tabulate.html</loc>
+    <loc>https://ashesitr.github.io/reservr/reference/weighted_tabulate.html</loc>
   </url>
 </urlset>

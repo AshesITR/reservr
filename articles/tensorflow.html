@@ -75,7 +75,7 @@
 
       
 
-      </header><script src="tensorflow_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>TensorFlow Integration</h1>
@@ -91,12 +91,12 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>While <code>{reservr}</code> is capable of fitting distributions to censored and truncated observations, it does not directly allow modelling the influence of exogenous variables observed alongside the primary outcome. This is where the integration with TensorFlow comes in.</p>
+<p>While <a href="https://ashesitr.github.io/reservr/">reservr</a> is capable of fitting distributions to censored and truncated observations, it does not directly allow modelling the influence of exogenous variables observed alongside the primary outcome. This is where the integration with TensorFlow comes in.</p>
 <p>The TensorFlow integration allows to fit a neural network simultaneously to all parameters of a distribution while taking exogenous variables into account.</p>
-<p><code>{reservr}</code> accepts all partial tensorflow networks which yield a single arbitrary-dimension rank 2 tensor (e.g. any dense layer) as output and can connect suitable layers to this <em>intermediate output</em> such that the complete network predicts the parameters of any pre-specified distribution family.</p>
+<p><a href="https://ashesitr.github.io/reservr/">reservr</a> accepts all partial tensorflow networks which yield a single arbitrary-dimension rank 2 tensor (e.g. any dense layer) as output and can connect suitable layers to this <em>intermediate output</em> such that the complete network predicts the parameters of any pre-specified distribution family.</p>
 <p>It also dynamically compiles a suitable conditional likelihood based loss, depending on the type of problem (censoring, truncation), which can be optimized using the <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">keras::fit</a></code> implementation out-of-the box. This means there is full flexibility with respect to callbacks, optimizers, mini-batching, etc.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">reservr</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ashesitr.github.io/reservr/">reservr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/tensorflow" class="external-link">tensorflow</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://keras.rstudio.com" class="external-link">keras</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span>
@@ -164,11 +164,7 @@
 
   <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">coef_nnet</span><span class="op">)</span>
   <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">coef_lm</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="co">#&gt; Loaded Tensorflow version 2.7.0</span>
-<span class="co">#&gt; [1] 0.8800764 1.9325488</span>
-<span class="co">#&gt; (Intercept)           x </span>
-<span class="co">#&gt;   0.5645856   1.9574191</span></code></pre></div>
+<span class="op">}</span></code></pre></div>
 </div>
 </div>
   </div>

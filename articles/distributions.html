@@ -75,7 +75,7 @@
 
       
 
-      </header><script src="distributions_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Working with Distributions</h1>
@@ -91,14 +91,14 @@
 <div class="section level2">
 <h2 id="distributions">Distributions<a class="anchor" aria-label="anchor" href="#distributions"></a>
 </h2>
-<p>Distributions are a set of classes available in <code>{reservr}</code> to specify distribution families of random variables. A Distribution inherits from the R6 Class <code>Distribution</code> and provides all functionality necessary for working with a specific family.</p>
+<p>Distributions are a set of classes available in <a href="https://ashesitr.github.io/reservr/">reservr</a> to specify distribution families of random variables. A Distribution inherits from the R6 Class <code>Distribution</code> and provides all functionality necessary for working with a specific family.</p>
 <p>A Distribution can be defined by calling one of the constructor functions, prefixed by <code>dist_</code> in the package. All constructors accept parameters of the family as arguments. If these arguments are specified, the corresponding parameter is considered <em>fixed</em> in the sense that it need not be specified when computing something for the distribution and it will be assumed fixed when calling <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> on the distribution instance.</p>
 <div class="section level3">
 <h3 id="sample">Sample<a class="anchor" aria-label="anchor" href="#sample"></a>
 </h3>
 <p>For example, an unspecified normal distribution can be created by calling <code><a href="../reference/dist_normal.html">dist_normal()</a></code> without arguments. This means the parameters <code>mean</code> and <code>sd</code> are considered <em>placeholders</em>. If we want to, e.g., sample from <code>norm</code>, we must specify these placeholders in the <code>with_params</code> argument:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">reservr</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ashesitr.github.io/reservr/">reservr</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>
 <span class="co"># Instantiate an unspecified normal distribution</span>
 <span class="va">norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dist_normal.html">dist_normal</a></span><span class="op">(</span><span class="op">)</span>
