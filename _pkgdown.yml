@@ -20,6 +20,7 @@ reference:
       Fit models to truncated data using maximum likelihood or EM-Algorithms, depending on the selected family.
     contents:
       - starts_with("fit_")
+      - fit.reservr_keras_model
   - title: "Extract predictions from fitted models"
     desc: >
       Methods for adding predictions to new data.
@@ -33,7 +34,6 @@ reference:
       - starts_with("tf_")
       - starts_with("k_")
       - starts_with("callback_")
-      - as_k_constants
       - as_params
   - title: "Miscellaneous"
     desc: >
@@ -46,6 +46,10 @@ reference:
       - dgpd
       - pgpd
       - qgpd
+      - rpareto
+      - dpareto
+      - ppareto
+      - qpareto
       - inflate_params
       - integrate_gk
       - is.Interval
