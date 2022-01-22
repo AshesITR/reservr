@@ -79,9 +79,9 @@ WeibullDistribution <- distribution_class_simple(
     }
 
     if ("shape" %in% names(vars)) {
-      z[is.infinite(q)] <- 0.0
+      z[is.infinite(q) | q <= 0] <- 0.0
       diff_shape <- log(z) * z_pow_alpha * exp(-z_pow_alpha)
-      diff_shape[is.infinite(q)] <- 0.0
+      diff_shape[is.infinite(q) | q <= 0] <- 0.0
 
       res$shape <- if (log.p) {
         diff_shape / pweibull(q, shape = params$shape, scale = params$scale,
@@ -97,7 +97,7 @@ WeibullDistribution <- distribution_class_simple(
       diff_scale <- params$shape / params$scale *
         z_pow_alpha *
         exp(-z_pow_alpha)
-      diff_scale[is.infinite(q)] <- 0.0
+      diff_scale[is.infinite(q) | q <= 0] <- 0.0
 
       res$scale <- if (log.p) {
         diff_scale / pweibull(q, shape = params$shape, scale = params$scale,
