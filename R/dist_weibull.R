@@ -115,8 +115,8 @@ WeibullDistribution <- distribution_class_simple(
     shape <- tf$broadcast_to(args[["shape"]], x$shape)
     scale <- tf$broadcast_to(args[["scale"]], x$shape)
 
-    ok <- x >= 0.0 & tf$math$is_finite(x)
-    x_safe <- tf$where(ok, x, 0.0)
+    ok <- x > 0.0 & tf$math$is_finite(x)
+    x_safe <- tf$where(ok, x, 1.0)
 
     tf$where(
       ok,
@@ -129,22 +129,23 @@ WeibullDistribution <- distribution_class_simple(
     scale <- tf$broadcast_to(args[["scale"]], qmin$shape)
 
     qmin0 <- qmin <= 0.0
-    qmin_safe <- tf$math$maximum(0.0, qmin / scale)
+    qmin_safe <- tf$where(qmin0, 1.0, qmin / scale)
     qmax0 <- qmax > 0.0
     qmax_ok <- tf$math$is_finite(qmax) & qmax > 0.0
     qmax_safe <- tf$where(qmax_ok, qmax / scale, qmin_safe + 1.0)
+    qmax_safe2 <- tf$where(qmin0, qmin_safe + 1.0, qmax_safe)
     qmax_nok <- tf$where(qmax0, K$neg_inf, K$zero)
 
     tf$where(
       qmin0,
       tf$where(
         qmax_ok,
-        log(1.0 - exp(-tf$math$pow(qmax_safe, shape))),
+        tf$math$log1p(-exp(-tf$math$pow(qmax_safe, shape))),
         qmax_nok
       ),
       tf$where(
         qmax_ok,
-        log(exp(-tf$math$pow(qmin_safe, shape)) - exp(-tf$math$pow(qmax_safe, shape))),
+        log(exp(-tf$math$pow(qmin_safe, shape)) - exp(-tf$math$pow(qmax_safe2, shape))),
         -tf$math$pow(qmin_safe, shape)
       )
     )
