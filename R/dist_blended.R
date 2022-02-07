@@ -713,6 +713,12 @@ fit_dist_start.BlendedDistribution <- function(dist, obs, dists_start = NULL,
   tmin_comp <- blended_transition(obs$tmin, u_mat, eps_mat)
   tmax_comp <- blended_transition(obs$tmax, u_mat, eps_mat)
 
+  # Precautions against (small) numerical error in blended_transition:
+  obs_trans_min <- pmin(obs_trans_min, obs_trans, na.rm = TRUE)
+  obs_trans_max <- pmax(obs_trans_max, obs_trans, na.rm = TRUE)
+  tmin_comp <- pmin(tmin_comp, obs_trans_min)
+  tmax_comp <- pmax(tmax_comp, obs_trans_max)
+
   res$dists[!ph_dists] <- rep_len(list(list()), sum(!ph_dists))
   if (any(ph_dists)) {
     if (!is.null(dists_start)) {

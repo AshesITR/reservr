@@ -83,6 +83,12 @@ fit_blended <- function(dist, obs, start,
   tmin_comp <- blended_transition(obs$tmin, u_mat, eps_mat)
   tmax_comp <- blended_transition(obs$tmax, u_mat, eps_mat)
 
+  # Precautions against (small) numerical error in blended_transition:
+  obs_trans_min <- pmin(obs_trans_min, obs_trans, na.rm = TRUE)
+  obs_trans_max <- pmax(obs_trans_max, obs_trans, na.rm = TRUE)
+  tmin_comp <- pmin(tmin_comp, obs_trans_min)
+  tmax_comp <- pmax(tmax_comp, obs_trans_max)
+
   # TODO ggfs. 1 / (pmax - pmin) aus dens_matrix und trunc_matrix kürzen
   # density matrix
   dens_matrix <- function(params) {
