@@ -128,9 +128,9 @@ GammaDistribution <- distribution_class_simple(
     tf$where(
       qmin0,
       tf$where(
-        qmax_ok,
-        log(tf$math$igamma(shape, qmax_safe * rate)),
-        qmax_nok
+        qmax0 | qmaxInf,
+        qmax_nok,
+        log(tf$math$igamma(shape, qmax_safe * rate))
       ),
       tf$where(
         qmaxInf,
