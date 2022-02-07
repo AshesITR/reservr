@@ -15,5 +15,7 @@ test_that("gamma distribution works", {
   expect_diff_probability(dist, x, params)
   expect_diff_probability(dist, x, list(shape = 3, rate = 5))
   expect_tf_logdensity(dist, params, x)
-  expect_tf_logdensity(dist, params, x, x + 1.0)
+  expect_tf_logprobability(dist, params, x, x + 1.0)
+  expect_tf_logprobability(dist, params, 0.0, x)
+  expect_tf_logprobability(dist, params, x, Inf)
 })
