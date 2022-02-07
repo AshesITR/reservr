@@ -49,7 +49,7 @@ jobs:
       - name: install miniconda / tensorflow
         run: |
           reticulate::install_miniconda()
-          tensorflow::install_tensorflow()
+          tensorflow::install_tensorflow(conda_python_version = reticulate::py_version())
           tensorflow::tf$constant("Hellow Tensorflow")
         shell: Rscript {0}
 
