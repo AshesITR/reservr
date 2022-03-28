@@ -209,6 +209,19 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
       stop("is_in_support() is not implemented for ", class(self)[1L], ".")
     },
 
+    #' @details Determine the support of a Distribution
+    #'
+    #' @param with_params Distribution parameters to use.
+    #' Each parameter value can also be a numeric vector of constant length `n`.
+    #' In that case, the `i`-th result will use the `i`-th parameters.
+    #'
+    #' @return A length `n` list of [interval_union()] describing the support.
+    #' Discrete values will be given as integer intervals whereas continuous intervals describe the continuous support.
+    #'
+    get_support = function(with_params = list()) {
+      stop("get_support() is not implemented for ", class(self)[1L], ".")
+    }
+
     # nocov end
 
     #' @details Determine if a value has positive probability
@@ -959,10 +972,12 @@ distribution_class <- function(
     }
   },
   support = I_REALS,
-  is_discrete = function(x, params) {
-    if (self$is_discrete()) {
+  is_discrete = if (type == "discrete") {
+    function(x, params) {
       self$is_in_support(x, params)
-    } else {
+    }
+  } else if (type == "continuous") {
+    function(x, params) {
       logical(length(x))
     }
   },
@@ -987,16 +1002,28 @@ distribution_class <- function(
     if (!missing(diff_density)) "diff_density" else NULL,
     if (!missing(diff_probability)) "diff_probability" else NULL,
     if (!missing(tf_logdensity)) "tf_logdensity" else NULL,
-    if (!missing(tf_logprobability)) "tf_logprobability" else NULL
+    if (!missing(tf_logprobability)) "tf_logprobability" else NULL,
+    if (!missing(support) && is.Interval(support)) "support" else NULL
   )
 
   if (is.Interval(support)) {
     support_interval <- support
 
-    support <- function(x, params) {
+    is_in_support <- function(x, params) {
       support_interval$contains(x)
     }
 
+    get_support <- if (type == "discrete") {
+      function(params) list(discrete = list(support_interval))
+    } else if (type == "continuous") {
+      function(params) list(continuous = list(support_interval))
+    }
+  } else {
+    is_in_support <- support
+
+    get_support <- function(params) {
+      super$get_support(params)
+    }
   }
 
   R6Class(
@@ -1065,7 +1092,21 @@ distribution_class <- function(
       is_in_support = function(x, with_params = list()) {
         params <- private$.make_params(with_params, length(x))
         if (!length(x)) return(logical())
-        private$.support_impl(x = x, params = params)
+        private$.is_in_support_impl(x = x, params = params)
+      },
+      get_support = function(with_params = list()) {
+        if (length(with_params)) {
+          max_length <- function(ll) {
+            is_list <- vapply(ll, is.list, logical(1L))
+            n_here <- max(lengths(ll)[!is_list])
+            max(vapply(ll[is_list], max_length, logical(1L)), n_here)
+          }
+          n <- max(max_length(with_params), 1L)
+        } else {
+          n <- 1L
+        }
+        params <- private$.make_params(with_params, n)
+        private$.get_support_impl(params = params)
       },
       is_discrete_at = function(x, with_params = list()) {
         params <- private$.make_params(with_params, length(x))
@@ -1112,7 +1153,8 @@ distribution_class <- function(
       .hazard_impl = hazard,
       .diff_density_impl = diff_density,
       .diff_probability_impl = diff_probability,
-      .support_impl = support,
+      .is_in_support_impl = is_in_support,
+      .get_support_impl = get_support,
       .is_discrete_impl = is_discrete,
       .tf_logdensity_impl = tf_logdensity,
       .tf_logprobability_impl = tf_logprobability,
