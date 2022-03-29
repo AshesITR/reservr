@@ -59,7 +59,8 @@ TranslatedDistribution <- distribution_class(
       with_params = params$dist$params
     )
   },
-  support = function(x, params) {
+  # TODO implement support()
+  is_in_support = function(x, params) {
     x_trans <- (x - params$offset) / params$multiplier
     params$dist$dist$is_in_support(
       x = x_trans,

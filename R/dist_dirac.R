@@ -47,7 +47,16 @@ DiracDistribution <- distribution_class(
   quantile = function(p, lower.tail = TRUE, log.p = FALSE, params) {
     params$point
   },
-  support = function(x, params) {
+  support = function(params) {
+    mapply(
+      make_interval_union,
+      lowest = params$point,
+      highest = params$point,
+      MoreArgs = list(include_lowest = 1.0, include_highest = 1.0, integer = 1.0),
+      SIMPLIFY = FALSE
+    )
+  },
+  is_in_support = function(x, params) {
     x %in% params$point
   },
   tf_is_discrete_at = function() function(x, args) {

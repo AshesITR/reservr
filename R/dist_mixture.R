@@ -121,7 +121,8 @@ MixtureDistribution <- distribution_class(
     if (log.p) res <- log(res)
     res
   },
-  support = function(x, params) {
+  # TODO implement support()
+  is_in_support = function(x, params) {
     rowSums(map_lgl_matrix(
       params$dists,
       ~.$dist$is_in_support(x, .$params),

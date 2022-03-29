@@ -42,7 +42,15 @@ BinomialDistribution <- distribution_class_simple(
     size = interval(1L, Inf, include_lowest = TRUE, integer = TRUE),
     prob = interval(0.0, 1.0, closed = TRUE)
   ),
-  support = function(x, params) {
+  support = function(params) {
+    mapply(
+      make_interval_union,
+      highest = params$size,
+      MoreArgs = list(lowest = 0.0, include_lowest = 1.0, include_highest = 1.0, integer = 1.0),
+      SIMPLIFY = FALSE
+    )
+  },
+  is_in_support = function(x, params) {
     x == trunc(x) & x >= 0L & x <= params$size
   },
   diff_density = function(x, vars, log, params) {

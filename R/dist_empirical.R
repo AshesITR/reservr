@@ -86,9 +86,9 @@ EmpiricalDistribution <- distribution_class(
   quantile = function(p, lower.tail = TRUE, log.p = FALSE, params) {
     if (log.p) p <- exp(p)
     if (!lower.tail) p <- 1.0 - p
-    quantile(params$x, p)
+    quantile(unlist(params$x), p) # FIXME this only works if params$x is a list of scalars
   },
-  support = function(x, params) {
-    x %in% unlist(params$x)
+  is_in_support = function(x, params) {
+    x %in% unlist(params$x) # FIXME this only works if params$x is a list of scalars
   }
 )

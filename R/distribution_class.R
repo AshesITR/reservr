@@ -972,6 +972,7 @@ distribution_class <- function(
     }
   },
   support = I_REALS,
+  is_in_support = NULL,
   is_discrete = if (type == "discrete") {
     function(x, params) {
       self$is_in_support(x, params)
@@ -1003,27 +1004,24 @@ distribution_class <- function(
     if (!missing(diff_probability)) "diff_probability" else NULL,
     if (!missing(tf_logdensity)) "tf_logdensity" else NULL,
     if (!missing(tf_logprobability)) "tf_logprobability" else NULL,
-    if (!missing(support) && is.Interval(support)) "support" else NULL
+    if (!missing(support)) "support" else NULL
   )
 
-  if (is.Interval(support)) {
+  if (missing(support)) {
+    get_support <- function(params) {
+      super$get_support(params)
+    }
+  } else if (is.Interval(support)) {
     support_interval <- support
 
     is_in_support <- function(x, params) {
       support_interval$contains(x)
     }
 
-    get_support <- if (type == "discrete") {
-      function(params) list(discrete = list(support_interval))
-    } else if (type == "continuous") {
-      function(params) list(continuous = list(support_interval))
-    }
-  } else {
-    is_in_support <- support
-
-    get_support <- function(params) {
-      super$get_support(params)
-    }
+    # efficiently steal n = number of params from wrapper
+    get_support <- function(params) rep(list(support_interval), eval.parent(quote(n)))
+  } else { # !missing(support) && !is.Interval(support) -> function
+    get_support <- support
   }
 
   R6Class(
@@ -1096,6 +1094,7 @@ distribution_class <- function(
       },
       get_support = function(with_params = list()) {
         if (length(with_params)) {
+          # FIXME will break with distribution parameters
           max_length <- function(ll) {
             is_list <- vapply(ll, is.list, logical(1L))
             n_here <- max(lengths(ll)[!is_list])

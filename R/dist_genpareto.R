@@ -54,7 +54,21 @@ GeneralizedParetoDistribution <- distribution_class_simple(
     sigmau = I_POSITIVE_REALS,
     xi = I_REALS
   ),
-  support = function(x, params) {
+  support = function(params) {
+    xi_neg <- params$xi < 0.0
+    low <- params$u
+    hi <- ifelse(xi_neg, params$u - params$sigmau / params$xi, Inf)
+    inc_hi <- xi_neg
+    mapply(
+      make_interval_union,
+      lowest = low,
+      highest = hi,
+      include_highest = as.numeric(inc_hi),
+      MoreArgs = list(include_lowest = 1.0, integer = 0.0),
+      SIMPLIFY = FALSE
+    )
+  },
+  is_in_support = function(x, params) {
     xi_neg <- params$xi < 0.0
     res <- x >= params$u
     res[xi_neg] <- res[xi_neg] &

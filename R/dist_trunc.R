@@ -227,7 +227,8 @@ TruncatedDistribution <- distribution_class(
       with_params = params$dist$params
     )
   },
-  support = function(x, params) {
+  # TODO implement support()
+  is_in_support = function(x, params) {
     x_trans <- x - params$offset
     x_okay <- !is.na(x_trans) &
       params$min <= x_trans &

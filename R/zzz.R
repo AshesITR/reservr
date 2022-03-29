@@ -127,3 +127,20 @@ xcx_inv <- function(yt) {
     )$root
   }, numeric(1L))
 }
+
+make_interval_union <- function(lowest, highest, include_lowest, include_highest, integer) {
+  n <- check_lengths(lowest, highest, include_lowest, include_highest, integer)
+  res <- matrix(
+    data = c(
+      rep_len(lowest, n),
+      rep_len(highest, n),
+      rep_len(include_lowest, n),
+      rep_len(include_highest, n),
+      rep_len(integer, n)
+    ),
+    ncol = 5L,
+    dimnames = list(NULL, c("lowest", "highest", "include_lowest", "include_highest", "integer"))
+  )
+  class(res) <- "interval_union"
+  res
+}

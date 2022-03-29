@@ -190,7 +190,8 @@ BlendedDistribution <- distribution_class(
     if (log.p) res <- log(res)
     res
   },
-  support = function(x, params) {
+  # TODO implement support()
+  is_in_support = function(x, params) {
     comps <- self$get_components()
     k <- length(comps)
 

@@ -37,7 +37,16 @@ UniformDistribution <- distribution_class_simple(
   name = "Uniform",
   fun_name = "unif",
   params = list(min = I_REALS, max = I_REALS),
-  support = function(x, params) {
+  support = function(params) {
+    mapply(
+      make_interval_union,
+      lowest = params$min,
+      highest = params$max,
+      MoreArgs = list(include_lowest = 1.0, include_highest = 1.0, integer = 0.0),
+      SIMPLIFY = FALSE
+    )
+  },
+  is_in_support = function(x, params) {
     params$min <= x & x <= params$max
   },
   diff_density = function(x, vars, log, params) {
