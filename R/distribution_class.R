@@ -220,7 +220,7 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
     #'
     get_support = function(with_params = list()) {
       stop("get_support() is not implemented for ", class(self)[1L], ".")
-    }
+    },
 
     # nocov end
 

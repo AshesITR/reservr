@@ -117,6 +117,7 @@ Collate:
     'distribution_methods.R'
     'flatten_params.R'
     'integrate.R'
+    'interval_union.R'
     'plot_distributions.R'
     'prob_report.R'
     'reservr-package.R'

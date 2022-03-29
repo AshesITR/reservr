@@ -2,11 +2,11 @@
 % Please edit documentation in R/interval.R
 \name{interval-operations}
 \alias{interval-operations}
-\alias{interval_union}
+\alias{interval_convex_union}
 \alias{interval_intersection}
 \title{Convex union and intersection of intervals}
 \usage{
-interval_union(..., intervals = list())
+interval_convex_union(..., intervals = list())
 
 interval_intersection(..., intervals = list())
 }
@@ -16,7 +16,7 @@ interval_intersection(..., intervals = list())
 \item{intervals}{A list of \code{Interval}s.}
 }
 \value{
-\code{interval_union} returns the convex union of all intervals in \code{intervals}.
+\code{interval_convex_union} returns the convex union of all intervals in \code{intervals}.
 This is the smallest interval completely containing all intervals.
 
 \code{interval_intersection} returns the set intersection of all intervals in
@@ -26,24 +26,24 @@ This is the smallest interval completely containing all intervals.
 Convex union and intersection of intervals
 }
 \examples{
-interval_union(
+interval_convex_union(
   interval(c(0, 1), closed = TRUE),
   interval(c(1, 2))
 )
 
-interval_union(
+interval_convex_union(
   interval(c(0, 5)),
   interval(c(1, 4), closed = TRUE)
 )
 
 # Convex union is not equal to set union:
-interval_union(
+interval_convex_union(
   interval(c(0, 1)),
   interval(c(2, 3))
 )
 
 # The empty union is {}
-interval_union()
+interval_convex_union()
 
 interval_intersection(
   interval(c(0, 1)),
@@ -69,5 +69,7 @@ interval_intersection(
 interval_intersection()
 }
 \seealso{
+\link{interval_union} for constructing non-convex interval unions.
+
 interval
 }

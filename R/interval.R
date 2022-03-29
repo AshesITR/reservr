@@ -48,7 +48,7 @@ Interval <- R6Class(
           res[x == self$range[2]] <- TRUE
         }
         if (self$integer) {
-          res[x != trunc(x)] <- FALSE
+          res[(x - self$range[1]) != trunc(x - self$range[1])] <- FALSE
         }
         res
       } else {
@@ -200,13 +200,8 @@ Interval <- R6Class(
         private$check_write()
         assert_that(is_bool(value), msg = "`integer` must be a bool.")
         if (value) {
-          # Ensure endpoints are integers, automatically include
-          # lowest / highest if new range is smaller than old range.
-
           rng <- private$.range
-          rng[1L] <- ceiling(rng[1L])
-          if (rng[1L] != private$.range[1L]) private$.include_lowest <- TRUE
-          rng[2L] <- floor(rng[2L])
+          rng[2L] <- rng[1L] + trunc(rng[2L] - rng[1L])
           if (rng[2L] != private$.range[2L]) private$.include_highest <- TRUE
           private$.range <- rng
         }
@@ -286,33 +281,35 @@ interval <- function(
 #' @param ... appened to `intervals` if present.
 #'
 #' @return
-#' `interval_union` returns the convex union of all intervals in `intervals`.
+#' `interval_convex_union` returns the convex union of all intervals in `intervals`.
 #' This is the smallest interval completely containing all intervals.
+#'
+#' @seealso [interval_union] for constructing non-convex interval unions.
 #'
 #' @export
 #'
 #' @examples
-#' interval_union(
+#' interval_convex_union(
 #'   interval(c(0, 1), closed = TRUE),
 #'   interval(c(1, 2))
 #' )
 #'
-#' interval_union(
+#' interval_convex_union(
 #'   interval(c(0, 5)),
 #'   interval(c(1, 4), closed = TRUE)
 #' )
 #'
 #' # Convex union is not equal to set union:
-#' interval_union(
+#' interval_convex_union(
 #'   interval(c(0, 1)),
 #'   interval(c(2, 3))
 #' )
 #'
 #' # The empty union is {}
-#' interval_union()
+#' interval_convex_union()
 #' @name interval-operations
 #' @seealso interval
-interval_union <- function(..., intervals = list()) {
+interval_convex_union <- function(..., intervals = list()) {
   # FIXME consider integer intervals
   if (rlang::dots_n(...) > 0)
     intervals <- c(intervals, list(...))

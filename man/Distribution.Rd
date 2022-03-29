@@ -236,6 +236,7 @@ Distribution}
 \item \href{#method-diff_density}{\code{Distribution$diff_density()}}
 \item \href{#method-diff_probability}{\code{Distribution$diff_probability()}}
 \item \href{#method-is_in_support}{\code{Distribution$is_in_support()}}
+\item \href{#method-get_support}{\code{Distribution$get_support()}}
 \item \href{#method-is_discrete_at}{\code{Distribution$is_discrete_at()}}
 \item \href{#method-tf_is_discrete_at}{\code{Distribution$tf_is_discrete_at()}}
 \item \href{#method-has_capability}{\code{Distribution$has_capability()}}
@@ -656,6 +657,32 @@ A logical vector with the same length as \code{x} indicating whether
 
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_support"></a>}}
+\if{latex}{\out{\hypertarget{method-get_support}{}}}
+\subsection{Method \code{get_support()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Distribution$get_support(with_params = list())}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{with_params}}{Distribution parameters to use.
+Each parameter value can also be a numeric vector of constant length \code{n}.
+In that case, the \code{i}-th result will use the \code{i}-th parameters.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+Determine the support of a Distribution
+}
+
+\subsection{Returns}{
+A length \code{n} list of \code{\link[=interval_union]{interval_union()}} describing the support.
+Discrete values will be given as integer intervals whereas continuous intervals describe the continuous support.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-is_discrete_at"></a>}}
