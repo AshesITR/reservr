@@ -87,5 +87,7 @@ prob_report <- function(dist, intervals, expo = NULL, with_params = list(),
     .max_iter = .max_iter
   )
 
-  exp_nclaims_reported / total_expo
+  res <- exp_nclaims_reported / total_expo
+  # Ensure numerical issues don't cause invalid probabilities
+  pmax(0.0, pmin(1.0, res))
 }
