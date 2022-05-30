@@ -104,7 +104,7 @@ DiscreteDistribution <- distribution_class(
     is_integerish(x) & x > 0.0 & x <= params$size[[1L]]
   },
   tf_logdensity = function() {
-    k <- self$default_params$size
+    k <- as.integer(self$default_params$size)
     if (is.null(k)) stop("`size` must be fixed for tf_logdensity().")
     function(x, args) {
       probs <- args[["probs"]]
@@ -120,7 +120,7 @@ DiscreteDistribution <- distribution_class(
     }
   },
   tf_logprobability = function() {
-    k <- self$default_params$size
+    k <- as.integer(self$default_params$size)
     if (is.null(k)) stop("`size` must be fixed for tf_logprobability().")
     function(qmin, qmax, args) {
       probs <- args[["probs"]]
