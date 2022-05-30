@@ -139,6 +139,19 @@ DiscreteDistribution <- distribution_class(
       tf$where(prob > 0.0, log(prob_safe), K$neg_inf)
     }
   },
+  tf_make_constants = function(with_params = list()) {
+    check_installed("keras")
+    params <- private$.make_params(with_params, 1)
+    out <- list()
+    if (!is.null(params$size)) {
+      out$size <- keras::k_constant(params$size)
+    }
+    if (length(params$probs) && !is.null(params$probs[[1L]])) {
+      probs <- as.numeric(params$probs)
+      out$probs <- keras::k_constant(probs / sum(probs), shape = c(1L, length(probs)))
+    }
+    out
+  },
   tf_compile_params = function(input, name_prefix = "") {
     ph <- self$get_placeholders()
     k <- length(ph$probs)
