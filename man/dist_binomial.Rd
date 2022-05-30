@@ -47,6 +47,7 @@ Other Distributions:
 \code{\link{dist_beta}()},
 \code{\link{dist_blended}()},
 \code{\link{dist_dirac}()},
+\code{\link{dist_discrete}()},
 \code{\link{dist_empirical}()},
 \code{\link{dist_erlangmix}()},
 \code{\link{dist_exponential}()},

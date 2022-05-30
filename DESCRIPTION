@@ -93,6 +93,7 @@ Collate:
     'fit_blended.R'
     'dist_blended.R'
     'dist_dirac.R'
+    'dist_discrete.R'
     'dist_empirical.R'
     'fit_erlang_mixture.R'
     'dist_erlangmix.R'

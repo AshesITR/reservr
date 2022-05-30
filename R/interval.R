@@ -417,3 +417,5 @@ I_POSITIVE_REALS <- interval(0, Inf, read_only = TRUE)
 I_UNIT_INTERVAL <- interval(0, 1, closed = TRUE, read_only = TRUE)
 I_NATURALS <- interval(0, Inf,
                        include_lowest = TRUE, integer = TRUE, read_only = TRUE)
+I_POSITIVE_INTEGERS <- interval(1.0, Inf,
+                                include_lowest = TRUE, integer = TRUE)

@@ -64,6 +64,7 @@ Other Distributions:
 \code{\link{dist_binomial}()},
 \code{\link{dist_blended}()},
 \code{\link{dist_dirac}()},
+\code{\link{dist_discrete}()},
 \code{\link{dist_erlangmix}()},
 \code{\link{dist_exponential}()},
 \code{\link{dist_gamma}()},
