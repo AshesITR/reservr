@@ -34,5 +34,5 @@ test_that("discrete distribution works", {
   expect_tf_logdensity(dist, params, x)
   expect_tf_logprobability(dist, params, x, x + 1.0)
   expect_tf_logprobability(dist, params, 0, x)
-  expect_tf_logprobability(dist, params, x, params$size)
+  expect_tf_logprobability(dist, params, x, length(params$probs))
 })
