@@ -138,6 +138,28 @@ DiscreteDistribution <- distribution_class(
       prob_safe <- tf$where(prob > 0.0, prob, 1.0)
       tf$where(prob > 0.0, log(prob_safe), K$neg_inf)
     }
+  },
+  tf_compile_params = function(input, name_prefix = "") {
+    ph <- self$get_placeholders()
+    k <- length(ph$probs)
+    if (length(ph$probs)) {
+      out <- list(
+        probs = keras::layer_dense(
+          input, units = k, activation = "softmax",
+          name = paste0(name_prefix, "probs")
+        )
+      )
+    } else {
+      out <- list()
+    }
+
+    list(
+      outputs = out,
+      output_inflater = eval(bquote(function(outputs) {
+        if (!is.list(outputs)) outputs <- list(outputs)
+        list(probs = outputs[[1L]])
+      }))
+    )
   }
 )
 
