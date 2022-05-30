@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -71,7 +71,7 @@
     <dl><dt>x</dt>
 <dd><p>Numeric object to be converted to a matrix Tensor.</p></dd>
 <dt>dtype</dt>
-<dd><p>Type of the elements of the resulting tensor. Defaults to <code><a href="https://keras.rstudio.com/reference/k_floatx.html" class="external-link">k_floatx()</a></code>.</p></dd>
+<dd><p>Type of the elements of the resulting tensor. Defaults to <code><a href="https://rdrr.io/pkg/keras/man/k_floatx.html" class="external-link">k_floatx()</a></code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -81,7 +81,7 @@ The shape will be <code>(nrow(x), ncol(x))</code> where <code>x</code> is first 
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://keras.rstudio.com/reference/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in">  <span class="fu">k_matrix</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu">k_matrix</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, dtype <span class="op">=</span> <span class="st">"int32"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="co"># Vectors are converted to columns:</span></span>
@@ -102,7 +102,7 @@ The shape will be <code>(nrow(x), ncol(x))</code> where <code>x</code> is first 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

@@ -28,7 +28,7 @@ detection."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -61,7 +61,7 @@ detection."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
     </div>
 
     <div class="ref-description">
-    <p>Provides a keras callback similar to <code><a href="https://keras.rstudio.com/reference/callback_reduce_lr_on_plateau.html" class="external-link">keras::callback_reduce_lr_on_plateau()</a></code> but which also restores the weights
+    <p>Provides a keras callback similar to <code><a href="https://rdrr.io/pkg/keras/man/callback_reduce_lr_on_plateau.html" class="external-link">keras::callback_reduce_lr_on_plateau()</a></code> but which also restores the weights
 to the best seen so far whenever a learning rate reduction occurs, and with slightly more restrictive improvement
 detection.</p>
     </div>
@@ -116,9 +116,9 @@ This is very useful if the metric oscillates.</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Note that while <code><a href="https://keras.rstudio.com/reference/callback_reduce_lr_on_plateau.html" class="external-link">callback_reduce_lr_on_plateau()</a></code> automatically logs the learning rate as a metric 'lr',
+    <p>Note that while <code><a href="https://rdrr.io/pkg/keras/man/callback_reduce_lr_on_plateau.html" class="external-link">callback_reduce_lr_on_plateau()</a></code> automatically logs the learning rate as a metric 'lr',
 this is currently impossible from R.
-Thus, if you want to also log the learning rate, you should add <code><a href="https://keras.rstudio.com/reference/callback_reduce_lr_on_plateau.html" class="external-link">callback_reduce_lr_on_plateau()</a></code> with a high
+Thus, if you want to also log the learning rate, you should add <code><a href="https://rdrr.io/pkg/keras/man/callback_reduce_lr_on_plateau.html" class="external-link">callback_reduce_lr_on_plateau()</a></code> with a high
 <code>min_lr</code> to effectively disable the callback but still monitor the learning rate.</p>
     </div>
 
@@ -129,32 +129,32 @@ Thus, if you want to also log the learning rate, you should add <code><a href="h
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">dist</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">100</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="va">group</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">global_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">dist</span>, <span class="va">x</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://keras.rstudio.com/reference/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in">  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://keras.rstudio.com" class="external-link">keras</a></span><span class="op">)</span></span>
-<span class="r-in">  <span class="va">l_in</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://keras.rstudio.com/reference/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span class="r-in">  <span class="va">l_in</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="tf_compile_model.html">tf_compile_model</a></span><span class="op">(</span></span>
 <span class="r-in">    inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">l_in</span><span class="op">)</span>,</span>
 <span class="r-in">    intermediate_output <span class="op">=</span> <span class="va">l_in</span>,</span>
 <span class="r-in">    dist <span class="op">=</span> <span class="va">dist</span>,</span>
-<span class="r-in">    optimizer <span class="op">=</span> <span class="fu"><a href="https://keras.rstudio.com/reference/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span class="r-in">    optimizer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span class="r-in">    censoring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span class="r-in">    truncation <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="tf_initialise_model.html">tf_initialise_model</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">global_fit</span><span class="op">$</span><span class="va">params</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">fit_history</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
 <span class="r-in">    <span class="va">mod</span>,</span>
-<span class="r-in">    x <span class="op">=</span> <span class="fu"><a href="https://keras.rstudio.com/reference/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>,</span>
+<span class="r-in">    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>,</span>
 <span class="r-in">    y <span class="op">=</span> <span class="fu"><a href="trunc_obs.html">as_trunc_obs</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
 <span class="r-in">    epochs <span class="op">=</span> <span class="fl">20L</span>,</span>
 <span class="r-in">    callbacks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span class="r-in">      <span class="fu">callback_adaptive_lr</span><span class="op">(</span><span class="st">"loss"</span>, factor <span class="op">=</span> <span class="fl">0.5</span>, patience <span class="op">=</span> <span class="fl">2L</span>, verbose <span class="op">=</span> <span class="fl">1L</span>, min_lr <span class="op">=</span> <span class="fl">1.0e-4</span><span class="op">)</span>,</span>
-<span class="r-in">      <span class="fu"><a href="https://keras.rstudio.com/reference/callback_reduce_lr_on_plateau.html" class="external-link">callback_reduce_lr_on_plateau</a></span><span class="op">(</span><span class="st">"loss"</span>, min_lr <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span> <span class="co"># to track lr</span></span>
+<span class="r-in">      <span class="fu"><a href="https://rdrr.io/pkg/keras/man/callback_reduce_lr_on_plateau.html" class="external-link">callback_reduce_lr_on_plateau</a></span><span class="op">(</span><span class="st">"loss"</span>, min_lr <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span> <span class="co"># to track lr</span></span>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_history</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in">  <span class="va">predicted_means</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mod</span>, data <span class="op">=</span> <span class="fu"><a href="https://keras.rstudio.com/reference/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">  <span class="va">predicted_means</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mod</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
 <span class="r-in"></span>
 </code></pre></div>
@@ -171,7 +171,7 @@ Thus, if you want to also log the learning rate, you should add <code><a href="h
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

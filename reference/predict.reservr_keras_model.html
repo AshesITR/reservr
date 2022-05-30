@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -84,19 +84,19 @@ Contains one set of parameters per row in <code>data</code>.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://keras.rstudio.com/reference/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in">  <span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100L</span></span>
 <span class="r-in">  <span class="va">rand_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">dist</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="va">N</span>, with_params <span class="op">=</span> <span class="va">params</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in">  <span class="va">tf_in</span> <span class="op">&lt;-</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://keras.rstudio.com/reference/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span></span>
+<span class="r-in">  <span class="va">tf_in</span> <span class="op">&lt;-</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="tf_compile_model.html">tf_compile_model</a></span><span class="op">(</span></span>
 <span class="r-in">    inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">tf_in</span><span class="op">)</span>,</span>
 <span class="r-in">    intermediate_output <span class="op">=</span> <span class="va">tf_in</span>,</span>
 <span class="r-in">    dist <span class="op">=</span> <span class="va">dist</span>,</span>
-<span class="r-in">    optimizer <span class="op">=</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://keras.rstudio.com/reference/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span class="r-in">    optimizer <span class="op">=</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span class="r-in">    censoring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span class="r-in">    truncation <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span class="r-in">  <span class="op">)</span></span>
@@ -128,7 +128,7 @@ Contains one set of parameters per row in <code>data</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

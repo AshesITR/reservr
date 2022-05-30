@@ -55,7 +55,7 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -93,7 +93,6 @@
 <div class="page-header"><h1 id="reservr">reservr<a class="anchor" aria-label="anchor" href="#reservr"></a>
 </h1></div>
 <!-- badges: start -->
-
 <p>The goal of reservr is to provide a flexible interface for specifying distributions and fitting them to (randomly) truncated and possibly interval-censored data. It provides custom fitting algorithms to fit distributions to i.i.d. samples as well as dynnamic TensorFlow integration to allow training neural networks with arbitrary output distributions. The latter can be used to include explanatory variables in the distributional fits. Reservr also provides some tools relevant for working with its core functionality in an actuarial setting, namely the functions <code><a href="reference/prob_report.html">prob_report()</a></code> and <code><a href="reference/truncate_claims.html">truncate_claims()</a></code>, both of which make assumptions on the type of random truncation applied to the data.</p>
 <p>Please refer to the vignettes <code>distributions.Rmd</code> and <code>tensorflow.Rmd</code> for detailed introductions.</p>
 <div class="section level2">
@@ -106,8 +105,7 @@
 ``` r
 install.packages("reservr")
 ```
---->
-<p>If you want to use all of reservrs features, make sure to also install <a href="https://tensorflow.rstudio.com/installation/" class="external-link">tensorflow</a>.</p>
+---><p>If you want to use all of reservrs features, make sure to also install <a href="https://tensorflow.rstudio.com/installation/" class="external-link">tensorflow</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
@@ -222,7 +220,7 @@ install.packages("reservr")
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>

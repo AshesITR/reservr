@@ -29,7 +29,7 @@ resulting functions will be run as regular R functions instead."><!-- mathjax --
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -95,7 +95,7 @@ package tensorflow. After evaluation, <code><a href="https://rdrr.io/pkg/tensorf
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"><span class="co"># TensorFlow functions are functions of class</span></span>
 <span class="r-in"><span class="co"># c("tensorflow.python.eager.def_function.Function", "python.builtin.object")</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://keras.rstudio.com/reference/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">dist</span><span class="op">$</span><span class="fu">tf_logdensity</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"function"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu">tf_with_disable_graph</span><span class="op">(</span><span class="va">dist</span><span class="op">$</span><span class="fu">tf_logdensity</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="st">"function"</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
@@ -117,7 +117,7 @@ package tensorflow. After evaluation, <code><a href="https://rdrr.io/pkg/tensorf
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>
