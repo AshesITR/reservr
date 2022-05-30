@@ -111,7 +111,7 @@ DiscreteDistribution <- distribution_class(
       probs <- tf$reshape(probs, list(-1L, k))
 
       denss <- tf$stack(lapply(seq_len(k), function(i) {
-        tf$where(x == k_constant(i), probs[, i], K$zero)
+        tf$where(x == keras::k_constant(i), probs[, i], K$zero)
       }), axis = 1L)
 
       dens <- tf$reduce_sum(denss, axis = 1L)
