@@ -136,15 +136,12 @@ EM-Algorithm is instead used to improve stability.</p>
 <span class="r-in"><span class="co"># NB: direct optimisation steps with pre-run take a few seconds</span></span>
 <span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"><span class="va">direct_fit_init</span> <span class="op">&lt;-</span> <span class="fu">fit_dist_direct</span><span class="op">(</span><span class="va">dist</span>, <span class="va">obs</span>, start <span class="op">=</span> <span class="va">default_fit</span><span class="op">$</span><span class="va">params</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in res[xi0] &lt;- pexp(z[xi0], lower.tail = lower.tail, log.p = log.p):</span> NAs are not allowed in subscripted assignments</span>
 <span class="r-in"><span class="va">direct_fit_auto_init</span> <span class="op">&lt;-</span> <span class="fu">fit_dist_direct</span><span class="op">(</span><span class="va">dist</span>, <span class="va">obs</span>, .start_with_default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in res[xi0] &lt;- pexp(z[xi0], lower.tail = lower.tail, log.p = log.p):</span> NAs are not allowed in subscripted assignments</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="va">direct_fit_init</span><span class="op">$</span><span class="va">logLik</span> <span class="op">==</span> <span class="va">direct_fit_auto_init</span><span class="op">$</span><span class="va">logLik</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in stopifnot(direct_fit_init$logLik == direct_fit_auto_init$logLik):</span> object 'direct_fit_init' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">default_fit</span><span class="op">$</span><span class="va">logLik</span>, <span class="va">direct_fit</span><span class="op">$</span><span class="va">logLik</span>, <span class="va">direct_fit_init</span><span class="op">$</span><span class="va">logLik</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'direct_fit_init' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -82.28394 -82.28322 -75.57235</span>
 <span class="r-in"><span class="co"># }</span></span>
 <span class="r-in"></span>
 </code></pre></div>
