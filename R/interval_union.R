@@ -43,9 +43,10 @@ interval_union <- function(...) {
     dimnames = list(NULL, c("lowest", "highest", "include_lowest", "include_highest", "integer"))
   )
 
+  # Constants are represented as [a, a] (int), i.e. c(a, a, 1, 1, 1)
   interval_data[is_numeric, ] <- c(
     rep(unlist(args[is_numeric]), 2L),
-    rep(c(1, 1, 1), each = sum(is_numeric))
+    rep(1, 3L * sum(is_numeric))
   )
   interval_data[is_interval, ] <- t(vapply(args[is_interval], function(int) {
     c(int$range, int$include_lowest, int$include_highest, int$integer)
