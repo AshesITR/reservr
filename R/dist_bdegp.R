@@ -78,20 +78,22 @@ dist_bdegp <- function(n, m, u, epsilon) {
     msg = "`epsilon` must be a positive real < `u`."
   )
 
-  diracs <- lapply(seq_len(n) - 1.0, dist_dirac)
   erlangs <- dist_translate(
     dist_erlangmix(shapes = vector("list", m)),
     offset = n - 0.5
   )
 
   dist_mixture(
-    dists = c(
-      diracs,
-      list(dist_blended(
+    dists = list(
+      dist_translate(
+        dist_discrete(size = n),
+        offset = -1.0
+      ),
+      dist_blended(
         dists = list(erlangs, dist_genpareto1(u = u)),
         breaks = list(u),
         bandwidths = list(epsilon)
-      ))
+      )
     )
   )
 }
