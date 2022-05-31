@@ -203,7 +203,11 @@ plot_distributions(
   with_params = list(
     bdegp = list(
       dists = list(
-        list(), list(), list(
+        list(
+          dist = list(
+            probs = list(0.6, 0.4)
+          )
+        ), list(
           dists = list(
             list(
               dist = list(
@@ -220,7 +224,7 @@ plot_distributions(
           probs = list(0.7, 0.3)
         )
       ),
-      probs = list(0.15, 0.1, 0.75)
+      probs = list(0.25, 0.75)
     )
   )
 )
