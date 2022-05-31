@@ -227,7 +227,7 @@ format.Distribution <- function(x, short = FALSE, ...) {
   }
   if (short) return(dist)
   a_an <- if (substr(dist, 1L, 1L) %in% c("A", "E", "I", "O", "U")) "An" else "A"
-  paste0(a_an, " ", dist, " with ", x$get_dof(), " dof")
+  paste(a_an, dist, "with", x$get_dof(), "dof")
 }
 
 #' @export
@@ -240,5 +240,53 @@ format.ErlangMixtureDistribution <- function(x, short = FALSE, ...) {
   }
   dist <- paste0("ErlangMixture<", spec, ">")
   if (short) return(dist)
-  paste0("Am ", dist, " with ", x$get_dof(), " dof")
+  paste("An", dist, "with", x$get_dof(), "dof")
+}
+
+#' @export
+format.DiscreteDistribution <- function(x, short = FALSE, ...) {
+  free_probs <- length(x$get_placeholders()$probs)
+  spec <- if (free_probs) {
+    paste0("size = ", x$default_params$size)
+  } else {
+    p <- unlist(x$default_params$probs)
+    p <- p / sum(p)
+    paste(p, collapse = ", ")
+  }
+  dist <- paste0("Discrete<", spec, ">")
+  if (short) return(dist)
+  paste("A", dist, "with", x$get_dof(), "dof")
+}
+
+#' @export
+format.BDEGPDistribution <- function(x, short = FALSE, ...) {
+  free_shapes <- length(x$get_placeholders()$dists[[2]]$dists[[1]]$dist$shapes)
+  free_xi <- "xi" %in% names(x$get_placeholders()$dists[[2]]$dists[[2]])
+  free_sigmau <- "sigmau" %in% names(x$get_placeholders()$dists[[2]]$dists[[2]])
+  spec <- paste0(
+    "n = ", x$default_params$dists[[1]]$default_params$dist$default_params$size, ", ",
+    if (free_shapes > 0L) {
+      paste0("m = ", free_shapes)
+    } else {
+      paste0(
+        "m = <",
+        paste(
+          unlist(x$default_params$dists[[2]]$default_params$dists[[1]]$default_params$dist$default_params$shapes),
+          collapse = ", "
+        ),
+        ">"
+      )
+    }, ", ",
+    "u = ", x$default_params$dists[[2]]$default_params$breaks[[1L]], ", ",
+    "epsilon = ", x$default_params$dists[[2]]$default_params$bandwidths[[1L]],
+    if (!free_xi) {
+      paste0(", xi = ", x$default_params$dists[[2]]$default_params$dists[[2]]$default_params$xi)
+    },
+    if (!free_sigmau) {
+      paste0(", sigmau = ", x$default_params$dists[[2]]$default_params$dists[[2]]$default_params$sigmau)
+    }
+  )
+  dist <- paste0("BDEGP<", spec, ">")
+  if (short) return(dist)
+  paste("A", dist, "with", x$get_dof(), "dof")
 }

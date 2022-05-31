@@ -85,7 +85,7 @@ dist_bdegp <- function(n, m, u, epsilon) {
     offset = n - 0.5
   )
 
-  dist_mixture(
+  dist <- dist_mixture(
     dists = list(
       dist_translate(
         dist_discrete(size = n),
@@ -98,4 +98,6 @@ dist_bdegp <- function(n, m, u, epsilon) {
       )
     )
   )
+  class(dist) <- c("BDEGPDistribution", class(dist))
+  dist
 }
