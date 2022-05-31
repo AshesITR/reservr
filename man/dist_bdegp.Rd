@@ -39,7 +39,9 @@ blending interval.
 dist <- dist_bdegp(n = 1, m = 2, u = 10, epsilon = 3)
 params <- list(
   dists = list(
-    list(),
+    list(
+      dist = list(probs = list(1.0))
+    ),
     list(
       dists = list(
         list(

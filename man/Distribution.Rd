@@ -226,39 +226,39 @@ Distribution}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{Distribution$new()}}
-\item \href{#method-sample}{\code{Distribution$sample()}}
-\item \href{#method-density}{\code{Distribution$density()}}
-\item \href{#method-tf_logdensity}{\code{Distribution$tf_logdensity()}}
-\item \href{#method-probability}{\code{Distribution$probability()}}
-\item \href{#method-tf_logprobability}{\code{Distribution$tf_logprobability()}}
-\item \href{#method-quantile}{\code{Distribution$quantile()}}
-\item \href{#method-hazard}{\code{Distribution$hazard()}}
-\item \href{#method-diff_density}{\code{Distribution$diff_density()}}
-\item \href{#method-diff_probability}{\code{Distribution$diff_probability()}}
-\item \href{#method-is_in_support}{\code{Distribution$is_in_support()}}
-\item \href{#method-is_discrete_at}{\code{Distribution$is_discrete_at()}}
-\item \href{#method-tf_is_discrete_at}{\code{Distribution$tf_is_discrete_at()}}
-\item \href{#method-has_capability}{\code{Distribution$has_capability()}}
-\item \href{#method-get_type}{\code{Distribution$get_type()}}
-\item \href{#method-get_components}{\code{Distribution$get_components()}}
-\item \href{#method-is_discrete}{\code{Distribution$is_discrete()}}
-\item \href{#method-is_continuous}{\code{Distribution$is_continuous()}}
-\item \href{#method-require_capability}{\code{Distribution$require_capability()}}
-\item \href{#method-get_dof}{\code{Distribution$get_dof()}}
-\item \href{#method-get_placeholders}{\code{Distribution$get_placeholders()}}
-\item \href{#method-get_params}{\code{Distribution$get_params()}}
-\item \href{#method-tf_make_constants}{\code{Distribution$tf_make_constants()}}
-\item \href{#method-tf_compile_params}{\code{Distribution$tf_compile_params()}}
-\item \href{#method-get_param_bounds}{\code{Distribution$get_param_bounds()}}
-\item \href{#method-get_param_constraints}{\code{Distribution$get_param_constraints()}}
-\item \href{#method-export_functions}{\code{Distribution$export_functions()}}
-\item \href{#method-clone}{\code{Distribution$clone()}}
+\item \href{#method-Distribution-new}{\code{Distribution$new()}}
+\item \href{#method-Distribution-sample}{\code{Distribution$sample()}}
+\item \href{#method-Distribution-density}{\code{Distribution$density()}}
+\item \href{#method-Distribution-tf_logdensity}{\code{Distribution$tf_logdensity()}}
+\item \href{#method-Distribution-probability}{\code{Distribution$probability()}}
+\item \href{#method-Distribution-tf_logprobability}{\code{Distribution$tf_logprobability()}}
+\item \href{#method-Distribution-quantile}{\code{Distribution$quantile()}}
+\item \href{#method-Distribution-hazard}{\code{Distribution$hazard()}}
+\item \href{#method-Distribution-diff_density}{\code{Distribution$diff_density()}}
+\item \href{#method-Distribution-diff_probability}{\code{Distribution$diff_probability()}}
+\item \href{#method-Distribution-is_in_support}{\code{Distribution$is_in_support()}}
+\item \href{#method-Distribution-is_discrete_at}{\code{Distribution$is_discrete_at()}}
+\item \href{#method-Distribution-tf_is_discrete_at}{\code{Distribution$tf_is_discrete_at()}}
+\item \href{#method-Distribution-has_capability}{\code{Distribution$has_capability()}}
+\item \href{#method-Distribution-get_type}{\code{Distribution$get_type()}}
+\item \href{#method-Distribution-get_components}{\code{Distribution$get_components()}}
+\item \href{#method-Distribution-is_discrete}{\code{Distribution$is_discrete()}}
+\item \href{#method-Distribution-is_continuous}{\code{Distribution$is_continuous()}}
+\item \href{#method-Distribution-require_capability}{\code{Distribution$require_capability()}}
+\item \href{#method-Distribution-get_dof}{\code{Distribution$get_dof()}}
+\item \href{#method-Distribution-get_placeholders}{\code{Distribution$get_placeholders()}}
+\item \href{#method-Distribution-get_params}{\code{Distribution$get_params()}}
+\item \href{#method-Distribution-tf_make_constants}{\code{Distribution$tf_make_constants()}}
+\item \href{#method-Distribution-tf_compile_params}{\code{Distribution$tf_compile_params()}}
+\item \href{#method-Distribution-get_param_bounds}{\code{Distribution$get_param_bounds()}}
+\item \href{#method-Distribution-get_param_constraints}{\code{Distribution$get_param_constraints()}}
+\item \href{#method-Distribution-export_functions}{\code{Distribution$export_functions()}}
+\item \href{#method-Distribution-clone}{\code{Distribution$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-Distribution-new"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-new}{}}}
 \subsection{Method \code{new()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$new(type, caps, params, name, default_params)}\if{html}{\out{</div>}}
@@ -295,8 +295,8 @@ Used internally by the \verb{dist_*} functions.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-sample"></a>}}
-\if{latex}{\out{\hypertarget{method-sample}{}}}
+\if{html}{\out{<a id="method-Distribution-sample"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-sample}{}}}
 \subsection{Method \code{sample()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$sample(n, with_params = list())}\if{html}{\out{</div>}}
@@ -331,8 +331,8 @@ Distribution with the specified parameters.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-density"></a>}}
-\if{latex}{\out{\hypertarget{method-density}{}}}
+\if{html}{\out{<a id="method-Distribution-density"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-density}{}}}
 \subsection{Method \code{density()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$density(x, log = FALSE, with_params = list())}\if{html}{\out{</div>}}
@@ -368,8 +368,8 @@ A numeric vector of (log-)densities
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-tf_logdensity"></a>}}
-\if{latex}{\out{\hypertarget{method-tf_logdensity}{}}}
+\if{html}{\out{<a id="method-Distribution-tf_logdensity"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-tf_logdensity}{}}}
 \subsection{Method \code{tf_logdensity()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$tf_logdensity()}\if{html}{\out{</div>}}
@@ -385,8 +385,8 @@ log-density of the Distribution evaluated at \code{x} with parameters \code{args
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-probability"></a>}}
-\if{latex}{\out{\hypertarget{method-probability}{}}}
+\if{html}{\out{<a id="method-Distribution-probability"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-probability}{}}}
 \subsection{Method \code{probability()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$probability(
@@ -433,8 +433,8 @@ A numeric vector of (log-)probabilities
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-tf_logprobability"></a>}}
-\if{latex}{\out{\hypertarget{method-tf_logprobability}{}}}
+\if{html}{\out{<a id="method-Distribution-tf_logprobability"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-tf_logprobability}{}}}
 \subsection{Method \code{tf_logprobability()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$tf_logprobability()}\if{html}{\out{</div>}}
@@ -451,8 +451,8 @@ closed interval [\code{qmin}, \code{qmax}] with parameters \code{args}.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-quantile"></a>}}
-\if{latex}{\out{\hypertarget{method-quantile}{}}}
+\if{html}{\out{<a id="method-Distribution-quantile"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-quantile}{}}}
 \subsection{Method \code{quantile()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$quantile(
@@ -495,8 +495,8 @@ A numeric vector of quantiles
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-hazard"></a>}}
-\if{latex}{\out{\hypertarget{method-hazard}{}}}
+\if{html}{\out{<a id="method-Distribution-hazard"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-hazard}{}}}
 \subsection{Method \code{hazard()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$hazard(x, log = FALSE, with_params = list())}\if{html}{\out{</div>}}
@@ -532,8 +532,8 @@ A numeric vector of (log-)hazards
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-diff_density"></a>}}
-\if{latex}{\out{\hypertarget{method-diff_density}{}}}
+\if{html}{\out{<a id="method-Distribution-diff_density"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-diff_density}{}}}
 \subsection{Method \code{diff_density()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$diff_density(x, log = FALSE, with_params = list())}\if{html}{\out{</div>}}
@@ -574,8 +574,8 @@ free parameters of the Distribution evaluated at \code{x}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-diff_probability"></a>}}
-\if{latex}{\out{\hypertarget{method-diff_probability}{}}}
+\if{html}{\out{<a id="method-Distribution-diff_probability"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-diff_probability}{}}}
 \subsection{Method \code{diff_probability()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$diff_probability(
@@ -623,8 +623,8 @@ gradients of all free parameters of the Distribution evaluated at \code{q}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-is_in_support"></a>}}
-\if{latex}{\out{\hypertarget{method-is_in_support}{}}}
+\if{html}{\out{<a id="method-Distribution-is_in_support"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-is_in_support}{}}}
 \subsection{Method \code{is_in_support()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$is_in_support(x, with_params = list())}\if{html}{\out{</div>}}
@@ -659,8 +659,8 @@ A logical vector with the same length as \code{x} indicating whether
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-is_discrete_at"></a>}}
-\if{latex}{\out{\hypertarget{method-is_discrete_at}{}}}
+\if{html}{\out{<a id="method-Distribution-is_discrete_at"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-is_discrete_at}{}}}
 \subsection{Method \code{is_discrete_at()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$is_discrete_at(x, with_params = list())}\if{html}{\out{</div>}}
@@ -696,8 +696,8 @@ parameters.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-tf_is_discrete_at"></a>}}
-\if{latex}{\out{\hypertarget{method-tf_is_discrete_at}{}}}
+\if{html}{\out{<a id="method-Distribution-tf_is_discrete_at"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-tf_is_discrete_at}{}}}
 \subsection{Method \code{tf_is_discrete_at()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$tf_is_discrete_at()}\if{html}{\out{</div>}}
@@ -713,8 +713,8 @@ the Distribution has a point mass at \code{x} given parameters \code{args}.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-has_capability"></a>}}
-\if{latex}{\out{\hypertarget{method-has_capability}{}}}
+\if{html}{\out{<a id="method-Distribution-has_capability"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-has_capability}{}}}
 \subsection{Method \code{has_capability()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$has_capability(caps)}\if{html}{\out{</div>}}
@@ -744,8 +744,8 @@ A logical vector the same length as \code{caps}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_type"></a>}}
-\if{latex}{\out{\hypertarget{method-get_type}{}}}
+\if{html}{\out{<a id="method-Distribution-get_type"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-get_type}{}}}
 \subsection{Method \code{get_type()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$get_type()}\if{html}{\out{</div>}}
@@ -773,8 +773,8 @@ dist_mixture(list(dist_dirac(), dist_binomial()))$get_type()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_components"></a>}}
-\if{latex}{\out{\hypertarget{method-get_components}{}}}
+\if{html}{\out{<a id="method-Distribution-get_components"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-get_components}{}}}
 \subsection{Method \code{get_components()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$get_components()}\if{html}{\out{</div>}}
@@ -799,8 +799,8 @@ dist_mixture(list(dist_exponential(), dist_gamma()))$get_components()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-is_discrete"></a>}}
-\if{latex}{\out{\hypertarget{method-is_discrete}{}}}
+\if{html}{\out{<a id="method-Distribution-is_discrete"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-is_discrete}{}}}
 \subsection{Method \code{is_discrete()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$is_discrete()}\if{html}{\out{</div>}}
@@ -826,8 +826,8 @@ dist_dirac()$is_discrete()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-is_continuous"></a>}}
-\if{latex}{\out{\hypertarget{method-is_continuous}{}}}
+\if{html}{\out{<a id="method-Distribution-is_continuous"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-is_continuous}{}}}
 \subsection{Method \code{is_continuous()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$is_continuous()}\if{html}{\out{</div>}}
@@ -853,8 +853,8 @@ dist_dirac()$is_continuous()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-require_capability"></a>}}
-\if{latex}{\out{\hypertarget{method-require_capability}{}}}
+\if{html}{\out{<a id="method-Distribution-require_capability"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-require_capability}{}}}
 \subsection{Method \code{require_capability()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$require_capability(
@@ -891,8 +891,8 @@ Invisibly \code{TRUE}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_dof"></a>}}
-\if{latex}{\out{\hypertarget{method-get_dof}{}}}
+\if{html}{\out{<a id="method-Distribution-get_dof"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-get_dof}{}}}
 \subsection{Method \code{get_dof()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$get_dof()}\if{html}{\out{</div>}}
@@ -918,8 +918,8 @@ dist_exponential(rate = 1.0)$get_dof()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_placeholders"></a>}}
-\if{latex}{\out{\hypertarget{method-get_placeholders}{}}}
+\if{html}{\out{<a id="method-Distribution-get_placeholders"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-get_placeholders}{}}}
 \subsection{Method \code{get_placeholders()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$get_placeholders()}\if{html}{\out{</div>}}
@@ -949,8 +949,8 @@ dist_mixture(list(dist_dirac(), dist_exponential()))$get_placeholders()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_params"></a>}}
-\if{latex}{\out{\hypertarget{method-get_params}{}}}
+\if{html}{\out{<a id="method-Distribution-get_params"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-get_params}{}}}
 \subsection{Method \code{get_params()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$get_params(with_params = list())}\if{html}{\out{</div>}}
@@ -987,8 +987,8 @@ parameters that are missing both in the Distributions parameters and in
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-tf_make_constants"></a>}}
-\if{latex}{\out{\hypertarget{method-tf_make_constants}{}}}
+\if{html}{\out{<a id="method-Distribution-tf_make_constants"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-tf_make_constants}{}}}
 \subsection{Method \code{tf_make_constants()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$tf_make_constants(with_params = list())}\if{html}{\out{</div>}}
@@ -1014,8 +1014,8 @@ TensorFlow Tensor of dtype \code{floatx}.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-tf_compile_params"></a>}}
-\if{latex}{\out{\hypertarget{method-tf_compile_params}{}}}
+\if{html}{\out{<a id="method-Distribution-tf_compile_params"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-tf_compile_params}{}}}
 \subsection{Method \code{tf_compile_params()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$tf_compile_params(input, name_prefix = "")}\if{html}{\out{</div>}}
@@ -1046,8 +1046,8 @@ loss function returned by
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_param_bounds"></a>}}
-\if{latex}{\out{\hypertarget{method-get_param_bounds}{}}}
+\if{html}{\out{<a id="method-Distribution-get_param_bounds"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-get_param_bounds}{}}}
 \subsection{Method \code{get_param_bounds()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$get_param_bounds()}\if{html}{\out{</div>}}
@@ -1082,8 +1082,8 @@ dist_genpareto1()$get_param_bounds()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_param_constraints"></a>}}
-\if{latex}{\out{\hypertarget{method-get_param_constraints}{}}}
+\if{html}{\out{<a id="method-Distribution-get_param_constraints"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-get_param_constraints}{}}}
 \subsection{Method \code{get_param_constraints()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$get_param_constraints()}\if{html}{\out{</div>}}
@@ -1118,8 +1118,8 @@ parameters
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-export_functions"></a>}}
-\if{latex}{\out{\hypertarget{method-export_functions}{}}}
+\if{html}{\out{<a id="method-Distribution-export_functions"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-export_functions}{}}}
 \subsection{Method \code{export_functions()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Distribution$export_functions(
@@ -1176,8 +1176,8 @@ evalq(
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-Distribution-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-Distribution-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
