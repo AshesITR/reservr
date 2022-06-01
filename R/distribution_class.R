@@ -1158,6 +1158,25 @@ distribution_class_simple <- function(name,
                 c(list(p = p, lower.tail = lower.tail, log.p = log.p), params))
       },
       support = support,
+      compile_sample = function() {
+        compile_simple_function(sample_fun, self)
+      },
+      compile_density = function() {
+        compile_simple_function(density_fun, self)
+      },
+      compile_probability = function() {
+        compile_simple_function(probability_fun, self)
+      },
+      compile_quantile = function() {
+        compile_simple_function(quantile_fun, self)
+      },
+      compile_probability_interval = function() {
+        if (self$is_continuous()) {
+          compile_simple_prob_interval_continuous(probability_fun, self)
+        } else { # => self$is_discrete()
+          compile_simple_prob_interval_discrete(probability_fun, density_fun, self)
+        }
+      },
       ...
     ),
     env = list(

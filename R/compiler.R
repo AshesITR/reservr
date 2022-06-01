@@ -1,0 +1,96 @@
+compile_simple_function <- function(fun, dist) {
+  fmls <- formals(fun)
+  fcall <- call("fun")
+  fcall[1 + seq_along(fmls)] <- fmls
+  names(fcall) <- c("", names(fmls))
+  for (gen_arg in intersect(names(fmls), c("x", "n", "p", "q", "lower.tail", "log", "log.p"))) {
+    fcall[[gen_arg]] <- as.name(gen_arg)
+  }
+  i <- 1L
+  for (ph in names(dist$get_placeholders())) {
+    fcall[[ph]] <- substitute(param_matrix[, i], list(i = i))
+    i <- i + 1L
+  }
+  for (para in names(dist$default_params)) {
+    if (!is.null(dist$default_params[[para]])) {
+      fcall[[para]] <- dist$default_params[[para]]
+    }
+  }
+  fmls_outer <- c(
+    fmls[names(fmls) %in% c("x", "n", "p", "q")],
+    alist(param_matrix = ),
+    fmls[names(fmls) %in% c("lower.tail", "log", "log.p")]
+  )
+  res <- as.function(c(fmls_outer, fcall))
+  class(res) <- "compiled_distribution_function"
+  attr(res, "n_params") <- i - 1L
+  res
+}
+
+compile_simple_prob_interval_continuous <- function(fun, dist) {
+  fmls <- formals(fun)
+  fcall <- call("fun")
+  fcall[1 + seq_along(fmls)] <- fmls
+  names(fcall) <- c("", names(fmls))
+
+  i <- 1L
+  for (ph in names(dist$get_placeholders())) {
+    fcall[[ph]] <- substitute(param_matrix[, i], list(i = i))
+    i <- i + 1L
+  }
+  for (para in names(dist$default_params)) {
+    if (!is.null(dist$default_params[[para]])) {
+      fcall[[para]] <- dist$default_params[[para]]
+    }
+  }
+  fcall[["lower.tail"]] <- TRUE
+  fcall[["log.p"]] <- FALSE
+
+  fmls_outer <- alist(qmin =, qmax =, param_matrix = )
+  fcall_upper <- fcall
+  fcall_upper[["q"]] <- as.name("qmax")
+  fcall_lower <- fcall
+  fcall_lower[["q"]] <- as.name("qmin")
+  res <- as.function(c(fmls_outer, bquote(.(fcall_upper) - .(fcall_lower))))
+  class(res) <- "compiled_distribution_function"
+  attr(res, "n_params") <- i - 1L
+  res
+}
+
+compile_simple_prob_interval_discrete <- function(pfun, dfun, dist) {
+  fmls <- formals(pfun)
+  fcall <- call("pfun")
+  fcall[1 + seq_along(fmls)] <- fmls
+  names(fcall) <- c("", names(fmls))
+
+  i <- 1L
+  for (ph in names(dist$get_placeholders())) {
+    fcall[[ph]] <- substitute(param_matrix[, i], list(i = i))
+    i <- i + 1L
+  }
+  for (para in names(dist$default_params)) {
+    if (!is.null(dist$default_params[[para]])) {
+      fcall[[para]] <- dist$default_params[[para]]
+    }
+  }
+  fcall[["lower.tail"]] <- TRUE
+  fcall[["log.p"]] <- FALSE
+
+  fmls_outer <- alist(qmin =, qmax =, param_matrix = )
+  fcall_upper <- fcall
+  fcall_upper[["q"]] <- as.name("qmax")
+  fcall_lower <- fcall
+  fcall_lower[["q"]] <- as.name("qmin")
+  fcall_lower_d <- fcall
+  fcall_lower_d[[1L]] <- as.name("dfun")
+  names(fcall_lower_d)[2L] <- "x"
+  fcall_lower_d[["x"]] <- as.name("qmin")
+  fcall_lower_d[["lower.tail"]] <- NULL
+  fcall_lower_d[["log.p"]] <- NULL
+  fcall_lower_d[["log"]] <- FALSE
+
+  res <- as.function(c(fmls_outer, bquote(.(fcall_upper) - .(fcall_lower) + .(fcall_lower_d))))
+  class(res) <- "compiled_distribution_function"
+  attr(res, "n_params") <- i - 1L
+  res
+}

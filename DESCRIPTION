@@ -87,6 +87,7 @@ Collate:
     'callback_adaptive_lr.R'
     'callback_debug_dist_gradients.R'
     'check_lengths.R'
+    'compiler.R'
     'dist_bdegp.R'
     'dist_beta.R'
     'dist_binomial.R'
