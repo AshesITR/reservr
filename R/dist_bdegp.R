@@ -24,9 +24,7 @@
 #' dist <- dist_bdegp(n = 1, m = 2, u = 10, epsilon = 3)
 #' params <- list(
 #'   dists = list(
-#'     list(
-#'       dist = list(probs = list(1.0))
-#'     ),
+#'     list(),
 #'     list(
 #'       dists = list(
 #'         list(
@@ -80,22 +78,20 @@ dist_bdegp <- function(n, m, u, epsilon) {
     msg = "`epsilon` must be a positive real < `u`."
   )
 
+  diracs <- lapply(seq_len(n) - 1.0, dist_dirac)
   erlangs <- dist_translate(
     dist_erlangmix(shapes = vector("list", m)),
     offset = n - 0.5
   )
 
   dist <- dist_mixture(
-    dists = list(
-      dist_translate(
-        dist_discrete(size = n),
-        offset = -1.0
-      ),
-      dist_blended(
+    dists = c(
+      diracs,
+      list(dist_blended(
         dists = list(erlangs, dist_genpareto1(u = u)),
         breaks = list(u),
         bandwidths = list(epsilon)
-      )
+      ))
     )
   )
   class(dist) <- c("BDEGPDistribution", class(dist))
