@@ -47,7 +47,7 @@ epoch).}
 
 \item{view_metrics}{View realtime plot of training metrics (by epoch). The
 default (\code{"auto"}) will display the plot when running within RStudio,
-\code{metrics} were specified during model \code{\link[keras:compile]{compile()}}, \code{epochs > 1} and
+\code{metrics} were specified during model \code{\link[keras:reexports]{compile()}}, \code{epochs > 1} and
 \code{verbose > 0}. Use the global \code{keras.view_metrics} option to establish a
 different default.}
 
@@ -78,7 +78,7 @@ weights to apply to the model's loss for each sample. In the case of
 temporal data, you can pass a 2D array with shape (samples,
 sequence_length), to apply a different weight to every timestep of every
 sample. In this case you should make sure to specify
-\code{sample_weight_mode="temporal"} in \code{\link[keras:compile]{compile()}}.}
+\code{sample_weight_mode="temporal"} in \code{\link[keras:reexports]{compile()}}.}
 
 \item{initial_epoch}{Integer, Epoch at which to start training (useful for
 resuming a previous training run).}
