@@ -108,6 +108,24 @@ DiracDistribution <- distribution_class(
       n_params = ph
     )
   },
+  compile_probability_interval = function() {
+    ph <- "point" %in% names(self$get_placeholders())
+    as_compiled_distribution_function(
+      eval(substitute(
+        function(qmin, qmax, param_matrix, log.p = FALSE) {
+          res <- qmin <= point_expr & point_expr <= qmax
+          res <- as.numeric(res)
+          if (log.p) {
+            res[res == 0.0] <- -Inf
+            res[res == 1.0] <- 0.0
+          }
+          res
+        },
+        list(point_expr = if (ph) quote(param_matrix[, 1L]) else self$default_params$point)
+      )),
+      n_params = ph
+    )
+  },
   compile_quantile = function() {
     if ("point" %in% names(self$get_placeholders())) {
       as_compiled_distribution_function(function(p, param_matrix, lower.tail = TRUE, log.p = FALSE) {
