@@ -338,6 +338,196 @@ ErlangMixtureDistribution <- distribution_class(
         outputs
       }))
     )
+  },
+  compile_sample = function() {
+    k <- length(self$get_params()$shapes)
+
+    ph <- self$get_placeholders()
+    ph_shapes <- length(ph$shapes) > 0L
+    ph_scale <- "scale" %in% names(ph)
+    ph_probs <- length(ph$probs) > 0L
+
+    n_params <- (as.integer(ph_shapes) + as.integer(ph_probs)) * k + as.integer(ph_scale)
+
+    scale_code <- if (ph_scale) substitute(param_matrix[, i_scale], list(
+      i_scale = 1L + if (ph_shapes) k else 0L
+    )) else self$default_params$scale
+
+    probs_expr <- if (ph_shapes || ph_scale) {
+      substitute(param_matrix[, i_prob:j_prob], list(
+        i_prob = 1L + if (ph_shapes) k else 0L + as.integer(ph_scale),
+        j_prob = k + if (ph_shapes) k else 0L + as.integer(ph_scale)
+      ))
+    } else {
+      quote(param_matrix)
+    }
+
+    slot_code <- if (ph_probs) {
+      substitute({
+        slot <- runif(n)
+        probmat <- matrixStats::rowCumsums(probs_expr)
+        probmat <- probmat / probmat[, k]
+        slot <- rowSums(slot > probmat) + 1
+      }, list(k = k, probs_expr = probs_expr))
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      substitute(
+        slot <- sample.int(n = k, size = n, replace = TRUE, prob = probs),
+        list(k = k, probs = probs)
+      )
+    }
+
+    shape_code <- if (ph_shapes) {
+      substitute(param_matrix[seq_len(n) + (slot - 1L) * n])
+    } else {
+      substitute(shapes[slot], list(shapes = as.numeric(self$get_params()$shapes)))
+    }
+
+    as_compiled_distribution_function(
+      eval(substitute(function(n, param_matrix) {
+        slot_code
+
+        rgamma(
+          n = n,
+          shape = shape_code,
+          scale = scale_code
+        )
+      }, list(slot_code = slot_code, shape_code = shape_code, scale_code = scale_code))),
+      n_params = n_params
+    )
+  },
+  compile_density = function() {
+    k <- length(self$get_params()$shapes)
+
+    ph <- self$get_placeholders()
+    ph_shapes <- length(ph$shapes) > 0L
+    ph_scale <- "scale" %in% names(ph)
+    ph_probs <- length(ph$probs) > 0L
+
+    n_params <- (as.integer(ph_shapes) + as.integer(ph_probs)) * k + as.integer(ph_scale)
+
+    scale_expr <- if (ph_scale) substitute(param_matrix[, i_scale], list(
+      i_scale = 1L + if (ph_shapes) k else 0L
+    )) else self$default_params$scale
+
+    probs_expr <- if (ph_shapes || ph_scale) {
+      substitute(param_matrix[, i_prob:j_prob], list(
+        i_prob = 1L + if (ph_shapes) k else 0L + as.integer(ph_scale),
+        j_prob = k + if (ph_shapes) k else 0L + as.integer(ph_scale)
+      ))
+    } else {
+      quote(param_matrix)
+    }
+
+    densmat_code <- if (ph_shapes) {
+      substitute(
+        densmat <- dgamma(x, shape = param_matrix[, 1L:k], scale = scale_expr),
+        list(k = k, scale_expr = scale_expr)
+      )
+    } else {
+      cl <- substitute({
+        densmat <- matrix(nrow = length(x), ncol = k)
+        scale <- scale_expr
+      }, list(k = k, scale_expr = scale_expr))
+
+      for (i in seq_len(k)) {
+        cl[[i + 3L]] <- substitute(
+          densmat[, i] <- dgamma(x, shape = shape, scale = scale),
+          list(i = i, shape = self$get_params()$shapes[[i]])
+        )
+      }
+
+      cl
+    }
+
+    densmix_code <- if (ph_probs) {
+      substitute({
+        probmat <- probs_expr
+        probmat <- probmat / rowSums(probmat)
+        res <- rowSums(densmat * probmat)
+      }, list(probs_expr = probs_expr))
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      substitute(res <- drop(densmat %*% probs), list(probs = probs))
+    }
+
+    as_compiled_distribution_function(
+      eval(substitute(function(x, param_matrix, log = FALSE) {
+        densmat_code
+        densmix_code
+        if (log) res <- log(res)
+        res
+      }, list(densmat_code = densmat_code, densmix_code = densmix_code))),
+      n_params
+    )
+  },
+  compile_probability = function() {
+    k <- length(self$get_params()$shapes)
+
+    ph <- self$get_placeholders()
+    ph_shapes <- length(ph$shapes) > 0L
+    ph_scale <- "scale" %in% names(ph)
+    ph_probs <- length(ph$probs) > 0L
+
+    n_params <- (as.integer(ph_shapes) + as.integer(ph_probs)) * k + as.integer(ph_scale)
+
+    scale_expr <- if (ph_scale) substitute(param_matrix[, i_scale], list(
+      i_scale = 1L + if (ph_shapes) k else 0L
+    )) else self$default_params$scale
+
+    probs_expr <- if (ph_shapes || ph_scale) {
+      substitute(param_matrix[, i_prob:j_prob], list(
+        i_prob = 1L + if (ph_shapes) k else 0L + as.integer(ph_scale),
+        j_prob = k + if (ph_shapes) k else 0L + as.integer(ph_scale)
+      ))
+    } else {
+      quote(param_matrix)
+    }
+
+    cdfmat_code <- if (ph_shapes) {
+      substitute(
+        cdfmat <- pgamma(x, shape = param_matrix[, 1L:k], scale = scale_expr, lower.tail = lower.tail),
+        list(k = k, scale_expr = scale_expr)
+      )
+    } else {
+      cl <- substitute({
+        cdfmat <- matrix(nrow = length(x), ncol = k)
+        scale <- scale_expr
+      }, list(k = k, scale_expr = scale_expr))
+
+      for (i in seq_len(k)) {
+        cl[[i + 3L]] <- substitute(
+          cdfmat[, i] <- pgamma(x, shape = shape, scale = scale, lower.tail = lower.tail),
+          list(i = i, shape = self$get_params()$shapes[[i]])
+        )
+      }
+
+      cl
+    }
+
+    probmix_code <- if (ph_probs) {
+      substitute({
+        probmat <- probs_expr
+        probmat <- probmat / rowSums(probmat)
+        res <- rowSums(cdfmat * probmat)
+      }, list(probs_expr = probs_expr))
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      substitute(res <- drop(cdfmat %*% probs), list(probs = probs))
+    }
+
+    as_compiled_distribution_function(
+      eval(substitute(function(q, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+        cdfmat_code
+        probmix_code
+        if (log.p) res <- log(res)
+        res
+      }, list(cdfmat_code = cdfmat_code, probmix_code = probmix_code))),
+      n_params
+    )
   }
 )
 
