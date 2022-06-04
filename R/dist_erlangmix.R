@@ -528,6 +528,73 @@ ErlangMixtureDistribution <- distribution_class(
       }, list(cdfmat_code = cdfmat_code, probmix_code = probmix_code))),
       n_params
     )
+  },
+  compile_probability_interval = function() {
+    k <- length(self$get_params()$shapes)
+
+    ph <- self$get_placeholders()
+    ph_shapes <- length(ph$shapes) > 0L
+    ph_scale <- "scale" %in% names(ph)
+    ph_probs <- length(ph$probs) > 0L
+
+    n_params <- (as.integer(ph_shapes) + as.integer(ph_probs)) * k + as.integer(ph_scale)
+
+    scale_expr <- if (ph_scale) substitute(param_matrix[, i_scale], list(
+      i_scale = 1L + if (ph_shapes) k else 0L
+    )) else self$default_params$scale
+
+    probs_expr <- if (ph_shapes || ph_scale) {
+      substitute(param_matrix[, i_prob:j_prob], list(
+        i_prob = 1L + if (ph_shapes) k else 0L + as.integer(ph_scale),
+        j_prob = k + if (ph_shapes) k else 0L + as.integer(ph_scale)
+      ))
+    } else {
+      quote(param_matrix)
+    }
+
+    cdfmat_code <- if (ph_shapes) {
+      substitute(
+        cdfmat <- pgamma(qmax, shape = param_matrix[, 1L:k], scale = scale_expr) -
+          pgamma(qmin, shape = param_matrix[, 1L:k], scale = scale_expr),
+        list(k = k, scale_expr = scale_expr)
+      )
+    } else {
+      cl <- substitute({
+        cdfmat <- matrix(nrow = length(x), ncol = k)
+        scale <- scale_expr
+      }, list(k = k, scale_expr = scale_expr))
+
+      for (i in seq_len(k)) {
+        cl[[i + 3L]] <- substitute(
+          cdfmat[, i] <- pgamma(qmax, shape = shape, scale = scale) - pgamma(qmin, shape = shape, scale = scale),
+          list(i = i, shape = self$get_params()$shapes[[i]])
+        )
+      }
+
+      cl
+    }
+
+    probmix_code <- if (ph_probs) {
+      substitute({
+        probmat <- probs_expr
+        probmat <- probmat / rowSums(probmat)
+        res <- rowSums(cdfmat * probmat)
+      }, list(probs_expr = probs_expr))
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      substitute(res <- drop(cdfmat %*% probs), list(probs = probs))
+    }
+
+    as_compiled_distribution_function(
+      eval(substitute(function(qmin, qmax, param_matrix, log.p = FALSE) {
+        cdfmat_code
+        probmix_code
+        if (log.p) res <- log(res)
+        res
+      }, list(cdfmat_code = cdfmat_code, probmix_code = probmix_code))),
+      n_params
+    )
   }
 )
 
