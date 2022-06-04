@@ -46,13 +46,15 @@ compile_simple_prob_interval_continuous <- function(fun, dist) {
   fcall[["lower.tail"]] <- TRUE
   fcall[["log.p"]] <- FALSE
 
-  fmls_outer <- alist(qmin =, qmax =, param_matrix = )
   fcall_upper <- fcall
   fcall_upper[["q"]] <- as.name("qmax")
   fcall_lower <- fcall
   fcall_lower[["q"]] <- as.name("qmin")
   as_compiled_distribution_function(
-    c(fmls_outer, bquote(.(fcall_upper) - .(fcall_lower))),
+    eval(bquote(function(qmin, qmax, param_matrix, log.p = FALSE) {
+      prob <- .(fcall_upper) - .(fcall_lower)
+      if (log.p) log(prob) else prob
+    })),
     i - 1L
   )
 }
@@ -90,7 +92,10 @@ compile_simple_prob_interval_discrete <- function(pfun, dfun, dist) {
   fcall_lower_d[["log"]] <- FALSE
 
   as_compiled_distribution_function(
-    c(fmls_outer, bquote(.(fcall_upper) - .(fcall_lower) + .(fcall_lower_d))),
+    eval(bquote(function(qmin, qmax, param_matrix, log.p = FALSE) {
+      prob <- .(fcall_upper) - .(fcall_lower) + .(fcall_lower_d)
+      if (log.p) log(prob) else prob
+    })),
     i - 1L
   )
 }

@@ -301,6 +301,287 @@ TruncatedDistribution <- distribution_class(
 
       tf$where(ok, dist_disc(xt_safe, dist_args), FALSE)
     }
+  },
+  compile_sample = function() {
+    ph <- names(self$get_placeholders())
+    ph_min <- "min" %in% ph
+    ph_max <- "max" %in% ph
+    ph_offset <- "offset" %in% ph
+    ph_max_retry <- "max_retry" %in% ph
+
+    dist <- self$get_components()[[1L]]
+    dist_quantile <- dist$compile_quantile()
+    dist_prob <- dist$compile_probability()
+    dist_prob_int <- dist$compile_probability_interval()
+
+    n_params_dist <- attr(dist_quantile, "n_params")
+    n_params <- as.integer(ph_min) + as.integer(ph_max) + as.integer(ph_offset) + as.integer(ph_max_retry) +
+      n_params_dist
+
+    dist_param_expr <- if (n_params_dist > 0L) {
+      bquote(param_matrix[, 1L:.(n_params_dist)])
+    } else {
+      NULL
+    }
+
+    min_expr <- if (ph_min) {
+      bquote(param_matrix[, .(n_params_dist + 1L)])
+    } else {
+      self$default_params$min
+    }
+
+    max_expr <- if (ph_max) {
+      quote(param_matrix[, .(n_params_dist + as.integer(ph_min) + 1L)])
+    } else {
+      self$default_params$max
+    }
+
+    offset_expr <- if (ph_offset) {
+      quote(param_matrix[, .(n_params_dist + as.integer(ph_min) + as.integer(ph_max) + 1L)])
+    } else {
+      self$default_params$offset
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(n, param_matrix) {
+        p_upper <- dist_prob(.(max_expr), .(dist_param_expr))
+        p_width <- dist_prob_int(.(min_expr), .(max_expr), .(dist_param_expr))
+        q <- runif(n = n, min = p_upper - p_width, max = p_upper)
+        .(offset_expr) + dist_quantile(q, .(dist_param_expr))
+      })),
+      n_params
+    )
+  },
+  compile_density = function() {
+    ph <- names(self$get_placeholders())
+    ph_min <- "min" %in% ph
+    ph_max <- "max" %in% ph
+    ph_offset <- "offset" %in% ph
+    ph_max_retry <- "max_retry" %in% ph
+
+    dist <- self$get_components()[[1L]]
+    dist_dens <- dist$compile_density()
+    dist_prob_int <- dist$compile_probability_interval()
+
+    n_params_dist <- attr(dist_dens, "n_params")
+    n_params <- as.integer(ph_min) + as.integer(ph_max) + as.integer(ph_offset) + as.integer(ph_max_retry) +
+      n_params_dist
+
+    dist_param_expr <- if (n_params_dist > 0L) {
+      bquote(param_matrix[, 1L:.(n_params_dist)])
+    } else {
+      NULL
+    }
+
+    min_expr <- if (ph_min) {
+      bquote(param_matrix[, .(n_params_dist + 1L)])
+    } else {
+      self$default_params$min
+    }
+
+    max_expr <- if (ph_max) {
+      quote(param_matrix[, .(n_params_dist + as.integer(ph_min) + 1L)])
+    } else {
+      self$default_params$max
+    }
+
+    offset_expr <- if (ph_offset) {
+      quote(param_matrix[, .(n_params_dist + as.integer(ph_min) + as.integer(ph_max) + 1L)])
+    } else {
+      self$default_params$offset
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(x, param_matrix, log = FALSE) {
+        xtrans <- x - .(offset_expr)
+        xdens <- dist_dens(xtrans, .(dist_param_expr), log = log)
+        ptrunc <- dist_prob_int(.(min_expr), .(max_expr), .(dist_param_expr), log.p = log)
+
+        if (log) {
+          xdens[xtrans < .(min_expr)] <- -Inf
+          xdens[xtrans > .(max_expr)] <- -Inf
+          xdens - ptrunc
+        } else {
+          xdens[xtrans < .(min_expr)] <- 0.0
+          xdens[xtrans > .(max_expr)] <- 0.0
+          xdens / ptrunc
+        }
+      })),
+      n_params
+    )
+  },
+  compile_probability = function() {
+    ph <- names(self$get_placeholders())
+    ph_min <- "min" %in% ph
+    ph_max <- "max" %in% ph
+    ph_offset <- "offset" %in% ph
+    ph_max_retry <- "max_retry" %in% ph
+
+    dist <- self$get_components()[[1L]]
+    dist_prob_int <- dist$compile_probability_interval()
+
+    n_params_dist <- attr(dist_dens, "n_params")
+    n_params <- as.integer(ph_min) + as.integer(ph_max) + as.integer(ph_offset) + as.integer(ph_max_retry) +
+      n_params_dist
+
+    dist_param_expr <- if (n_params_dist > 0L) {
+      bquote(param_matrix[, 1L:.(n_params_dist)])
+    } else {
+      NULL
+    }
+
+    min_expr <- if (ph_min) {
+      bquote(param_matrix[, .(n_params_dist + 1L)])
+    } else {
+      self$default_params$min
+    }
+
+    max_expr <- if (ph_max) {
+      quote(param_matrix[, .(n_params_dist + as.integer(ph_min) + 1L)])
+    } else {
+      self$default_params$max
+    }
+
+    offset_expr <- if (ph_offset) {
+      quote(param_matrix[, .(n_params_dist + as.integer(ph_min) + as.integer(ph_max) + 1L)])
+    } else {
+      self$default_params$offset
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(q, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+        qtrans <- q - .(offset_expr)
+        if (lower.tail) {
+          qprob <- dist_prob_int(.(min_expr), qtrans, .(dist_param_expr), log.p = log.p)
+        } else {
+          qprob <- dist_prob_int(qtrans, .(max_expr), .(dist_param_expr), log.p = log.p)
+        }
+        ptrunc <- dist_prob_int(.(min_expr), .(max_expr), .(dist_param_expr), log.p = log.p)
+
+        if (log.p) {
+          qprob[qtrans < .(min_expr)] <- if (lower.tail) -Inf else 0.0
+          qprob[qtrans > .(max_expr)] <- if (lower.tail) 0.0 else -Inf
+          qprob - ptrunc
+        } else {
+          qprob[qtrans < .(min_expr)] <- if (lower.tail) 0.0 else 1.0
+          qprob[qtrans > .(max_expr)] <- if (lower.tail) 1.0 else 0.0
+          qprob / ptrunc
+        }
+      })),
+      n_params
+    )
+  },
+  compile_probability_interval = function() {
+    ph <- names(self$get_placeholders())
+    ph_min <- "min" %in% ph
+    ph_max <- "max" %in% ph
+    ph_offset <- "offset" %in% ph
+    ph_max_retry <- "max_retry" %in% ph
+
+    dist <- self$get_components()[[1L]]
+    dist_prob_int <- dist$compile_probability_interval()
+
+    n_params_dist <- attr(dist_dens, "n_params")
+    n_params <- as.integer(ph_min) + as.integer(ph_max) + as.integer(ph_offset) + as.integer(ph_max_retry) +
+      n_params_dist
+
+    dist_param_expr <- if (n_params_dist > 0L) {
+      bquote(param_matrix[, 1L:.(n_params_dist)])
+    } else {
+      NULL
+    }
+
+    min_expr <- if (ph_min) {
+      bquote(param_matrix[, .(n_params_dist + 1L)])
+    } else {
+      self$default_params$min
+    }
+
+    max_expr <- if (ph_max) {
+      quote(param_matrix[, .(n_params_dist + as.integer(ph_min) + 1L)])
+    } else {
+      self$default_params$max
+    }
+
+    offset_expr <- if (ph_offset) {
+      quote(param_matrix[, .(n_params_dist + as.integer(ph_min) + as.integer(ph_max) + 1L)])
+    } else {
+      self$default_params$offset
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(qmin, qmax, param_matrix, log.p = FALSE) {
+        qtrans_min <- pmin(pmax(qmin - .(offset_expr), .(min_expr)), .(max_expr))
+        qtrans_max <- pmin(pmax(qmax - .(offset_expr), .(min_expr)), .(max_expr))
+
+        qprob <- dist_prob_int(qtrans_min, qtrans_max, .(dist_param_expr), log.p = log.p)
+        ptrunc <- dist_prob_int(.(min_expr), .(max_expr), .(dist_param_expr), log.p = log.p)
+
+        if (log.p) {
+          qprob - ptrunc
+        } else {
+          qprob / ptrunc
+        }
+      })),
+      n_params
+    )
+  },
+  compile_quantile = function() {
+    ph <- names(self$get_placeholders())
+    ph_min <- "min" %in% ph
+    ph_max <- "max" %in% ph
+    ph_offset <- "offset" %in% ph
+    ph_max_retry <- "max_retry" %in% ph
+
+    dist <- self$get_components()[[1L]]
+    dist_quantile <- dist$compile_quantile()
+    dist_prob <- dist$compile_probability()
+    dist_prob_int <- dist$compile_probability_interval()
+
+    n_params_dist <- attr(dist_quantile, "n_params")
+    n_params <- as.integer(ph_min) + as.integer(ph_max) + as.integer(ph_offset) + as.integer(ph_max_retry) +
+      n_params_dist
+
+    dist_param_expr <- if (n_params_dist > 0L) {
+      bquote(param_matrix[, 1L:.(n_params_dist)])
+    } else {
+      NULL
+    }
+
+    min_expr <- if (ph_min) {
+      bquote(param_matrix[, .(n_params_dist + 1L)])
+    } else {
+      self$default_params$min
+    }
+
+    max_expr <- if (ph_max) {
+      quote(param_matrix[, .(n_params_dist + as.integer(ph_min) + 1L)])
+    } else {
+      self$default_params$max
+    }
+
+    offset_expr <- if (ph_offset) {
+      quote(param_matrix[, .(n_params_dist + as.integer(ph_min) + as.integer(ph_max) + 1L)])
+    } else {
+      self$default_params$offset
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(p, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+        if (log.p) p <- exp(p)
+        p_upper <- dist_prob(.(max_expr), .(dist_param_expr))
+        p_width <- dist_prob_int(.(min_expr), .(max_expr), .(dist_param_expr))
+
+        q <- if (lower.tail) {
+          p_upper - p_width * (1.0 - p)
+        } else {
+          p_upper - p_width * p
+        }
+
+        .(offset_expr) + dist_quantile(q, .(dist_param_expr))
+      })),
+      n_params
+    )
   }
 )
 
