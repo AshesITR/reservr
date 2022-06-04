@@ -389,8 +389,207 @@ MixtureDistribution <- distribution_class(
         out
       }))
     )
-  }
+  },
+  compile_sample = function() {
+    comps <- self$get_components()
+    k <- length(comps)
+    ph_probs <- length(self$get_placeholders()$probs) > 0L
 
+    comp_sample <- lapply(comps, function(dist) dist$compile_sample())
+    comp_param_counts <- vapply(comp_sample, function(fun) attr(fun, "n_params"), integer(1L))
+    comp_param_ends <- cumsum(comp_param_counts)
+    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
+
+    n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
+
+    slot_code <- if (ph_probs) {
+      bquote({
+        slot <- runif(n)
+        probmat <- matrixStats::rowCumsums(
+          param_matrix[, .(sum(comp_param_counts) + 1L):.(sum(comp_param_counts) + k), drop = FALSE]
+        )
+        probmat <- probmat / probmat[, .(k)]
+        slot <- rowSums(slot > probmat) + 1
+      })
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      bquote(slot <- sample.int(n = .(k), size = n, replace = TRUE, prob = .(probs)))
+    }
+
+    sampling_code <- bquote({
+      res <- numeric(n)
+      num_samples <- tabulate(slot, .(k))
+    })
+    for (i in seq_along(comp_sample)) {
+      comp_param_expr <- if (comp_param_counts[i] > 0L) {
+        bquote(param_matrix[slot == .(i), .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
+      } else {
+        NULL
+      }
+
+      sampling_code[[i + 3L]] <- bquote(
+        res[slot == .(i)] <- comp_sample[[.(i)]](
+          num_samples[.(i)],
+          .(comp_param_expr)
+        )
+      )
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(n, param_matrix) {
+        .(slot_code)
+        .(sampling_code)
+        res
+      })),
+      n_params
+    )
+  },
+  compile_density = function() {
+    comps <- self$get_components()
+    k <- length(comps)
+    ph_probs <- length(self$get_placeholders()$probs) > 0L
+
+    comp_density <- lapply(comps, function(dist) dist$compile_density())
+    comp_param_counts <- vapply(comp_density, function(fun) attr(fun, "n_params"), integer(1L))
+    comp_param_ends <- cumsum(comp_param_counts)
+    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
+
+    n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
+
+    component_code <- bquote({
+      compmat <- matrix(nrow = length(x), ncol = .(k))
+    })
+
+    for (i in seq_len(k)) {
+      comp_param_expr <- if (comp_param_counts[i] > 0L) {
+        bquote(param_matrix[slot == .(i), .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
+      } else {
+        NULL
+      }
+
+      component_code[[i + 2L]] <- bquote(
+        compmat[, .(i)] <- comp_density[[.(i)]](x, .(comp_param_expr))
+      )
+    }
+
+    mixture_code <- if (ph_probs) {
+      bquote({
+        probmat <- param_matrix[, .(n_params - k + 1L):.(n_params), drop = FALSE]
+        probmat <- probmat / rowSums(probmat)
+        res <- rowSums(compmat * probmat)
+      })
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      bquote(res <- drop(compmat %*% .(probs)))
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(x, param_matrix, log = FALSE) {
+        .(component_code)
+        .(mixture_code)
+        if (log) log(res) else res
+      })),
+      n_params
+    )
+  },
+  compile_probability = function() {
+    comps <- self$get_components()
+    k <- length(comps)
+    ph_probs <- length(self$get_placeholders()$probs) > 0L
+
+    comp_probability <- lapply(comps, function(dist) dist$compile_probability())
+    comp_param_counts <- vapply(comp_probability, function(fun) attr(fun, "n_params"), integer(1L))
+    comp_param_ends <- cumsum(comp_param_counts)
+    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
+
+    n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
+
+    component_code <- bquote({
+      compmat <- matrix(nrow = length(x), ncol = .(k))
+    })
+
+    for (i in seq_len(k)) {
+      comp_param_expr <- if (comp_param_counts[i] > 0L) {
+        bquote(param_matrix[slot == .(i), .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
+      } else {
+        NULL
+      }
+
+      component_code[[i + 2L]] <- bquote(
+        compmat[, .(i)] <- comp_probability[[.(i)]](q, .(comp_param_expr), lower.tail = lower.tail)
+      )
+    }
+
+    mixture_code <- if (ph_probs) {
+      bquote({
+        probmat <- param_matrix[, .(n_params - k + 1L):.(n_params), drop = FALSE]
+        probmat <- probmat / rowSums(probmat)
+        res <- rowSums(compmat * probmat)
+      })
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      bquote(res <- drop(compmat %*% .(probs)))
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(q, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+        .(component_code)
+        .(mixture_code)
+        if (log.p) log(res) else res
+      }))
+    )
+  },
+  compile_probability_interval = function() {
+    comps <- self$get_components()
+    k <- length(comps)
+    ph_probs <- length(self$get_placeholders()$probs) > 0L
+
+    comp_probability_interval <- lapply(comps, function(dist) dist$compile_probability_interval())
+    comp_param_counts <- vapply(comp_probability_interval, function(fun) attr(fun, "n_params"), integer(1L))
+    comp_param_ends <- cumsum(comp_param_counts)
+    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
+
+    n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
+
+    component_code <- bquote({
+      compmat <- matrix(nrow = length(x), ncol = .(k))
+    })
+
+    for (i in seq_len(k)) {
+      comp_param_expr <- if (comp_param_counts[i] > 0L) {
+        bquote(param_matrix[slot == .(i), .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
+      } else {
+        NULL
+      }
+
+      component_code[[i + 2L]] <- bquote(
+        compmat[, .(i)] <- comp_probability_interval[[.(i)]](qmin, qmax, .(comp_param_expr))
+      )
+    }
+
+    mixture_code <- if (ph_probs) {
+      bquote({
+        probmat <- param_matrix[, .(n_params - k + 1L):.(n_params), drop = FALSE]
+        probmat <- probmat / rowSums(probmat)
+        res <- rowSums(compmat * probmat)
+      })
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      bquote(res <- drop(compmat %*% .(probs)))
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(qmin, qmax, param_matrix, log.p = FALSE) {
+        .(component_code)
+        .(mixture_code)
+        if (log.p) log(res) else res
+      }))
+    )
+  }
 )
 
 #' @rdname fit_dist_start
