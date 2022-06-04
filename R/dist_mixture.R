@@ -455,6 +455,10 @@ MixtureDistribution <- distribution_class(
     comp_param_ends <- cumsum(comp_param_counts)
     comp_param_starts <- comp_param_ends - comp_param_counts + 1L
 
+    comp_types <- vapply(comps, function(comp) comp$get_type(), character(1L))
+    # TODO implement mixed type too
+    stopifnot(all(comp_types %in% c("discrete", "continuous")))
+
     n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
 
     component_code <- bquote({
@@ -471,6 +475,13 @@ MixtureDistribution <- distribution_class(
       component_code[[i + 2L]] <- bquote(
         compmat[, .(i)] <- comp_density[[.(i)]](x, .(comp_param_expr))
       )
+    }
+
+    if (self$get_type() == "mixed") {
+      component_code[[k + 3L]] <- bquote({
+        is_discrete <- matrixStats::rowAnys(compmat[, .(which(comp_types == "discrete"))])
+        compmat[is_discrete, .(which(comp_types == "continuous"))] <- 0.0
+      })
     }
 
     mixture_code <- if (ph_probs) {
