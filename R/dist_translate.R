@@ -368,6 +368,45 @@ TranslatedDistribution <- distribution_class(
       n_params
     )
   },
+  compile_probability_interval = function() {
+    ph <- names(self$get_placeholders())
+    ph_offset <- "offset" %in% ph
+    ph_multiplier <- "multiplier" %in% ph
+
+    dist_probability <- self$get_components()[[1L]]$compile_probability_interval()
+    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) + attr(dist_probability, "n_params")
+
+    dist_param_expr <- if (attr(dist_probability, "n_params") > 0L) {
+      bquote(param_matrix[, 1L:.(attr(dist_probability, "n_params"))])
+    } else {
+      NULL
+    }
+
+    multiplier_expr <- if (ph_multiplier) {
+      bquote(param_matrix[, .(n_params)])
+    } else {
+      self$default_params$multiplier
+    }
+
+    offset_expr <- if (ph_offset) {
+      bquote(param_matrix[, .(attr(dist_density, "n_params") + 1L)])
+    } else {
+      self$default_params$offset
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(p, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+        dist_probability(
+          (qmin - .(offset_expr)) / .(multiplier_expr),
+          (qmax - .(offset_expr)) / .(multiplier_expr),
+          .(dist_param_expr),
+          lower.tail = lower.tail,
+          log.p = log.p
+        )
+      })),
+      n_params
+    )
+  },
   compile_quantile = function() {
     ph <- names(self$get_placeholders())
     ph_offset <- "offset" %in% ph
