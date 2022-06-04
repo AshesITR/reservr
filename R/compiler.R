@@ -21,10 +21,10 @@ compile_simple_function <- function(fun, dist) {
     alist(param_matrix = ),
     fmls[names(fmls) %in% c("lower.tail", "log", "log.p")]
   )
-  res <- as.function(c(fmls_outer, fcall))
-  class(res) <- "compiled_distribution_function"
-  attr(res, "n_params") <- i - 1L
-  res
+  as_compiled_distribution_function(
+    c(fmls_outer, fcall),
+    i - 1L
+  )
 }
 
 compile_simple_prob_interval_continuous <- function(fun, dist) {
@@ -51,10 +51,10 @@ compile_simple_prob_interval_continuous <- function(fun, dist) {
   fcall_upper[["q"]] <- as.name("qmax")
   fcall_lower <- fcall
   fcall_lower[["q"]] <- as.name("qmin")
-  res <- as.function(c(fmls_outer, bquote(.(fcall_upper) - .(fcall_lower))))
-  class(res) <- "compiled_distribution_function"
-  attr(res, "n_params") <- i - 1L
-  res
+  as_compiled_distribution_function(
+    c(fmls_outer, bquote(.(fcall_upper) - .(fcall_lower))),
+    i - 1L
+  )
 }
 
 compile_simple_prob_interval_discrete <- function(pfun, dfun, dist) {
@@ -89,8 +89,16 @@ compile_simple_prob_interval_discrete <- function(pfun, dfun, dist) {
   fcall_lower_d[["log.p"]] <- NULL
   fcall_lower_d[["log"]] <- FALSE
 
-  res <- as.function(c(fmls_outer, bquote(.(fcall_upper) - .(fcall_lower) + .(fcall_lower_d))))
-  class(res) <- "compiled_distribution_function"
-  attr(res, "n_params") <- i - 1L
-  res
+  as_compiled_distribution_function(
+    c(fmls_outer, bquote(.(fcall_upper) - .(fcall_lower) + .(fcall_lower_d))),
+    i - 1L
+  )
+}
+
+as_compiled_distribution_function <- function(fun, n_params) {
+  fun <- as.function(fun)
+  n_params <- as.integer(n_params)
+  class(fun) <- "compiled_distribution_function"
+  attr(fun, "n_params") <- n_params
+  fun
 }
