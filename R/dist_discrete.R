@@ -277,6 +277,59 @@ DiscreteDistribution <- distribution_class(
       )
     }
   },
+  compile_probability_interval = function() {
+    ph <- length(self$get_placeholders()$probs) > 0L
+    k <- length(self$get_params()$probs)
+    if (ph) {
+      as_compiled_distribution_function(
+        eval(substitute(function(qmin, qmax, param_matrix, log.p = FALSE) {
+          param_matrix <- matrixStats::rowCumsums(param_matrix)
+          param_matrix <- param_matrix / param_matrix[, k]
+
+          qmin <- ceiling(qmin)
+          qmax <- floor(qmax)
+          qmin[qmin < 1.0] <- 1.0
+          qmax[qmax > k] <- k
+
+          res <- numeric(length(q))
+          ok <- which(qmin <= k & qmax >= 1.0)
+          res[ok] <- param_matrix[
+            ok + (qmax[ok] - 1.0) * nrow(param_matrix)
+          ]
+          ok_lower <- which(qmin > 1.0 & qmin <= k & qmax >= 1.0)
+          res[ok_lower] <- res[ok_lower] - param_matrix[
+            ok_lower + (qmin[ok_lower] - 2.0) * nrow(param_matrix)
+          ]
+
+          if (log.p) res <- log(res)
+
+          res
+        }, list(k = k))),
+        k
+      )
+    } else {
+      probs <- as.numeric(self$default_params$probs)
+      probs <- cumsum(probs)
+      probs <- c(0.0, probs / probs[k])
+      as_compiled_distribution_function(
+        eval(substitute(function(qmin, qmax, param_matrix, log.p = FALSE) {
+          qmin <- ceiling(qmin)
+          qmax <- floor(qmax)
+          qmin[qmin < 1.0] <- 1.0
+          qmax[qmax > k] <- k
+
+          res <- numeric(length(q))
+          ok <- which(qmin <= k & qmax >= 1.0)
+          res[ok] <- probs[qmax[ok] + 1L] - probs[qmin[ok]]
+
+          if (log.p) res <- log(res)
+
+          res
+        }, list(k = k, probs = probs))),
+        0
+      )
+    }
+  },
   compile_quantile = function() {
     ph <- length(self$get_placeholders()$probs) > 0L
     k <- length(self$get_params()$probs)
