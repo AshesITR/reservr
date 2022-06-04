@@ -37,8 +37,8 @@ TranslatedDistribution <- distribution_class(
       fun_name = "dist_translate$density()"
     )
     x_trans <- (x - params$offset) / params$multiplier
-    params$dist$dist$density(x_trans, log = log,
-                             with_params = params$dist$params) / params$multiplier
+    dens <- params$dist$dist$density(x_trans, log = log, with_params = params$dist$params)
+    if (log) dens - log(params$multiplier) else dens / params$multiplier
   },
   probability = function(q, lower.tail = TRUE, log.p = FALSE, params) {
     params$dist$dist$require_capability(
@@ -260,6 +260,146 @@ TranslatedDistribution <- distribution_class(
         }
         out
       }))
+    )
+  },
+  compile_sample = function() {
+    ph <- names(self$get_placeholders())
+    ph_offset <- "offset" %in% ph
+    ph_multiplier <- "multiplier" %in% ph
+
+    dist_sample <- self$get_components()[[1L]]$compile_sample()
+    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) + attr(dist_sample, "n_params")
+
+    dist_param_expr <- if (attr(dist_sample, "n_params") > 0L) {
+      bquote(param_matrix[, 1L:.(attr(dist_sample, "n_params"))])
+    } else {
+      NULL
+    }
+
+    multiplier_expr <- if (ph_multiplier) {
+      bquote(param_matrix[, .(n_params)])
+    } else {
+      self$default_params$multiplier
+    }
+
+    offset_expr <- if (ph_offset) {
+      bquote(param_matrix[, .(attr(dist_sample, "n_params") + 1L)])
+    } else {
+      self$default_params$offset
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(n, param_matrix) {
+        dist_sample(n, .(dist_param_expr)) * .(multiplier_expr) + .(offset_expr)
+      })),
+      n_params
+    )
+  },
+  compile_density = function() {
+    ph <- names(self$get_placeholders())
+    ph_offset <- "offset" %in% ph
+    ph_multiplier <- "multiplier" %in% ph
+
+    dist_density <- self$get_components()[[1L]]$compile_density()
+    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) + attr(dist_density, "n_params")
+
+    dist_param_expr <- if (attr(dist_density, "n_params") > 0L) {
+      bquote(param_matrix[, 1L:.(attr(dist_density, "n_params"))])
+    } else {
+      NULL
+    }
+
+    multiplier_expr <- if (ph_multiplier) {
+      bquote(param_matrix[, .(n_params)])
+    } else {
+      self$default_params$multiplier
+    }
+
+    offset_expr <- if (ph_offset) {
+      bquote(param_matrix[, .(attr(dist_density, "n_params") + 1L)])
+    } else {
+      self$default_params$offset
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(x, param_matrix, log = FALSE) {
+        mult <- .(multiplier_expr)
+        dens <- dist_density((x - .(offset_expr)) / mult, .(dist_param_expr), log = log)
+        if (log) dens - log(mult) else dens / mult
+      })),
+      n_params
+    )
+  },
+  compile_probability = function() {
+    ph <- names(self$get_placeholders())
+    ph_offset <- "offset" %in% ph
+    ph_multiplier <- "multiplier" %in% ph
+
+    dist_probability <- self$get_components()[[1L]]$compile_probability()
+    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) + attr(dist_probability, "n_params")
+
+    dist_param_expr <- if (attr(dist_probability, "n_params") > 0L) {
+      bquote(param_matrix[, 1L:.(attr(dist_probability, "n_params"))])
+    } else {
+      NULL
+    }
+
+    multiplier_expr <- if (ph_multiplier) {
+      bquote(param_matrix[, .(n_params)])
+    } else {
+      self$default_params$multiplier
+    }
+
+    offset_expr <- if (ph_offset) {
+      bquote(param_matrix[, .(attr(dist_density, "n_params") + 1L)])
+    } else {
+      self$default_params$offset
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(p, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+        dist_probability(
+          (x - .(offset_expr)) / .(multiplier_expr),
+          .(dist_param_expr),
+          lower.tail = lower.tail,
+          log.p = log.p
+        )
+      })),
+      n_params
+    )
+  },
+  compile_quantile = function() {
+    ph <- names(self$get_placeholders())
+    ph_offset <- "offset" %in% ph
+    ph_multiplier <- "multiplier" %in% ph
+
+    dist_quantile <- self$get_components()[[1L]]$compile_quantile()
+    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) + attr(dist_quantile, "n_params")
+
+    dist_param_expr <- if (attr(dist_quantile, "n_params") > 0L) {
+      bquote(param_matrix[, 1L:.(attr(dist_quantile, "n_params"))])
+    } else {
+      NULL
+    }
+
+    multiplier_expr <- if (ph_multiplier) {
+      bquote(param_matrix[, .(n_params)])
+    } else {
+      self$default_params$multiplier
+    }
+
+    offset_expr <- if (ph_offset) {
+      bquote(param_matrix[, .(attr(dist_quantile, "n_params") + 1L)])
+    } else {
+      self$default_params$offset
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(p, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+        dist_quantile(p, .(dist_param_expr), lower.tail = lower.tail, log.p = log.p) * .(multiplier_expr) +
+           .(offset_expr)
+      })),
+      n_params
     )
   }
 )
