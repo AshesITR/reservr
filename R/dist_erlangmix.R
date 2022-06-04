@@ -354,7 +354,7 @@ ErlangMixtureDistribution <- distribution_class(
     )) else self$default_params$scale
 
     probs_expr <- if (ph_shapes || ph_scale) {
-      substitute(param_matrix[, i_prob:j_prob], list(
+      substitute(param_matrix[, i_prob:j_prob, drop = FALSE], list(
         i_prob = 1L + if (ph_shapes) k else 0L + as.integer(ph_scale),
         j_prob = k + if (ph_shapes) k else 0L + as.integer(ph_scale)
       ))
@@ -412,7 +412,7 @@ ErlangMixtureDistribution <- distribution_class(
     )) else self$default_params$scale
 
     probs_expr <- if (ph_shapes || ph_scale) {
-      substitute(param_matrix[, i_prob:j_prob], list(
+      substitute(param_matrix[, i_prob:j_prob, drop = FALSE], list(
         i_prob = 1L + if (ph_shapes) k else 0L + as.integer(ph_scale),
         j_prob = k + if (ph_shapes) k else 0L + as.integer(ph_scale)
       ))
@@ -422,7 +422,7 @@ ErlangMixtureDistribution <- distribution_class(
 
     densmat_code <- if (ph_shapes) {
       substitute(
-        densmat <- dgamma(x, shape = param_matrix[, 1L:k], scale = scale_expr),
+        densmat <- dgamma(x, shape = param_matrix[, 1L:k, drop = FALSE], scale = scale_expr),
         list(k = k, scale_expr = scale_expr)
       )
     } else {
@@ -478,7 +478,7 @@ ErlangMixtureDistribution <- distribution_class(
     )) else self$default_params$scale
 
     probs_expr <- if (ph_shapes || ph_scale) {
-      substitute(param_matrix[, i_prob:j_prob], list(
+      substitute(param_matrix[, i_prob:j_prob, drop = FALSE], list(
         i_prob = 1L + if (ph_shapes) k else 0L + as.integer(ph_scale),
         j_prob = k + if (ph_shapes) k else 0L + as.integer(ph_scale)
       ))
@@ -488,7 +488,7 @@ ErlangMixtureDistribution <- distribution_class(
 
     cdfmat_code <- if (ph_shapes) {
       substitute(
-        cdfmat <- pgamma(x, shape = param_matrix[, 1L:k], scale = scale_expr, lower.tail = lower.tail),
+        cdfmat <- pgamma(x, shape = param_matrix[, 1L:k, drop = FALSE], scale = scale_expr, lower.tail = lower.tail),
         list(k = k, scale_expr = scale_expr)
       )
     } else {
@@ -544,7 +544,7 @@ ErlangMixtureDistribution <- distribution_class(
     )) else self$default_params$scale
 
     probs_expr <- if (ph_shapes || ph_scale) {
-      substitute(param_matrix[, i_prob:j_prob], list(
+      substitute(param_matrix[, i_prob:j_prob, drop = FALSE], list(
         i_prob = 1L + if (ph_shapes) k else 0L + as.integer(ph_scale),
         j_prob = k + if (ph_shapes) k else 0L + as.integer(ph_scale)
       ))
@@ -554,8 +554,8 @@ ErlangMixtureDistribution <- distribution_class(
 
     cdfmat_code <- if (ph_shapes) {
       substitute(
-        cdfmat <- pgamma(qmax, shape = param_matrix[, 1L:k], scale = scale_expr) -
-          pgamma(qmin, shape = param_matrix[, 1L:k], scale = scale_expr),
+        cdfmat <- pgamma(qmax, shape = param_matrix[, 1L:k, drop = FALSE], scale = scale_expr) -
+          pgamma(qmin, shape = param_matrix[, 1L:k, drop = FALSE], scale = scale_expr),
         list(k = k, scale_expr = scale_expr)
       )
     } else {

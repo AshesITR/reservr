@@ -268,10 +268,12 @@ TranslatedDistribution <- distribution_class(
     ph_multiplier <- "multiplier" %in% ph
 
     dist_sample <- self$get_components()[[1L]]$compile_sample()
-    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) + attr(dist_sample, "n_params")
+    n_params_dist <- attr(dist_sample, "n_params")
+    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) +
+      n_params_dist
 
-    dist_param_expr <- if (attr(dist_sample, "n_params") > 0L) {
-      bquote(param_matrix[, 1L:.(attr(dist_sample, "n_params"))])
+    dist_param_expr <- if (n_params_dist > 0L) {
+      bquote(param_matrix[, 1L:.(n_params_dist), drop = FALSE])
     } else {
       NULL
     }
@@ -283,7 +285,7 @@ TranslatedDistribution <- distribution_class(
     }
 
     offset_expr <- if (ph_offset) {
-      bquote(param_matrix[, .(attr(dist_sample, "n_params") + 1L)])
+      bquote(param_matrix[, .(n_params_dist + 1L)])
     } else {
       self$default_params$offset
     }
@@ -301,10 +303,12 @@ TranslatedDistribution <- distribution_class(
     ph_multiplier <- "multiplier" %in% ph
 
     dist_density <- self$get_components()[[1L]]$compile_density()
-    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) + attr(dist_density, "n_params")
+    n_params_dist <- attr(dist_density, "n_params")
+    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) +
+      n_params_dist
 
-    dist_param_expr <- if (attr(dist_density, "n_params") > 0L) {
-      bquote(param_matrix[, 1L:.(attr(dist_density, "n_params"))])
+    dist_param_expr <- if (n_params_dist > 0L) {
+      bquote(param_matrix[, 1L:.(n_params_dist), drop = FALSE])
     } else {
       NULL
     }
@@ -316,7 +320,7 @@ TranslatedDistribution <- distribution_class(
     }
 
     offset_expr <- if (ph_offset) {
-      bquote(param_matrix[, .(attr(dist_density, "n_params") + 1L)])
+      bquote(param_matrix[, .(n_params_dist + 1L)])
     } else {
       self$default_params$offset
     }
@@ -336,10 +340,12 @@ TranslatedDistribution <- distribution_class(
     ph_multiplier <- "multiplier" %in% ph
 
     dist_probability <- self$get_components()[[1L]]$compile_probability()
-    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) + attr(dist_probability, "n_params")
+    n_params_dist <- attr(dist_probability, "n_params")
+    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) +
+      n_params_dist
 
-    dist_param_expr <- if (attr(dist_probability, "n_params") > 0L) {
-      bquote(param_matrix[, 1L:.(attr(dist_probability, "n_params"))])
+    dist_param_expr <- if (n_params_dist > 0L) {
+      bquote(param_matrix[, 1L:.(n_params_dist), drop = FALSE])
     } else {
       NULL
     }
@@ -351,7 +357,7 @@ TranslatedDistribution <- distribution_class(
     }
 
     offset_expr <- if (ph_offset) {
-      bquote(param_matrix[, .(attr(dist_density, "n_params") + 1L)])
+      bquote(param_matrix[, .(n_params_dist + 1L)])
     } else {
       self$default_params$offset
     }
@@ -374,10 +380,11 @@ TranslatedDistribution <- distribution_class(
     ph_multiplier <- "multiplier" %in% ph
 
     dist_probability <- self$get_components()[[1L]]$compile_probability_interval()
-    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) + attr(dist_probability, "n_params")
+    n_params_dist <- attr(dist_probability, "n_params")
+    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) + n_params_dist
 
-    dist_param_expr <- if (attr(dist_probability, "n_params") > 0L) {
-      bquote(param_matrix[, 1L:.(attr(dist_probability, "n_params"))])
+    dist_param_expr <- if (n_params_dist > 0L) {
+      bquote(param_matrix[, 1L:.(n_params_dist), drop = FALSE])
     } else {
       NULL
     }
@@ -389,7 +396,7 @@ TranslatedDistribution <- distribution_class(
     }
 
     offset_expr <- if (ph_offset) {
-      bquote(param_matrix[, .(attr(dist_density, "n_params") + 1L)])
+      bquote(param_matrix[, .(n_params_dist + 1L)])
     } else {
       self$default_params$offset
     }
@@ -413,10 +420,12 @@ TranslatedDistribution <- distribution_class(
     ph_multiplier <- "multiplier" %in% ph
 
     dist_quantile <- self$get_components()[[1L]]$compile_quantile()
-    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) + attr(dist_quantile, "n_params")
+    n_params_dist <- attr(dist_quantile, "n_params")
+    n_params <- as.integer(ph_offset) + as.integer(ph_multiplier) +
+      n_params_dist
 
-    dist_param_expr <- if (attr(dist_quantile, "n_params") > 0L) {
-      bquote(param_matrix[, 1L:.(attr(dist_quantile, "n_params"))])
+    dist_param_expr <- if (n_params_dist > 0L) {
+      bquote(param_matrix[, 1L:.(n_params_dist), drop = FALSE])
     } else {
       NULL
     }
@@ -428,7 +437,7 @@ TranslatedDistribution <- distribution_class(
     }
 
     offset_expr <- if (ph_offset) {
-      bquote(param_matrix[, .(attr(dist_quantile, "n_params") + 1L)])
+      bquote(param_matrix[, .(n_params_dist + 1L)])
     } else {
       self$default_params$offset
     }

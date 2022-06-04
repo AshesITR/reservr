@@ -319,7 +319,7 @@ TruncatedDistribution <- distribution_class(
       n_params_dist
 
     dist_param_expr <- if (n_params_dist > 0L) {
-      bquote(param_matrix[, 1L:.(n_params_dist)])
+      bquote(param_matrix[, 1L:.(n_params_dist), drop = FALSE])
     } else {
       NULL
     }
@@ -368,7 +368,7 @@ TruncatedDistribution <- distribution_class(
       n_params_dist
 
     dist_param_expr <- if (n_params_dist > 0L) {
-      bquote(param_matrix[, 1L:.(n_params_dist)])
+      bquote(param_matrix[, 1L:.(n_params_dist), drop = FALSE])
     } else {
       NULL
     }
@@ -425,7 +425,7 @@ TruncatedDistribution <- distribution_class(
       n_params_dist
 
     dist_param_expr <- if (n_params_dist > 0L) {
-      bquote(param_matrix[, 1L:.(n_params_dist)])
+      bquote(param_matrix[, 1L:.(n_params_dist), drop = FALSE])
     } else {
       NULL
     }
@@ -486,7 +486,7 @@ TruncatedDistribution <- distribution_class(
       n_params_dist
 
     dist_param_expr <- if (n_params_dist > 0L) {
-      bquote(param_matrix[, 1L:.(n_params_dist)])
+      bquote(param_matrix[, 1L:.(n_params_dist), drop = FALSE])
     } else {
       NULL
     }
@@ -543,7 +543,7 @@ TruncatedDistribution <- distribution_class(
       n_params_dist
 
     dist_param_expr <- if (n_params_dist > 0L) {
-      bquote(param_matrix[, 1L:.(n_params_dist)])
+      bquote(param_matrix[, 1L:.(n_params_dist), drop = FALSE])
     } else {
       NULL
     }
