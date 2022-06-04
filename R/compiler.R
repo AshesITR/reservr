@@ -97,6 +97,7 @@ compile_simple_prob_interval_discrete <- function(pfun, dfun, dist) {
 
 as_compiled_distribution_function <- function(fun, n_params) {
   fun <- as.function(fun)
+  fun <- compiler::cmpfun(fun, options = list(optimize = 3L))
   n_params <- as.integer(n_params)
   class(fun) <- "compiled_distribution_function"
   attr(fun, "n_params") <- n_params

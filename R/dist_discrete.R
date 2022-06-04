@@ -2,18 +2,17 @@
 #'
 #' A full-flexibility discrete distribution with values from 1 to `size`.
 #'
-#' Both parameters can be overridden with
-#' `with_params = list(size = ..., probs = ...)`.
+#' Parameters can be overridden with
+#' `with_params = list(probs = ...)`.
 #'
-#' @param size Number of classes parameter (integer), or `NULL` as a
-#'   placeholder.
+#' @param size Number of classes parameter (integer). Required if `probs` is `NULL`.
 #' @param probs Vector of probabilties parameter, or `NULL` as a placeholder.
 #'
 #' @return A `DiscreteDistribution` object.
 #' @export
 #'
 #' @examples
-#' d_discrete <- dist_discrete(size = 4, probs = list(0.5, 0.25, 0.15, 0.1))
+#' d_discrete <- dist_discrete(probs = list(0.5, 0.25, 0.15, 0.1))
 #' x <- d_discrete$sample(100)
 #' d_emp <- dist_empirical(x)
 #'
@@ -33,18 +32,17 @@
 #' @family Distributions
 dist_discrete <- function(size = NULL, probs = NULL) {
   if (is.null(probs)) probs <- vector("list", as.integer(size))
-  DiscreteDistribution$new(size = size, probs = probs)
+  DiscreteDistribution$new(probs = probs)
 }
 
 DiscreteDistribution <- distribution_class(
   name = "Discrete",
   type = "discrete",
   params = list(
-    size = I_POSITIVE_INTEGERS,
     probs = list(I_UNIT_INTERVAL)
   ),
   sample = function(n, params) {
-    k <- params$size[[1L]]
+    k <- length(params$probs)
     slot <- runif(n)
     probmat <- matrixStats::rowCumsums(do.call(cbind, params$probs))
     probmat <- probmat / probmat[, k]
@@ -57,7 +55,7 @@ DiscreteDistribution <- distribution_class(
 
     x_ok <- as.integer(x)
     x_ok[x < 1L] <- NA_integer_
-    x_ok[x > params$size[[1L]]] <- NA_integer_
+    x_ok[x > length(params$probs)] <- NA_integer_
     x_ok[!is_integerish(x)] <- NA_integer_
 
     res <- densmat[seq_along(x) + (x_ok - 1L) * nrow(densmat)]
@@ -65,7 +63,7 @@ DiscreteDistribution <- distribution_class(
     if (log) log(res) else res
   },
   probability = function(q, lower.tail = TRUE, log.p = FALSE, params) {
-    k <- params$size[[1L]]
+    k <- length(params$probs)
     probmat <- matrixStats::rowCumsums(do.call(cbind, params$probs))
     probmat <- probmat / probmat[, k]
 
@@ -88,7 +86,7 @@ DiscreteDistribution <- distribution_class(
     if (log.p) p <- exp(p)
     if (!lower.tail) p <- 1.0 - p
 
-    k <- params$size[[1L]]
+    k <- length(params$probs)
     probmat <- matrixStats::rowCumsums(do.call(cbind, params$probs))
     probmat <- probmat / probmat[, k]
     rowSums(p > probmat) + 1L
@@ -101,11 +99,10 @@ DiscreteDistribution <- distribution_class(
     sdof
   },
   support = function(x, params) {
-    is_integerish(x) & x > 0.0 & x <= params$size[[1L]]
+    is_integerish(x) & x > 0.0 & x <= length(params$probs)
   },
   tf_logdensity = function() {
     k <- as.integer(self$default_params$size)
-    if (is.null(k)) stop("`size` must be fixed for tf_logdensity().")
     function(x, args) {
       probs <- args[["probs"]]
       probs <- tf$reshape(probs, list(-1L, k))
@@ -121,7 +118,6 @@ DiscreteDistribution <- distribution_class(
   },
   tf_logprobability = function() {
     k <- as.integer(self$default_params$size)
-    if (is.null(k)) stop("`size` must be fixed for tf_logprobability().")
     function(qmin, qmax, args) {
       probs <- args[["probs"]]
       probs <- tf$reshape(probs, list(-1L, k))
@@ -143,9 +139,6 @@ DiscreteDistribution <- distribution_class(
     check_installed("keras")
     params <- private$.make_params(with_params, 1)
     out <- list()
-    if (!is.null(params$size)) {
-      out$size <- keras::k_constant(params$size)
-    }
     if (length(params$probs) && !is.null(params$probs[[1L]])) {
       probs <- as.numeric(params$probs)
       out$probs <- keras::k_constant(probs / sum(probs), shape = c(1L, length(probs)))
@@ -173,6 +166,147 @@ DiscreteDistribution <- distribution_class(
         list(probs = outputs[[1L]])
       }))
     )
+  },
+  compile_sample = function() {
+    ph <- length(self$get_placeholders()$probs) > 0L
+    k <- length(self$get_params()$probs)
+    if (ph) {
+      as_compiled_distribution_function(
+        eval(substitute(function(n, param_matrix) {
+          slot <- runif(n)
+          param_matrix <- matrixStats::rowCumsums(param_matrix)
+          param_matrix <- param_matrix / param_matrix[, k]
+          rowSums(slot > param_matrix) + 1L
+        }, list(k = k))),
+        k
+      )
+    } else {
+      probs <- as.numeric(self$default_params$probs)
+      as_compiled_distribution_function(
+        eval(substitute(function(n, param_matrix) {
+          sample.int(n = k, size = n, replace = TRUE, prob = probs)
+        }, list(probs = probs, k = k))),
+        0L
+      )
+    }
+  },
+  compile_density = function() {
+    ph <- length(self$get_placeholders()$probs) > 0L
+    k <- length(self$get_params()$probs)
+    if (ph) {
+      as_compiled_distribution_function(
+        eval(substitute(function(x, param_matrix, log = FALSE) {
+          param_matrix <- param_matrix / rowSums(param_matrix)
+
+          x_ok <- as.integer(x)
+          x_ok[x < 1L] <- NA_integer_
+          x_ok[x > k] <- NA_integer_
+          x_ok[!is_integerish(x)] <- NA_integer_
+
+          res <- param_matrix[seq_along(x) + (x_ok - 1L) * nrow(param_matrix)]
+          res[is.na(x_ok)] <- 0.0
+          if (log) log(res) else res
+        }, list(k = k))),
+        k
+      )
+    } else {
+      probs <- as.numeric(self$default_params$probs)
+      probs <- probs / sum(probs)
+      as_compiled_distribution_function(
+        eval(substitute(function(x, param_matrix, log = FALSE) {
+          x_ok <- as.integer(x)
+          x_ok[x < 1L] <- NA_integer_
+          x_ok[x > k] <- NA_integer_
+          x_ok[!is_integerish(x)] <- NA_integer_
+
+          res <- probs[x_ok]
+          res[is.na(x_ok)] <- 0.0
+          if (log) log(res) else res
+        }, list(k = k, probs = probs))),
+        0
+      )
+    }
+  },
+  compile_probability = function() {
+    ph <- length(self$get_placeholders()$probs) > 0L
+    k <- length(self$get_params()$probs)
+    if (ph) {
+      as_compiled_distribution_function(
+        eval(substitute(function(q, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+          param_matrix <- matrixStats::rowCumsums(param_matrix)
+          param_matrix <- param_matrix / param_matrix[, k]
+
+          q <- floor(q)
+          q[q > k] <- k
+          q[q < 0] <- 0
+
+          res <- numeric(length(q))
+          res[q > 0] <- param_matrix[
+            which(q > 0.0) + (q[q > 0.0] - 1.0) * nrow(param_matrix)
+          ]
+          res[q == 0] <- 0.0
+
+          if (!lower.tail) res <- 1.0 - res
+          if (log.p) res <- log(res)
+
+          res
+        }, list(k = k))),
+        k
+      )
+    } else {
+      probs <- as.numeric(self$default_params$probs)
+      probs <- cumsum(probs)
+      probs <- probs / probs[k]
+      probs <- probs[-k]
+      as_compiled_distribution_function(
+        eval(substitute(function(q, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+          q <- floor(q)
+          q_inner <- q > 0.0 & q < k - 1.0
+
+          res <- numeric(length(q))
+          res[q_inner] <- probs[q[q_inner]]
+          res[q < 0.0] <- 0.0
+          res[q > k - 1.0] <- 1.0
+
+          if (!lower.tail) res <- 1.0 - res
+          if (log.p) res <- log(res)
+
+          res
+        }, list(k = k, probs = probs))),
+        0
+      )
+    }
+  },
+  compile_quantile = function() {
+    ph <- length(self$get_placeholders()$probs) > 0L
+    k <- length(self$get_params()$probs)
+    if (ph) {
+      as_compiled_distribution_function(
+        eval(substitute(function(p, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+          if (log.p) p <- exp(p)
+          if (!lower.tail) p <- 1.0 - p
+
+          param_matrix <- matrixStats::rowCumsums(param_matrix)
+          param_matrix <- param_matrix / param_matrix[, k]
+          rowSums(p > param_matrix) + 1L
+        }, list(k = k))),
+        k
+      )
+    } else {
+      probs <- as.numeric(self$default_params$probs)
+      probs <- cumsum(probs)
+      probs <- probs / probs[k]
+      probs <- probs[-k]
+      as_compiled_distribution_function(
+        eval(substitute(function(p, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+          if (log.p) p <- exp(p)
+          if (!lower.tail) p <- 1.0 - p
+
+          findInterval(p, probs) + 1L
+        }, list(probs = probs))),
+        0
+      )
+    }
   }
 )
 
@@ -181,14 +315,7 @@ fit_dist_start.DiscreteDistribution <- function(dist, obs, ...) {
   obs <- as_trunc_obs(obs)
   res <- dist$get_placeholders()
   ph_probs <- length(res$probs) > 0L
-  ph <- names(res)
-
-  if ("size" %in% ph) {
-    size <- max(obs$xmax)
-    res$size <- size
-  } else {
-    size <- dist$get_params()$size
-  }
+  size <- dist$default_params$size
 
   if (ph_probs) {
     densmat <- map_dbl_matrix(

@@ -247,7 +247,7 @@ format.ErlangMixtureDistribution <- function(x, short = FALSE, ...) {
 format.DiscreteDistribution <- function(x, short = FALSE, ...) {
   free_probs <- length(x$get_placeholders()$probs)
   spec <- if (free_probs) {
-    paste0("size = ", x$default_params$size)
+    paste0("size = ", length(x$default_params$probs))
   } else {
     p <- unlist(x$default_params$probs)
     p <- p / sum(p)
