@@ -467,7 +467,7 @@ MixtureDistribution <- distribution_class(
 
     for (i in seq_len(k)) {
       comp_param_expr <- if (comp_param_counts[i] > 0L) {
-        bquote(param_matrix[slot == .(i), .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
+        bquote(param_matrix[, .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
       } else {
         NULL
       }
@@ -479,7 +479,7 @@ MixtureDistribution <- distribution_class(
 
     if (self$get_type() == "mixed") {
       component_code[[k + 3L]] <- bquote({
-        is_discrete <- matrixStats::rowAnys(compmat[, .(which(comp_types == "discrete"))])
+        is_discrete <- matrixStats::rowAnys(compmat[, .(which(comp_types == "discrete")), drop = FALSE])
         compmat[is_discrete, .(which(comp_types == "continuous"))] <- 0.0
       })
     }
@@ -518,12 +518,12 @@ MixtureDistribution <- distribution_class(
     n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
 
     component_code <- bquote({
-      compmat <- matrix(nrow = length(x), ncol = .(k))
+      compmat <- matrix(nrow = length(q), ncol = .(k))
     })
 
     for (i in seq_len(k)) {
       comp_param_expr <- if (comp_param_counts[i] > 0L) {
-        bquote(param_matrix[slot == .(i), .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
+        bquote(param_matrix[, .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
       } else {
         NULL
       }
@@ -550,7 +550,8 @@ MixtureDistribution <- distribution_class(
         .(component_code)
         .(mixture_code)
         if (log.p) log(res) else res
-      }))
+      })),
+      n_params
     )
   },
   compile_probability_interval = function() {
@@ -566,12 +567,12 @@ MixtureDistribution <- distribution_class(
     n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
 
     component_code <- bquote({
-      compmat <- matrix(nrow = length(x), ncol = .(k))
+      compmat <- matrix(nrow = max(length(qmin), length(qmax)), ncol = .(k))
     })
 
     for (i in seq_len(k)) {
       comp_param_expr <- if (comp_param_counts[i] > 0L) {
-        bquote(param_matrix[slot == .(i), .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
+        bquote(param_matrix[, .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
       } else {
         NULL
       }
@@ -598,7 +599,8 @@ MixtureDistribution <- distribution_class(
         .(component_code)
         .(mixture_code)
         if (log.p) log(res) else res
-      }))
+      })),
+      n_params
     )
   }
 )

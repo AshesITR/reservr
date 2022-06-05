@@ -402,12 +402,11 @@ TranslatedDistribution <- distribution_class(
     }
 
     as_compiled_distribution_function(
-      eval(bquote(function(p, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+      eval(bquote(function(qmin, qmax, param_matrix, log.p = FALSE) {
         dist_probability(
           (qmin - .(offset_expr)) / .(multiplier_expr),
           (qmax - .(offset_expr)) / .(multiplier_expr),
           .(dist_param_expr),
-          lower.tail = lower.tail,
           log.p = log.p
         )
       })),

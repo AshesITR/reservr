@@ -1,6 +1,6 @@
-compile_simple_function <- function(fun, dist) {
-  fmls <- formals(fun)
-  fcall <- call("fun")
+compile_simple_function <- function(simple_fun, dist) {
+  fmls <- formals(simple_fun)
+  fcall <- call("simple_fun")
   fcall[1 + seq_along(fmls)] <- fmls
   names(fcall) <- c("", names(fmls))
   for (gen_arg in intersect(names(fmls), c("x", "n", "p", "q", "lower.tail", "log", "log.p"))) {
@@ -22,7 +22,7 @@ compile_simple_function <- function(fun, dist) {
     fmls[names(fmls) %in% c("lower.tail", "log", "log.p")]
   )
   as_compiled_distribution_function(
-    c(fmls_outer, fcall),
+    as.function(c(fmls_outer, fcall)),
     i - 1L
   )
 }

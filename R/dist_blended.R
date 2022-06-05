@@ -660,6 +660,532 @@ BlendedDistribution <- distribution_class(
 
       tf$reduce_logsumexp(tf$where(comp_logprobs > K$neg_inf, log_probs + comp_logprobs, K$neg_inf), axis = 1L)
     }
+  },
+  compile_sample = function() {
+    comps <- self$get_components()
+    k <- length(comps)
+    ph <- self$get_placeholders()
+    ph_probs <- length(ph$probs) > 0L
+    ph_u <- length(ph$breaks) > 0L
+    ph_eps <- length(ph$bandwidths) > 0L
+
+    comp_prob <- lapply(comps, function(comp) comp$compile_probability())
+    comp_prob_int <- lapply(comps, function(comp) comp$compile_probability_interval())
+    comp_quantile <- lapply(comps, function(comp) comp$compile_quantile())
+
+    comp_param_counts <- vapply(comp_prob, function(fun) attr(fun, "n_params"), integer(1L))
+    comp_param_ends <- cumsum(comp_param_counts)
+    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
+
+    n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L + if (ph_u) k - 1L else 0L + if (ph_eps) k - 1L else 0L
+
+    slot_code <- if (ph_probs) {
+      bquote({
+        slot <- runif(n)
+        probmat <- matrixStats::rowCumsums(
+          param_matrix[, .(sum(comp_param_counts) + 1L):.(sum(comp_param_counts) + k), drop = FALSE]
+        )
+        probmat <- probmat / probmat[, .(k)]
+        slot <- rowSums(slot > probmat) + 1
+      })
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      bquote(slot <- sample.int(n = .(k), size = n, replace = TRUE, prob = .(probs)))
+    }
+
+    sampling_code <- bquote({
+      res <- numeric(n)
+      num_samples <- tabulate(slot, .(k))
+    })
+    for (i in seq_len(k)) {
+      comp_param_expr <- if (comp_param_counts[i] > 0L) {
+        bquote(param_matrix[idx, .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
+      } else {
+        NULL
+      }
+
+      break_min_expr <- if (i == 1L) {
+        -Inf
+      } else if (ph_u) {
+        bquote(param_matrix[idx, .(sum(comp_param_counts) + i - 1L)])
+      } else {
+        self$default_params$breaks[[i - 1L]]
+      }
+
+      epsilon_min_expr <- if (i == 1L) {
+        0.0
+      } else if (ph_eps) {
+        bquote(param_matrix[idx, .(sum(comp_param_counts) + k + i - 2L)])
+      } else {
+        self$default_params$bandwidths[[i - 1L]]
+      }
+
+      break_max_expr <- if (i == k) {
+        Inf
+      } else if (ph_u) {
+        bquote(param_matrix[idx, .(sum(comp_param_counts) + i)])
+      } else {
+        self$default_params$breaks[[i]]
+      }
+
+      epsilon_max_expr <- if (i == k) {
+        0.0
+      } else if (ph_eps) {
+        bquote(param_matrix[idx, .(sum(comp_param_counts) + k + i - 1L)])
+      } else {
+        self$default_params$bandwiths[[i]]
+      }
+
+      sampling_code[[i + 3L]] <- bquote({
+        idx <- slot == .(i)
+        q_max <- comp_prob[[.(i)]](.(break_max_expr), .(comp_param_expr))
+        q_min <- q_max - comp_prob_int[[.(i)]](.(break_min_expr), .(break_max_expr), .(comp_param_expr))
+        q <- runif(num_samples[.(i)], min = q_min, max = q_max)
+        trunc_smps <- comp_quantile[[.(i)]](q, .(comp_param_expr))
+        res[idx] <- blended_transition_finv(
+          trunc_smps,
+          .(break_min_expr),
+          .(break_max_expr),
+          .(epsilon_min_expr),
+          .(epsilon_max_expr),
+          blend_left = .(i > 1L),
+          blend_right = .(i < k)
+        )
+      })
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(n, param_matrix) {
+        .(slot_code)
+        .(sampling_code)
+        res
+      })),
+      n_params
+    )
+  },
+  compile_density = function() {
+    comps <- self$get_components()
+    k <- length(comps)
+    ph <- self$get_placeholders()
+    ph_probs <- length(ph$probs) > 0L
+    ph_u <- length(ph$breaks) > 0L
+    ph_eps <- length(ph$bandwidths) > 0L
+
+    comp_dens <- lapply(comps, function(comp) comp$compile_density())
+    comp_prob_int <- lapply(comps, function(comp) comp$compile_probability_interval())
+
+    comp_param_counts <- vapply(comp_dens, function(fun) attr(fun, "n_params"), integer(1L))
+    comp_param_ends <- cumsum(comp_param_counts)
+    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
+
+    comp_types <- vapply(comps, function(comp) comp$get_type(), character(1L))
+    # TODO implement mixed type too
+    stopifnot(all(comp_types %in% c("discrete", "continuous")))
+
+    n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L + if (ph_u) k - 1L else 0L + if (ph_eps) k - 1L else 0L
+
+    component_code <- bquote({
+      compmat <- matrix(data = 0.0, nrow = length(x), ncol = .(k))
+    })
+
+    for (i in seq_len(k)) {
+      comp_param_expr <- if (comp_param_counts[i] > 0L) {
+        bquote(param_matrix[x_relevant, .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
+      } else {
+        NULL
+      }
+
+      relevant_min_expr <- if (i == 1L) {
+        TRUE
+      } else if (ph_u && ph_eps) {
+        bquote(
+          (param_matrix[, .(sum(comp_param_counts) + i - 1L)] -
+            param_matrix[, .(sum(comp_param_counts) + k + i - 2L)]) <= x
+        )
+      } else if (ph_u) {
+        bquote(
+          (param_matrix[, .(sum(comp_param_counts) + i - 1L)] -
+            .(self$default_params$bandwidths[[i - 1L]])) <= x
+        )
+      } else if (ph_eps) {
+        bquote(
+          (.(self$default_params$breaks[[i - 1L]]) -
+            param_matrix[, .(sum(comp_param_counts) + k + i - 2L)]) <= x
+        )
+      } else {
+        bquote(.(self$default_params$breaks[[i - 1L]] - self$default_params$bandwidths[[i - 1L]]) <= x)
+      }
+
+      break_min_expr <- if (i == 1L) {
+        -Inf
+      } else if (ph_u) {
+        bquote(param_matrix[x_relevant, .(sum(comp_param_counts) + i - 1L)])
+      } else {
+        self$default_params$breaks[[i - 1L]]
+      }
+
+      epsilon_min_expr <- if (i == 1L) {
+        0.0
+      } else if (ph_eps) {
+        bquote(param_matrix[x_relevant, .(sum(comp_param_counts) + k + i - 2L)])
+      } else {
+        self$default_params$bandwidths[[i - 1L]]
+      }
+
+      relevant_max_expr <- if (i == k) {
+        TRUE
+      } else if (ph_u && ph_eps) {
+        bquote(
+          x <= (param_matrix[, .(sum(comp_param_counts) + i)] +
+            param_matrix[, .(sum(comp_param_counts) + k + i - 1L)])
+        )
+      } else if (ph_u) {
+        bquote(
+          x <= (param_matrix[, .(sum(comp_param_counts) + i)] +
+            .(self$default_params$bandwiths[[i]]))
+        )
+      } else if (ph_eps) {
+        bquote(
+          x <= (.(self$default_params$breaks[[i]]) +
+            param_matrix[, .(sum(comp_param_counts) + k + i - 1L)])
+        )
+      } else {
+        bquote(
+          x <= .(self$default_params$breaks[[i]] + self$default_params$bandwidths[[i]])
+        )
+      }
+
+      break_max_expr <- if (i == k) {
+        Inf
+      } else if (ph_u) {
+        bquote(param_matrix[x_relevant, .(sum(comp_param_counts) + i)])
+      } else {
+        self$default_params$breaks[[i]]
+      }
+
+      epsilon_max_expr <- if (i == k) {
+        0.0
+      } else if (ph_eps) {
+        bquote(param_matrix[x_relevant, .(sum(comp_param_counts) + k + i - 1L)])
+      } else {
+        self$default_params$bandwidths[[i]]
+      }
+
+      component_code[[i + 2L]] <- bquote({
+        x_relevant <- .(relevant_min_expr) & .(relevant_max_expr)
+        blend <- blended_transition_fst(
+          x[x_relevant],
+          .(break_min_expr),
+          .(break_max_expr),
+          .(epsilon_min_expr),
+          .(epsilon_max_expr),
+          blend_left = .(i > 1L),
+          blend_right = .(i < k)
+        )
+        ptrunc <- comp_prob_int[[.(i)]](.(break_min_expr), .(break_max_expr), .(comp_param_expr))
+        compmat[x_relevant, .(i)] <- comp_dens[[.(i)]](blend[[1L]], .(comp_param_expr)) * blend[[2L]] / ptrunc
+      })
+    }
+
+    if (self$get_type() == "mixed") {
+      component_code[[k + 3L]] <- bquote({
+        is_discrete <- matrixStats::rowAnys(compmat[, .(which(comp_types == "discrete")), drop = FALSE])
+        compmat[is_discrete, .(which(comp_types == "continuous"))] <- 0.0
+      })
+    }
+
+    mixture_code <- if (ph_probs) {
+      bquote({
+        probmat <- param_matrix[, .(n_params - k + 1L):.(n_params), drop = FALSE]
+        probmat <- probmat / rowSums(probmat)
+        res <- rowSums(compmat * probmat)
+      })
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      bquote(res <- drop(compmat %*% .(probs)))
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(x, param_matrix, log = FALSE) {
+        .(component_code)
+        .(mixture_code)
+        if (log) log(res) else res
+      })),
+      n_params
+    )
+  },
+  compile_probability = function() {
+    comps <- self$get_components()
+    k <- length(comps)
+    ph <- self$get_placeholders()
+    ph_probs <- length(ph$probs) > 0L
+    ph_u <- length(ph$breaks) > 0L
+    ph_eps <- length(ph$bandwidths) > 0L
+
+    comp_prob_int <- lapply(comps, function(comp) comp$compile_probability_interval())
+
+    comp_param_counts <- vapply(comp_prob_int, function(fun) attr(fun, "n_params"), integer(1L))
+    comp_param_ends <- cumsum(comp_param_counts)
+    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
+
+    n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L + if (ph_u) k - 1L else 0L + if (ph_eps) k - 1L else 0L
+
+    component_code <- bquote({
+      compmat <- matrix(data = 0.0, nrow = length(q), ncol = .(k))
+    })
+
+    for (i in seq_len(k)) {
+      q_lo_expr <- if (i == 1L) {
+        FALSE
+      } else if (!ph_u && !ph_eps) {
+        bquote(q < .(self$default_params$breaks[[i - 1L]] - self$default_params$bandwidths[[i - 1L]]))
+      } else {
+        bquote(
+          q < .(
+            if (ph_u) bquote(param_matrix[, .(sum(comp_param_counts) + i - 1L)]) else self$default_params$breaks[[i - 1L]]
+          ) - .(
+            if (ph_eps) bquote(param_matrix[, .(sum(comp_param_counts) + k + i - 2L)]) else self$default_params$bandwidths[[i - 1L]]
+          )
+        )
+      }
+
+      q_hi_expr <- if (i == k) {
+        FALSE
+      } else if (!ph_u && !ph_eps) {
+        bquote(q >= .(self$default_params$breaks[[i]] + self$default_params$bandwidths[[i]]))
+      } else {
+        bquote(
+          q >= .(
+            if (ph_u) bquote(param_matrix[, .(sum(comp_param_counts) + i)]) else self$default_params$breaks[[i]]
+          ) + .(
+            if (ph_eps) bquote(param_matrix[, .(sum(comp_param_counts) + k + i - 1L)]) else self$default_params$bandwidths[[i]]
+          )
+        )
+      }
+
+      comp_param_expr <- if (comp_param_counts[i] > 0L) {
+        bquote(param_matrix[q_relevant, .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
+      } else {
+        NULL
+      }
+
+      break_min_expr <- if (i == 1L) {
+        -Inf
+      } else if (ph_u) {
+        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + i - 1L)])
+      } else {
+        self$default_params$breaks[[i - 1L]]
+      }
+
+      epsilon_min_expr <- if (i == 1L) {
+        0.0
+      } else if (ph_eps) {
+        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + k + i - 2L)])
+      } else {
+        self$default_params$bandwidths[[i - 1L]]
+      }
+
+      break_max_expr <- if (i == k) {
+        Inf
+      } else if (ph_u) {
+        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + i)])
+      } else {
+        self$default_params$breaks[[i]]
+      }
+
+      epsilon_max_expr <- if (i == k) {
+        0.0
+      } else if (ph_eps) {
+        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + k + i - 1L)])
+      } else {
+        self$default_params$bandwidths[[i]]
+      }
+
+      component_code[[i + 2L]] <- bquote({
+        q_lo <- .(q_lo_expr)
+        q_hi <- .(q_hi_expr)
+        q_relevant <- !(q_hi | q_lo)
+        blend <- blended_transition_fst(
+          q[q_relevant],
+          .(break_min_expr),
+          .(break_max_expr),
+          .(epsilon_min_expr),
+          .(epsilon_max_expr),
+          blend_left = .(i > 1L),
+          blend_right = .(i < k)
+        )
+        ptrunc <- comp_prob_int[[.(i)]](.(break_min_expr), .(break_max_expr), .(comp_param_expr))
+
+        if (lower.tail) {
+          compmat[q_lo, .(i)] <- 0.0
+          compmat[q_relevant, .(i)] <- comp_prob_int[[.(i)]](.(break_min_expr), blend[[1L]], .(comp_param_expr)) / ptrunc
+          compmat[q_hi, .(i)] <- 1.0
+        } else {
+          compmat[q_lo, .(i)] <- 1.0
+          compmat[q_relevant, .(i)] <- comp_prob_int[[.(i)]](blend[[1L]], .(break_max_expr), .(comp_param_expr)) / ptrunc
+          compmat[q_hi, .(i)] <- 0.0
+        }
+      })
+    }
+
+    mixture_code <- if (ph_probs) {
+      bquote({
+        probmat <- param_matrix[, .(n_params - k + 1L):.(n_params), drop = FALSE]
+        probmat <- probmat / rowSums(probmat)
+        res <- rowSums(compmat * probmat)
+      })
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      bquote(res <- drop(compmat %*% .(probs)))
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(q, param_matrix, lower.tail = TRUE, log.p = FALSE) {
+        .(component_code)
+        .(mixture_code)
+        if (log.p) log(res) else res
+      })),
+      n_params
+    )
+  },
+  compile_probability_interval = function() {
+    comps <- self$get_components()
+    k <- length(comps)
+    ph <- self$get_placeholders()
+    ph_probs <- length(ph$probs) > 0L
+    ph_u <- length(ph$breaks) > 0L
+    ph_eps <- length(ph$bandwidths) > 0L
+
+    comp_prob_int <- lapply(comps, function(comp) comp$compile_probability_interval())
+
+    comp_param_counts <- vapply(comp_prob_int, function(fun) attr(fun, "n_params"), integer(1L))
+    comp_param_ends <- cumsum(comp_param_counts)
+    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
+
+    n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L + if (ph_u) k - 1L else 0L + if (ph_eps) k - 1L else 0L
+
+    component_code <- bquote({
+      compmat <- matrix(data = 0.0, nrow = max(length(qmin), length(qmax)), ncol = .(k))
+    })
+
+    for (i in seq_len(k)) {
+      q_lo_expr <- if (i == 1L) {
+        FALSE
+      } else if (!ph_u && !ph_eps) {
+        bquote(qmax >= .(self$default_params$breaks[[i - 1L]] - self$default_params$bandwidths[[i - 1L]]))
+      } else {
+        bquote(
+          qmax >= .(
+            if (ph_u) bquote(param_matrix[, .(sum(comp_param_counts) + i - 1L)]) else self$default_params$breaks[[i - 1L]]
+          ) - .(
+            if (ph_eps) bquote(param_matrix[, .(sum(comp_param_counts) + k + i - 2L)]) else self$default_params$bandwidths[[i - 1L]]
+          )
+        )
+      }
+
+      q_hi_expr <- if (i == k) {
+        FALSE
+      } else if (!ph_u && !ph_eps) {
+        bquote(qmin <= .(self$default_params$breaks[[i]] + self$default_params$bandwidths[[i]]))
+      } else {
+        bquote(
+          qmin <= .(
+            if (ph_u) bquote(param_matrix[, .(sum(comp_param_counts) + i)]) else self$default_params$breaks[[i]]
+          ) + .(
+            if (ph_eps) bquote(param_matrix[, .(sum(comp_param_counts) + k + i - 1L)]) else self$default_params$bandwidths[[i]]
+          )
+        )
+      }
+
+      comp_param_expr <- if (comp_param_counts[i] > 0L) {
+        bquote(param_matrix[q_relevant, .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
+      } else {
+        NULL
+      }
+
+      break_min_expr <- if (i == 1L) {
+        -Inf
+      } else if (ph_u) {
+        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + i - 1L)])
+      } else {
+        self$default_params$breaks[[i - 1L]]
+      }
+
+      epsilon_min_expr <- if (i == 1L) {
+        0.0
+      } else if (ph_eps) {
+        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + k + i - 2L)])
+      } else {
+        self$default_params$bandwidths[[i - 1L]]
+      }
+
+      break_max_expr <- if (i == k) {
+        Inf
+      } else if (ph_u) {
+        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + i)])
+      } else {
+        self$default_params$breaks[[i]]
+      }
+
+      epsilon_max_expr <- if (i == k) {
+        0.0
+      } else if (ph_eps) {
+        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + k + i - 1L)])
+      } else {
+        self$default_params$bandwidths[[i]]
+      }
+
+      component_code[[i + 2L]] <- bquote({
+        q_relevant <- .(q_lo_expr) & .(q_hi_expr)
+        blend_min <- pmax(blended_transition_fst(
+          qmin[q_relevant],
+          .(break_min_expr),
+          .(break_max_expr),
+          .(epsilon_min_expr),
+          .(epsilon_max_expr),
+          blend_left = .(i > 1L),
+          blend_right = .(i < k)
+        )[[1L]], .(break_min_expr))
+
+        blend_max <- pmin(blended_transition_fst(
+          qmax[q_relevant],
+          .(break_min_expr),
+          .(break_max_expr),
+          .(epsilon_min_expr),
+          .(epsilon_max_expr),
+          blend_left = .(i > 1L),
+          blend_right = .(i < k)
+        )[[1L]], .(break_max_expr))
+
+        ptrunc <- comp_prob_int[[.(i)]](.(break_min_expr), .(break_max_expr), .(comp_param_expr))
+
+        compmat[q_relevant, .(i)] <- comp_prob_int[[.(i)]](blend_min, blend_max, .(comp_param_expr)) / ptrunc
+      })
+    }
+
+    mixture_code <- if (ph_probs) {
+      bquote({
+        probmat <- param_matrix[, .(n_params - k + 1L):.(n_params), drop = FALSE]
+        probmat <- probmat / rowSums(probmat)
+        res <- rowSums(compmat * probmat)
+      })
+    } else {
+      probs <- as.numeric(self$get_params()$probs)
+      probs <- probs / sum(probs)
+      bquote(res <- drop(compmat %*% .(probs)))
+    }
+
+    as_compiled_distribution_function(
+      eval(bquote(function(qmin, qmax, param_matrix, log.p = FALSE) {
+        .(component_code)
+        .(mixture_code)
+        if (log.p) log(res) else res
+      })),
+      n_params
+    )
   }
 )
 

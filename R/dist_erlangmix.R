@@ -488,18 +488,18 @@ ErlangMixtureDistribution <- distribution_class(
 
     cdfmat_code <- if (ph_shapes) {
       substitute(
-        cdfmat <- pgamma(x, shape = param_matrix[, 1L:k, drop = FALSE], scale = scale_expr, lower.tail = lower.tail),
+        cdfmat <- pgamma(q, shape = param_matrix[, 1L:k, drop = FALSE], scale = scale_expr, lower.tail = lower.tail),
         list(k = k, scale_expr = scale_expr)
       )
     } else {
       cl <- substitute({
-        cdfmat <- matrix(nrow = length(x), ncol = k)
+        cdfmat <- matrix(nrow = length(q), ncol = k)
         scale <- scale_expr
       }, list(k = k, scale_expr = scale_expr))
 
       for (i in seq_len(k)) {
         cl[[i + 3L]] <- substitute(
-          cdfmat[, i] <- pgamma(x, shape = shape, scale = scale, lower.tail = lower.tail),
+          cdfmat[, i] <- pgamma(q, shape = shape, scale = scale, lower.tail = lower.tail),
           list(i = i, shape = self$get_params()$shapes[[i]])
         )
       }
@@ -560,7 +560,7 @@ ErlangMixtureDistribution <- distribution_class(
       )
     } else {
       cl <- substitute({
-        cdfmat <- matrix(nrow = length(x), ncol = k)
+        cdfmat <- matrix(nrow = max(length(qmin), length(qmax)), ncol = k)
         scale <- scale_expr
       }, list(k = k, scale_expr = scale_expr))
 

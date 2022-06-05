@@ -224,3 +224,56 @@ blended_transition_inv <- function(x, u, eps, .component) {
 
   res
 }
+
+blended_transition_fst <- function(x, u_lo, u_hi, e_lo, e_hi, blend_left, blend_right) {
+  xout <- x
+  dout <- rep_len(1.0, length(x))
+
+  if (blend_left) {
+    i_low <- x < u_lo + e_lo
+    if (length(u_lo) > 1L) u_lo <- u_lo[i_low]
+    if (length(e_lo) > 1L) e_lo <- e_lo[i_low]
+    blend_curr <- e_lo / pi * cospi(0.5 * (x[i_low] - u_lo) / e_lo)
+    dblend_curr <- -0.5 * sinpi(0.5 * (x[i_low] - u_lo) / e_lo)
+    xout[i_low] <- 0.5 * (x[i_low] + u_lo + e_lo) - blend_curr
+    dout[i_low] <- 0.5 - dblend_curr
+  }
+
+  if (blend_right) {
+    i_high <- x > u_hi - e_hi
+    if (length(u_hi) > 1L) u_hi <- u_hi[i_high]
+    if (length(e_hi) > 1L) e_hi <- e_hi[i_high]
+    blend_curr <- e_hi / pi * cospi(0.5 * (x[i_high] - u_hi) / e_hi)
+    dblend_curr <- -0.5 * sinpi(0.5 * (x[i_high] - u_hi) / e_hi)
+    xout[i_high] <- 0.5 * (x[i_high] + u_hi - e_hi) + blend_curr
+    dout[i_high] <- 0.5 + dblend_curr
+  }
+
+  list(xout, dout)
+}
+
+blended_transition_finv <- function(x, u_lo, u_hi, e_lo, e_hi, blend_left, blend_right) {
+  res <- x
+
+  if (blend_left) {
+    res[x < u_lo] <- NA_real_
+
+    t_lo <- u_lo <= x & x < u_lo + e_lo
+    z <- (x[t_lo] - u_lo[t_lo]) / e_lo[t_lo] - 0.5
+
+    inv_tr <- xcx_inv(pi * z) * 2.0 / pi
+    res[t_lo] <- u_lo[t_lo] + e_lo[t_lo] * inv_tr
+  }
+
+  if (blend_right) {
+    res[x > u_hi] <- NA_real_
+
+    t_hi <- u_hi - e_hi < x & x <= u_hi
+    z <- (x[t_hi] - u_hi[t_hi]) / e_hi[t_hi] + 0.5
+
+    inv_tr <- -xcx_inv(-pi * z) * 2.0 / pi
+    res[t_hi] <- u_hi[t_hi] + e_hi[t_hi] * inv_tr
+  }
+
+  res
+}
