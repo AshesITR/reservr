@@ -1077,7 +1077,11 @@ BlendedDistribution <- distribution_class(
     n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L + if (ph_u) k - 1L else 0L + if (ph_eps) k - 1L else 0L
 
     component_code <- bquote({
-      compmat <- matrix(data = 0.0, nrow = max(length(qmin), length(qmax)), ncol = .(k))
+      compmat <- matrix(
+        data = 0.0,
+        nrow = .(if (n_params == 0L) quote(max(length(qmin), length(qmax))) else quote(nrow(param_matrix))),
+        ncol = .(k)
+      )
     })
 
     for (i in seq_len(k)) {

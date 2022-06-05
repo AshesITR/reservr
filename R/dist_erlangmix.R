@@ -559,10 +559,13 @@ ErlangMixtureDistribution <- distribution_class(
         list(k = k, scale_expr = scale_expr)
       )
     } else {
-      cl <- substitute({
-        cdfmat <- matrix(nrow = max(length(qmin), length(qmax)), ncol = k)
-        scale <- scale_expr
-      }, list(k = k, scale_expr = scale_expr))
+      cl <- bquote({
+        cdfmat <- matrix(
+          nrow = .(if (n_params == 0L) quote(max(length(qmin), length(qmax))) else quote(nrow(param_matrix))),
+          ncol = .(k)
+        )
+        scale <- .(scale_expr)
+      })
 
       for (i in seq_len(k)) {
         cl[[i + 3L]] <- substitute(
