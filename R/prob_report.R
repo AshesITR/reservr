@@ -71,7 +71,7 @@ prob_report <- function(dist, intervals, expo = NULL, with_params = list(),
           p_report <- prob_int(
             qmin = params[, 1L] - x,
             qmax = params[, 2L] - x,
-            param_matrix = params[, -(1L:2L)]
+            param_matrix = params[, -(1L:2L), drop = FALSE]
           )
           expo(x) * p_report
         }
@@ -80,7 +80,7 @@ prob_report <- function(dist, intervals, expo = NULL, with_params = list(),
           prob_int(
             qmin = params[, 1L] - x,
             qmax = params[, 2L] - x,
-            param_matrix = params[, -(1L:2L)]
+            param_matrix = params[, -(1L:2L), drop = FALSE]
           )
         }
       },

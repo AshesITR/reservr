@@ -10,7 +10,8 @@ prob_report(
   expo = NULL,
   with_params = list(),
   .tolerance = .Machine$double.eps^0.5,
-  .max_iter = 100L
+  .max_iter = 100L,
+  .try_compile = TRUE
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ different values for each interval.}
 integration intervals will be at most \code{length(lower) * .max_iter}. Therefor the maximum
 number of function evaluations per integration interval will be
 \code{15 * .max_iter}.}
+
+\item{.try_compile}{Try compiling the distributions probability function to speed up integration?}
 }
 \value{
 A vector of reporting probabilities, with one entry per row of \code{intervals}.

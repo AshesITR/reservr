@@ -38,4 +38,19 @@ test_that("test prob_report", {
     ),
     c(0.5, 0.5, 1.0)
   )
+
+  dist <- dist_exponential()
+  ints <- data.frame(
+    xmin = 0,
+    xmax = 1,
+    tmin = seq_len(10) - 1.0,
+    tmax = seq_len(10)
+  )
+  params <- list(rate = rep(c(1, 0.5), each = 5))
+
+  ref <- prob_report(dist, ints, with_params = params, .try_compile = FALSE)
+  expect_equal(
+    prob_report(dist, ints, with_params = params),
+    ref
+  )
 })

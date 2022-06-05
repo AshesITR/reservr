@@ -7,8 +7,7 @@
 dist_discrete(size = NULL, probs = NULL)
 }
 \arguments{
-\item{size}{Number of classes parameter (integer), or \code{NULL} as a
-placeholder.}
+\item{size}{Number of classes parameter (integer). Required if \code{probs} is \code{NULL}.}
 
 \item{probs}{Vector of probabilties parameter, or \code{NULL} as a placeholder.}
 }
@@ -19,11 +18,11 @@ A \code{DiscreteDistribution} object.
 A full-flexibility discrete distribution with values from 1 to \code{size}.
 }
 \details{
-Both parameters can be overridden with
-\code{with_params = list(size = ..., probs = ...)}.
+Parameters can be overridden with
+\code{with_params = list(probs = ...)}.
 }
 \examples{
-d_discrete <- dist_discrete(size = 4, probs = list(0.5, 0.25, 0.15, 0.1))
+d_discrete <- dist_discrete(probs = list(0.5, 0.25, 0.15, 0.1))
 x <- d_discrete$sample(100)
 d_emp <- dist_empirical(x)
 

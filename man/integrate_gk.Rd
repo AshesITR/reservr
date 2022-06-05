@@ -25,7 +25,8 @@ Currently, infinite bounds are not supported.}
 
 \item{params}{Parameters to pass as a second argument to \code{fun}.
 The actual parameters must have the same length as the number of integrals to
-compute. Can be a possibly nested list structures containing numeric vectors.}
+compute. Can be a possibly nested list structures containing numeric vectors.
+Alternatively, can be a matrix with the same number of rows as the number of integrals to compute.}
 
 \item{.tolerance}{Absolute element-wise tolerance.}
 
