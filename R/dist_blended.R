@@ -874,17 +874,19 @@ BlendedDistribution <- distribution_class(
 
       component_code[[i + 2L]] <- bquote({
         x_relevant <- .(relevant_min_expr) & .(relevant_max_expr)
-        blend <- blended_transition_fst(
-          x[x_relevant],
-          .(break_min_expr),
-          .(break_max_expr),
-          .(epsilon_min_expr),
-          .(epsilon_max_expr),
-          blend_left = .(i > 1L),
-          blend_right = .(i < k)
-        )
-        ptrunc <- comp_prob_int[[.(i)]](.(break_min_expr), .(break_max_expr), .(comp_param_expr))
-        compmat[x_relevant, .(i)] <- comp_dens[[.(i)]](blend[[1L]], .(comp_param_expr)) * blend[[2L]] / ptrunc
+        if (any(x_relevant)) {
+          blend <- blended_transition_fst(
+            x[x_relevant],
+            .(break_min_expr),
+            .(break_max_expr),
+            .(epsilon_min_expr),
+            .(epsilon_max_expr),
+            blend_left = .(i > 1L),
+            blend_right = .(i < k)
+          )
+          ptrunc <- comp_prob_int[[.(i)]](.(break_min_expr), .(break_max_expr), .(comp_param_expr))
+          compmat[x_relevant, .(i)] <- comp_dens[[.(i)]](blend[[1L]], .(comp_param_expr)) * blend[[2L]] / ptrunc
+        }
       })
     }
 
@@ -1007,26 +1009,33 @@ BlendedDistribution <- distribution_class(
         q_lo <- .(q_lo_expr)
         q_hi <- .(q_hi_expr)
         q_relevant <- !(q_hi | q_lo)
-        blend <- blended_transition_fst(
-          q[q_relevant],
-          .(break_min_expr),
-          .(break_max_expr),
-          .(epsilon_min_expr),
-          .(epsilon_max_expr),
-          blend_left = .(i > 1L),
-          blend_right = .(i < k)
-        )
-        ptrunc <- comp_prob_int[[.(i)]](.(break_min_expr), .(break_max_expr), .(comp_param_expr))
+        if (any(q_relevant)) {
+          blend <- blended_transition_fst(
+            q[q_relevant],
+            .(break_min_expr),
+            .(break_max_expr),
+            .(epsilon_min_expr),
+            .(epsilon_max_expr),
+            blend_left = .(i > 1L),
+            blend_right = .(i < k)
+          )
+          ptrunc <- comp_prob_int[[.(i)]](.(break_min_expr), .(break_max_expr), .(comp_param_expr))
 
-        if (lower.tail) {
-          compmat[q_lo, .(i)] <- 0.0
-          compmat[q_relevant, .(i)] <- comp_prob_int[[.(i)]](.(break_min_expr), blend[[1L]], .(comp_param_expr)) / ptrunc
-          compmat[q_hi, .(i)] <- 1.0
+          if (lower.tail) {
+            compmat[q_relevant, .(i)] <- comp_prob_int[[.(i)]](.(break_min_expr), blend[[1L]], .(comp_param_expr)) / ptrunc
+            compmat[q_hi, .(i)] <- 1.0
+          } else {
+            compmat[q_lo, .(i)] <- 1.0
+            compmat[q_relevant, .(i)] <- comp_prob_int[[.(i)]](blend[[1L]], .(break_max_expr), .(comp_param_expr)) / ptrunc
+          }
         } else {
-          compmat[q_lo, .(i)] <- 1.0
-          compmat[q_relevant, .(i)] <- comp_prob_int[[.(i)]](blend[[1L]], .(break_max_expr), .(comp_param_expr)) / ptrunc
-          compmat[q_hi, .(i)] <- 0.0
+          if (lower.tail) {
+            compmat[q_hi, .(i)] <- 1.0
+          } else {
+            compmat[q_lo, .(i)] <- 1.0
+          }
         }
+
       })
     }
 
@@ -1073,7 +1082,7 @@ BlendedDistribution <- distribution_class(
 
     for (i in seq_len(k)) {
       q_lo_expr <- if (i == 1L) {
-        FALSE
+        TRUE
       } else if (!ph_u && !ph_eps) {
         bquote(qmax >= .(self$default_params$breaks[[i - 1L]] - self$default_params$bandwidths[[i - 1L]]))
       } else {
@@ -1087,7 +1096,7 @@ BlendedDistribution <- distribution_class(
       }
 
       q_hi_expr <- if (i == k) {
-        FALSE
+        TRUE
       } else if (!ph_u && !ph_eps) {
         bquote(qmin <= .(self$default_params$breaks[[i]] + self$default_params$bandwidths[[i]]))
       } else {
@@ -1140,29 +1149,31 @@ BlendedDistribution <- distribution_class(
 
       component_code[[i + 2L]] <- bquote({
         q_relevant <- .(q_lo_expr) & .(q_hi_expr)
-        blend_min <- pmax(blended_transition_fst(
-          qmin[q_relevant],
-          .(break_min_expr),
-          .(break_max_expr),
-          .(epsilon_min_expr),
-          .(epsilon_max_expr),
-          blend_left = .(i > 1L),
-          blend_right = .(i < k)
-        )[[1L]], .(break_min_expr))
+        if (any(q_relevant)) {
+          blend_min <- pmax(blended_transition_fst(
+            qmin[q_relevant],
+            .(break_min_expr),
+            .(break_max_expr),
+            .(epsilon_min_expr),
+            .(epsilon_max_expr),
+            blend_left = .(i > 1L),
+            blend_right = .(i < k)
+          )[[1L]], .(break_min_expr))
 
-        blend_max <- pmin(blended_transition_fst(
-          qmax[q_relevant],
-          .(break_min_expr),
-          .(break_max_expr),
-          .(epsilon_min_expr),
-          .(epsilon_max_expr),
-          blend_left = .(i > 1L),
-          blend_right = .(i < k)
-        )[[1L]], .(break_max_expr))
+          blend_max <- pmin(blended_transition_fst(
+            qmax[q_relevant],
+            .(break_min_expr),
+            .(break_max_expr),
+            .(epsilon_min_expr),
+            .(epsilon_max_expr),
+            blend_left = .(i > 1L),
+            blend_right = .(i < k)
+          )[[1L]], .(break_max_expr))
 
-        ptrunc <- comp_prob_int[[.(i)]](.(break_min_expr), .(break_max_expr), .(comp_param_expr))
+          ptrunc <- comp_prob_int[[.(i)]](.(break_min_expr), .(break_max_expr), .(comp_param_expr))
 
-        compmat[q_relevant, .(i)] <- comp_prob_int[[.(i)]](blend_min, blend_max, .(comp_param_expr)) / ptrunc
+          compmat[q_relevant, .(i)] <- comp_prob_int[[.(i)]](blend_min, blend_max, .(comp_param_expr)) / ptrunc
+        }
       })
     }
 
