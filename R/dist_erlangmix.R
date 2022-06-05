@@ -73,7 +73,6 @@ ErlangMixtureDistribution <- distribution_class(
   probability = function(q, lower.tail = TRUE, log.p = FALSE, params) {
     params$probs <- lapply(params$probs, rep_len, length(q))
     probmat <- do.call(cbind, params$probs)
-    probmat <- probmat / rowSums(probmat)
 
     cdfmat <- map_dbl_matrix(
       params$shapes,
@@ -84,7 +83,7 @@ ErlangMixtureDistribution <- distribution_class(
       scale = params$scale
     )
 
-    res <- rowSums(cdfmat * probmat)
+    res <- rowSums(cdfmat * probmat) / rowSums(probmat)
     if (log.p) res <- log(res)
     res
   },
@@ -510,8 +509,7 @@ ErlangMixtureDistribution <- distribution_class(
     probmix_code <- if (ph_probs) {
       substitute({
         probmat <- probs_expr
-        probmat <- probmat / rowSums(probmat)
-        res <- rowSums(cdfmat * probmat)
+        res <- rowSums(cdfmat * probmat) / rowSums(probmat)
       }, list(probs_expr = probs_expr))
     } else {
       probs <- as.numeric(self$get_params()$probs)
@@ -559,29 +557,20 @@ ErlangMixtureDistribution <- distribution_class(
         list(k = k, scale_expr = scale_expr)
       )
     } else {
-      cl <- bquote({
-        cdfmat <- matrix(
-          nrow = .(if (n_params == 0L) quote(max(length(qmin), length(qmax))) else quote(nrow(param_matrix))),
-          ncol = .(k)
+      bquote({
+        cdfmat <- pgamma_diff_matrix(
+          lower = qmin,
+          upper = qmax,
+          shape = .(as.numeric(self$default_params$shapes)),
+          scale = .(scale_expr)
         )
-        scale <- .(scale_expr)
       })
-
-      for (i in seq_len(k)) {
-        cl[[i + 3L]] <- substitute(
-          cdfmat[, i] <- pgamma(qmax, shape = shape, scale = scale) - pgamma(qmin, shape = shape, scale = scale),
-          list(i = i, shape = self$get_params()$shapes[[i]])
-        )
-      }
-
-      cl
     }
 
     probmix_code <- if (ph_probs) {
       substitute({
         probmat <- probs_expr
-        probmat <- probmat / rowSums(probmat)
-        res <- rowSums(cdfmat * probmat)
+        res <- rowSums(cdfmat * probmat) / rowSums(probmat)
       }, list(probs_expr = probs_expr))
     } else {
       probs <- as.numeric(self$get_params()$probs)

@@ -25,15 +25,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // pgamma_diff_matrix
-NumericMatrix pgamma_diff_matrix(NumericVector lower, NumericVector upper, NumericVector shape, double scale);
+NumericMatrix pgamma_diff_matrix(const NumericVector lower, const NumericVector upper, const NumericVector shape, const NumericVector scale);
 RcppExport SEXP _reservr_pgamma_diff_matrix(SEXP lowerSEXP, SEXP upperSEXP, SEXP shapeSEXP, SEXP scaleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type lower(lowerSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type upper(upperSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type shape(shapeSEXP);
-    Rcpp::traits::input_parameter< double >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type lower(lowerSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type upper(upperSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type scale(scaleSEXP);
     rcpp_result_gen = Rcpp::wrap(pgamma_diff_matrix(lower, upper, shape, scale));
     return rcpp_result_gen;
 END_RCPP
