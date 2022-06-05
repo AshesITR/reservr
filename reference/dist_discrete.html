@@ -69,8 +69,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>size</dt>
-<dd><p>Number of classes parameter (integer), or <code>NULL</code> as a
-placeholder.</p></dd>
+<dd><p>Number of classes parameter (integer). Required if <code>probs</code> is <code>NULL</code>.</p></dd>
 <dt>probs</dt>
 <dd><p>Vector of probabilties parameter, or <code>NULL</code> as a placeholder.</p></dd>
 </dl></div>
@@ -80,8 +79,8 @@ placeholder.</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Both parameters can be overridden with
-<code>with_params = list(size = ..., probs = ...)</code>.</p>
+    <p>Parameters can be overridden with
+<code>with_params = list(probs = ...)</code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -112,7 +111,7 @@ placeholder.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">d_discrete</span> <span class="op">&lt;-</span> <span class="fu">dist_discrete</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">4</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.25</span>, <span class="fl">0.15</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">d_discrete</span> <span class="op">&lt;-</span> <span class="fu">dist_discrete</span><span class="op">(</span>probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.25</span>, <span class="fl">0.15</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">d_discrete</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">d_emp</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_empirical.html">dist_empirical</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span class="r-in"></span>

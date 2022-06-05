@@ -147,20 +147,20 @@ Censored observations must satisfy <code>tmin &lt;= xmin &lt; xmax &lt;= tmax</c
 <span class="r-in"><span class="va">x</span><span class="op">[</span><span class="va">cens</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">trunc_obs</span><span class="op">(</span><span class="va">x</span>, <span class="va">xmin</span>, <span class="va">xmax</span>, <span class="va">tmin</span>, <span class="va">tmax</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 38 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 37 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         x  xmin  xmax   tmin  tmax     w</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> <span style="color: #BB0000;">NA</span>     1     1.76  0.163   1.76     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  1.57  1.57  1.57  0.651   2.32     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  0.698 0.698 0.698 0.666   2.02     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  0.407 0.407 0.407 0.127   1.77     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  0.442 0.442 0.442 0.412   1.82     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  0.600 0.600 0.600 0.370   1.70     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  1.89  1.89  1.89  0.056<span style="text-decoration: underline;">9</span>  2.04     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  1.24  1.24  1.24  0.288   1.65     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  0.409 0.409 0.409 0.026<span style="text-decoration: underline;">2</span>  1.87     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  1.91  1.91  1.91  0.504   2.49     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 28 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  1.99  1.99  1.99  0.466   1.99     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  1.41  1.41  1.41  0.412   1.70     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  1.74  1.74  1.74  0.554   2.12     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> <span style="color: #BB0000;">NA</span>     1     1.63  0.049<span style="text-decoration: underline;">4</span>  1.63     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  2.01  2.01  2.01  0.889   2.42     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  0.315 0.315 0.315 0.253   1.59     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  1.26  1.26  1.26  0.390   2.30     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  0.748 0.748 0.748 0.744   2.01     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> <span style="color: #BB0000;">NA</span>     1     2     0.931   2.59     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  1.15  1.15  1.15  0.870   2.53     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 27 more rows</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">as_trunc_obs</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 6</span></span>
