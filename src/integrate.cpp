@@ -85,7 +85,7 @@ arma::vec integrate_impl(const Rcpp::Function& fun, const arma::vec& lower, cons
 
   // 1. Initial integral estimate
   integrate_gk_step(fun, lower, upper, params, std::vector<unsigned int>(), bounds_pq);
-  Rcpp::List curr_params;
+  T curr_params;
 
   // 2. While not converged (and max_iter not reached) ...
   while (iter < max_iter && !all_converged) {
