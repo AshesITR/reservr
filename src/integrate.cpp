@@ -1,3 +1,4 @@
+// [[Rcpp::depends(BH)]]
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <boost/heap/priority_queue.hpp>
 #include <RcppArmadillo.h>

@@ -11,6 +11,105 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// dist_mixture_density_free
+arma::vec dist_mixture_density_free(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const arma::uvec is_discrete);
+RcppExport SEXP _reservr_dist_mixture_density_free(SEXP xSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_densitiesSEXP, SEXP is_discreteSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_densities(comp_densitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type is_discrete(is_discreteSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_mixture_density_free(x, params, log_p, param_sizes, comp_densities, is_discrete));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_mixture_density_fixed
+arma::vec dist_mixture_density_fixed(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const arma::uvec is_discrete, const arma::vec probs);
+RcppExport SEXP _reservr_dist_mixture_density_fixed(SEXP xSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_densitiesSEXP, SEXP is_discreteSEXP, SEXP probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_densities(comp_densitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type is_discrete(is_discreteSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_mixture_density_fixed(x, params, log_p, param_sizes, comp_densities, is_discrete, probs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_mixture_probability_free
+arma::vec dist_mixture_probability_free(const arma::vec q, const arma::mat params, bool lower_tail, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_probabilities);
+RcppExport SEXP _reservr_dist_mixture_probability_free(SEXP qSEXP, SEXP paramsSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_probabilitiesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_probabilities(comp_probabilitiesSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_mixture_probability_free(q, params, lower_tail, log_p, param_sizes, comp_probabilities));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_mixture_probability_fixed
+arma::vec dist_mixture_probability_fixed(const arma::vec q, const arma::mat params, bool lower_tail, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_probabilities, const arma::vec probs);
+RcppExport SEXP _reservr_dist_mixture_probability_fixed(SEXP qSEXP, SEXP paramsSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_probabilitiesSEXP, SEXP probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_probabilities(comp_probabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_mixture_probability_fixed(q, params, lower_tail, log_p, param_sizes, comp_probabilities, probs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_mixture_iprobability_free
+arma::vec dist_mixture_iprobability_free(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities);
+RcppExport SEXP _reservr_dist_mixture_iprobability_free(SEXP qminSEXP, SEXP qmaxSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_iprobabilitiesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type qmin(qminSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type qmax(qmaxSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_mixture_iprobability_free(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_mixture_iprobability_fixed
+arma::vec dist_mixture_iprobability_fixed(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec probs);
+RcppExport SEXP _reservr_dist_mixture_iprobability_fixed(SEXP qminSEXP, SEXP qmaxSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type qmin(qminSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type qmax(qmaxSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_mixture_iprobability_fixed(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dgamma_matrix
 NumericMatrix dgamma_matrix(NumericVector x, NumericVector shape, double scale);
 RcppExport SEXP _reservr_dgamma_matrix(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP) {
@@ -126,6 +225,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_reservr_dist_mixture_density_free", (DL_FUNC) &_reservr_dist_mixture_density_free, 6},
+    {"_reservr_dist_mixture_density_fixed", (DL_FUNC) &_reservr_dist_mixture_density_fixed, 7},
+    {"_reservr_dist_mixture_probability_free", (DL_FUNC) &_reservr_dist_mixture_probability_free, 6},
+    {"_reservr_dist_mixture_probability_fixed", (DL_FUNC) &_reservr_dist_mixture_probability_fixed, 7},
+    {"_reservr_dist_mixture_iprobability_free", (DL_FUNC) &_reservr_dist_mixture_iprobability_free, 6},
+    {"_reservr_dist_mixture_iprobability_fixed", (DL_FUNC) &_reservr_dist_mixture_iprobability_fixed, 7},
     {"_reservr_dgamma_matrix", (DL_FUNC) &_reservr_dgamma_matrix, 3},
     {"_reservr_pgamma_diff_matrix", (DL_FUNC) &_reservr_pgamma_diff_matrix, 4},
     {"_reservr_trunc_erlangmix_ellik", (DL_FUNC) &_reservr_trunc_erlangmix_ellik, 9},

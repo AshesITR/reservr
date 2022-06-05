@@ -452,55 +452,23 @@ MixtureDistribution <- distribution_class(
 
     comp_density <- lapply(comps, function(dist) dist$compile_density())
     comp_param_counts <- vapply(comp_density, function(fun) attr(fun, "n_params"), integer(1L))
-    comp_param_ends <- cumsum(comp_param_counts)
-    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
 
     comp_types <- vapply(comps, function(comp) comp$get_type(), character(1L))
     # TODO implement mixed type too
     stopifnot(all(comp_types %in% c("discrete", "continuous")))
+    comp_discrete <- as.integer(comp_types == "discrete")
 
     n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
 
-    component_code <- bquote({
-      compmat <- matrix(nrow = length(x), ncol = .(k))
-    })
-
-    for (i in seq_len(k)) {
-      comp_param_expr <- if (comp_param_counts[i] > 0L) {
-        bquote(param_matrix[, .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
-      } else {
-        NULL
-      }
-
-      component_code[[i + 2L]] <- bquote(
-        compmat[, .(i)] <- comp_density[[.(i)]](x, .(comp_param_expr))
-      )
-    }
-
-    if (self$get_type() == "mixed") {
-      component_code[[k + 3L]] <- bquote({
-        is_discrete <- matrixStats::rowAnys(compmat[, .(which(comp_types == "discrete")), drop = FALSE])
-        compmat[is_discrete, .(which(comp_types == "continuous"))] <- 0.0
-      })
-    }
-
-    mixture_code <- if (ph_probs) {
-      bquote({
-        probmat <- param_matrix[, .(n_params - k + 1L):.(n_params), drop = FALSE]
-        probmat <- probmat / rowSums(probmat)
-        res <- rowSums(compmat * probmat)
-      })
+    dens_code <- if (ph_probs) {
+      bquote(drop(dist_mixture_density_free(x, param_matrix, log, .(comp_param_counts), comp_density, .(comp_discrete))))
     } else {
-      probs <- as.numeric(self$get_params()$probs)
-      probs <- probs / sum(probs)
-      bquote(res <- drop(compmat %*% .(probs)))
+      bquote(drop(dist_mixture_density_fixed(x, param_matrix, log, .(comp_param_counts), comp_density, .(comp_discrete), .(as.numeric(self$default_params$probs)))))
     }
 
     as_compiled_distribution_function(
       eval(bquote(function(x, param_matrix, log = FALSE) {
-        .(component_code)
-        .(mixture_code)
-        if (log) log(res) else res
+        .(dens_code)
       })),
       n_params
     )
@@ -512,44 +480,18 @@ MixtureDistribution <- distribution_class(
 
     comp_probability <- lapply(comps, function(dist) dist$compile_probability())
     comp_param_counts <- vapply(comp_probability, function(fun) attr(fun, "n_params"), integer(1L))
-    comp_param_ends <- cumsum(comp_param_counts)
-    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
 
     n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
 
-    component_code <- bquote({
-      compmat <- matrix(nrow = length(q), ncol = .(k))
-    })
-
-    for (i in seq_len(k)) {
-      comp_param_expr <- if (comp_param_counts[i] > 0L) {
-        bquote(param_matrix[, .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
-      } else {
-        NULL
-      }
-
-      component_code[[i + 2L]] <- bquote(
-        compmat[, .(i)] <- comp_probability[[.(i)]](q, .(comp_param_expr), lower.tail = lower.tail)
-      )
-    }
-
-    mixture_code <- if (ph_probs) {
-      bquote({
-        probmat <- param_matrix[, .(n_params - k + 1L):.(n_params), drop = FALSE]
-        probmat <- probmat / rowSums(probmat)
-        res <- rowSums(compmat * probmat)
-      })
+    prob_code <- if (ph_probs) {
+      bquote(drop(dist_mixture_probability_free(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_probability)))
     } else {
-      probs <- as.numeric(self$get_params()$probs)
-      probs <- probs / sum(probs)
-      bquote(res <- drop(compmat %*% .(probs)))
+      bquote(drop(dist_mixture_probability_fixed(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_probability, .(as.numeric(self$default_params$probs)))))
     }
 
     as_compiled_distribution_function(
       eval(bquote(function(q, param_matrix, lower.tail = TRUE, log.p = FALSE) {
-        .(component_code)
-        .(mixture_code)
-        if (log.p) log(res) else res
+        .(prob_code)
       })),
       n_params
     )
@@ -561,47 +503,18 @@ MixtureDistribution <- distribution_class(
 
     comp_probability_interval <- lapply(comps, function(dist) dist$compile_probability_interval())
     comp_param_counts <- vapply(comp_probability_interval, function(fun) attr(fun, "n_params"), integer(1L))
-    comp_param_ends <- cumsum(comp_param_counts)
-    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
 
     n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
 
-    component_code <- bquote({
-      compmat <- matrix(
-        nrow = .(if (n_params == 0L) quote(max(length(qmin), length(qmax))) else quote(nrow(param_matrix))),
-        ncol = .(k)
-      )
-    })
-
-    for (i in seq_len(k)) {
-      comp_param_expr <- if (comp_param_counts[i] > 0L) {
-        bquote(param_matrix[, .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
-      } else {
-        NULL
-      }
-
-      component_code[[i + 2L]] <- bquote(
-        compmat[, .(i)] <- comp_probability_interval[[.(i)]](qmin, qmax, .(comp_param_expr))
-      )
-    }
-
-    mixture_code <- if (ph_probs) {
-      bquote({
-        probmat <- param_matrix[, .(n_params - k + 1L):.(n_params), drop = FALSE]
-        probmat <- probmat / rowSums(probmat)
-        res <- rowSums(compmat * probmat)
-      })
+    iprob_code <- if (ph_probs) {
+      bquote(drop(dist_mixture_iprobability_free(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_probability_interval)))
     } else {
-      probs <- as.numeric(self$get_params()$probs)
-      probs <- probs / sum(probs)
-      bquote(res <- drop(compmat %*% .(probs)))
+      bquote(drop(dist_mixture_iprobability_fixed(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_probability_interval, .(as.numeric(self$default_params$probs)))))
     }
 
     as_compiled_distribution_function(
       eval(bquote(function(qmin, qmax, param_matrix, log.p = FALSE) {
-        .(component_code)
-        .(mixture_code)
-        if (log.p) log(res) else res
+        .(iprob_code)
       })),
       n_params
     )
