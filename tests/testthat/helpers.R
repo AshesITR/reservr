@@ -11,9 +11,10 @@ skip_if_no_tensorflow <- function() {
 # Perform tests with high-precision floats
 test_that("set floatx to 64-bit", {
   skip_if_no_tensorflow()
-  expect_silent({
+  expect_true({
     tensorflow::tf$keras$backend$set_floatx("float64")
     keras::k_set_floatx("float64")
+    TRUE
   })
 })
 

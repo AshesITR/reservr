@@ -102,7 +102,7 @@ DiscreteDistribution <- distribution_class(
     is_integerish(x) & x > 0.0 & x <= length(params$probs)
   },
   tf_logdensity = function() {
-    k <- as.integer(self$default_params$size)
+    k <- length(self$default_params$probs)
     function(x, args) {
       probs <- args[["probs"]]
       probs <- tf$reshape(probs, list(-1L, k))
@@ -117,7 +117,7 @@ DiscreteDistribution <- distribution_class(
     }
   },
   tf_logprobability = function() {
-    k <- as.integer(self$default_params$size)
+    k <- length(self$default_params$probs)
     function(qmin, qmax, args) {
       probs <- args[["probs"]]
       probs <- tf$reshape(probs, list(-1L, k))
@@ -368,7 +368,7 @@ fit_dist_start.DiscreteDistribution <- function(dist, obs, ...) {
   obs <- as_trunc_obs(obs)
   res <- dist$get_placeholders()
   ph_probs <- length(res$probs) > 0L
-  size <- dist$default_params$size
+  size <- length(dist$default_params$probs)
 
   if (ph_probs) {
     densmat <- map_dbl_matrix(

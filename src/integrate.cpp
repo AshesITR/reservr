@@ -1,9 +1,7 @@
-// [[Rcpp::depends(RcppParallel)]]
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <boost/heap/priority_queue.hpp>
 #include <RcppArmadillo.h>
 #include <Rcpp.h>
-#include <RcppParallel.h>
 
 struct Bounds {
   double lower, upper, value, error;
@@ -22,18 +20,6 @@ static const Rcpp::Function asNamespace = Rcpp::Environment::base_env()["asNames
 static const Rcpp::Environment pkg_namespace = asNamespace("reservr");
 static const Rcpp::Function pick_params_at_idx = pkg_namespace["pick_params_at_idx"];
 
-/*
-Rcpp::List pick_params_at_idx(const Rcpp::List& params, arma::uvec indices) {
-  Rcpp::Function impl = asNamespace("reservr")["pick_params_at_idx"];
-  return impl(params, indices);
-}
-
-Rcpp::List pick_params_at_idx(const Rcpp::List& params, std::vector<unsigned int> indices) {
-  Rcpp::Function impl = asNamespace("reservr")["pick_params_at_idx"];
-  return impl(params, indices);
-}
-*/
-
 static const arma::mat::fixed<15, 2> gk_weights{
   // GK15 weights
   0.022935322010529, 0.022935322010529, 0.063092092629979, 0.063092092629979, 0.104790010322250, 0.104790010322250,
@@ -49,8 +35,9 @@ static const arma::rowvec::fixed<15> gk_nodes{
   0.207784955007898, -0.207784955007898, 0.000000000000000
 };
 
+template <typename T>
 void integrate_gk_step(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper,
-  const Rcpp::List& params, const std::vector<unsigned int>& indices, std::vector<boost::heap::priority_queue<Bounds>>& pq) {
+  const T params, const std::vector<unsigned int>& indices, std::vector<boost::heap::priority_queue<Bounds>>& pq) {
 
   arma::vec midpoint = 0.5 * (lower + upper);
   arma::vec radius = 0.5 * (upper - lower);
@@ -73,10 +60,23 @@ void integrate_gk_step(const Rcpp::Function& fun, const arma::vec& lower, const 
   }
 }
 
-arma::vec integrate_impl(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper,
-  const Rcpp::List& params, double tolerance, int max_iter, arma::cube& info) {
+template <typename T>
+T params_at(const T& params, const std::vector<unsigned int> indexes);
 
-  arma::vec res(lower.n_elem, arma::fill::zeros);
+template <>
+Rcpp::List params_at(const Rcpp::List& params, const std::vector<unsigned int> indexes) {
+  return pick_params_at_idx(params, indexes);
+}
+
+template <>
+arma::mat params_at(const arma::mat& params, const std::vector<unsigned int> indexes) {
+  return params.rows(arma::uvec(indexes));
+}
+
+template <typename T>
+arma::vec integrate_impl(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper,
+  const T params, double tolerance, int max_iter, arma::vec& res, arma::cube& info) {
+
   std::vector<boost::heap::priority_queue<Bounds>> bounds_pq(lower.n_elem);
   bool all_converged = false, some_converged = false;
   std::vector<bool> converged(lower.n_elem);
@@ -113,7 +113,7 @@ arma::vec integrate_impl(const Rcpp::Function& fun, const arma::vec& lower, cons
     if (!all_converged) {
       if (some_converged) {
         // only re-pick params if some integrals converged in the last iteration
-        curr_params = pick_params_at_idx(params, non_converged);
+        curr_params = params_at(params, non_converged);
       } else if (non_converged.size() == lower.n_elem) {
         curr_params = params;
       }
@@ -142,10 +142,12 @@ arma::vec integrate_impl(const Rcpp::Function& fun, const arma::vec& lower, cons
     int j = 0;
     for (Bounds bd : bounds_pq[i]) {
       res[i] += bd.value;
-      info(i, j, 0) = bd.value;
-      info(i, j, 1) = bd.error;
-      info(i, j, 2) = bd.lower;
-      info(i, j, 3) = bd.upper;
+      if (info.n_elem > 0) {
+        info(i, j, 0) = bd.value;
+        info(i, j, 1) = bd.error;
+        info(i, j, 2) = bd.lower;
+        info(i, j, 3) = bd.upper;
+      }
       j++;
     }
   }
@@ -157,68 +159,43 @@ arma::vec integrate_impl(const Rcpp::Function& fun, const arma::vec& lower, cons
   return res;
 }
 
-struct IntegrateWorker : public RcppParallel::Worker {
-  const Rcpp::Function *fun;
-  const arma::vec *lower, *upper;
-  const Rcpp::List *params;
-  const double tolerance;
-  const int max_iter;
-  arma::vec *res;
-  arma::cube *info;
-
-  IntegrateWorker(const Rcpp::Function *fun, const arma::vec *lower, const arma::vec *upper, const Rcpp::List *params,
-    const double tolerance, const int max_iter, arma::vec *res, arma::cube *info) : fun(fun), lower(lower),
-    upper(upper), params(params), tolerance(tolerance), max_iter(max_iter), res(res), info(info) {}
-
-  IntegrateWorker(IntegrateWorker& base, RcppParallel::Split) : fun(base.fun), lower(base.lower), upper(base.upper),
-    params(base.params), tolerance(base.tolerance), max_iter(base.max_iter), res(base.res), info(base.info) {}
-
-  void operator()(std::size_t begin, std::size_t end) {
-    const arma::vec curr_lower = (*lower).subvec(begin, end - 1);
-    const arma::vec curr_upper = (*upper).subvec(begin, end - 1);
-    // TODO make this more efficient
-    arma::uvec curr_indices(end - begin);
-    for (std::size_t i = begin, j = 0; i < end; i++, j++) {
-      curr_indices[j] = i;
-    }
-    const Rcpp::List curr_params = pick_params_at_idx(*params, curr_indices);
-
-    arma::cube curr_info = (*info).rows(begin, end - 1);
-    arma::vec curr_res = integrate_impl(*fun, curr_lower, curr_upper, curr_params, tolerance, max_iter, curr_info);
-    (*res)(curr_indices) = curr_res;
-    (*info).rows(begin, end - 1) = curr_info;
-    /*for (std::size_t i = begin, j = 0; i < end; i++, j++) {
-      (*res)[i] = curr_res[j];
-    }*/
-  }
-};
-
-// [[Rcpp::export]]
+template <typename T>
 Rcpp::List do_integrate_gk(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper,
-  const Rcpp::List& params, const double tolerance, const int max_iter, bool parallel, bool debug) {
-
-  arma::vec res(lower.n_elem, arma::fill::zeros);
-  arma::cube info(lower.n_elem, max_iter, 4, arma::fill::zeros);
-  IntegrateWorker worker(&fun, &lower, &upper, &params, tolerance, max_iter, &res, &info);
-
-  if (parallel) {
-    // TODO: find out how to use Rcpp::Function from other threads
-    Rcpp::warning("Parallel integration is currently defunct. Using serial integration.");
-    worker(0, lower.n_elem);
-    // RcppParallel::parallelFor(0, lower.n_elem, worker);
+  const T& params, const double tolerance, const int max_iter, bool debug) {
+  arma::cube* info;
+  if (debug) {
+    info = new arma::cube(lower.n_elem, max_iter, 4, arma::fill::zeros);
   } else {
-    worker(0, lower.n_elem);
+    // empty cube to save memory allocation
+    info = new arma::cube();
   }
+  arma::vec res(lower.n_elem, arma::fill::zeros);
+  integrate_impl(fun, lower, upper, params, tolerance, max_iter, res, *info);
+
+  Rcpp::NumericVector r_res = Rcpp::wrap(res);
+  r_res.attr("dim") = R_NilValue;
 
   // Return as vector instead of colvec.
   if (debug) {
     return Rcpp::List::create(
-      Rcpp::Named("value") = Rcpp::as<std::vector<double>>(Rcpp::wrap(res)),
-      Rcpp::Named("info") = info
+      Rcpp::Named("value") = r_res,
+      Rcpp::Named("info") = *info
     );
   } else {
     return Rcpp::List::create(
-      Rcpp::Named("value") = Rcpp::as<std::vector<double>>(Rcpp::wrap(res))
+      Rcpp::Named("value") = r_res
     );
   }
+}
+
+// [[Rcpp::export]]
+Rcpp::List do_integrate_gk_lst(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper,
+  const Rcpp::List& params, const double tolerance, const int max_iter, bool debug) {
+  return do_integrate_gk(fun, lower, upper, params, tolerance, max_iter, debug);
+}
+
+// [[Rcpp::export]]
+Rcpp::List do_integrate_gk_mat(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper,
+  const arma::mat& params, const double tolerance, const int max_iter, bool debug) {
+  return do_integrate_gk(fun, lower, upper, params, tolerance, max_iter, debug);
 }

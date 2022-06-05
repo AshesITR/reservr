@@ -57,9 +57,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// do_integrate_gk
-Rcpp::List do_integrate_gk(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper, const Rcpp::List& params, const double tolerance, const int max_iter, bool parallel, bool debug);
-RcppExport SEXP _reservr_do_integrate_gk(SEXP funSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP paramsSEXP, SEXP toleranceSEXP, SEXP max_iterSEXP, SEXP parallelSEXP, SEXP debugSEXP) {
+// do_integrate_gk_lst
+Rcpp::List do_integrate_gk_lst(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper, const Rcpp::List& params, const double tolerance, const int max_iter, bool debug);
+RcppExport SEXP _reservr_do_integrate_gk_lst(SEXP funSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP paramsSEXP, SEXP toleranceSEXP, SEXP max_iterSEXP, SEXP debugSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -69,9 +69,25 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::List& >::type params(paramsSEXP);
     Rcpp::traits::input_parameter< const double >::type tolerance(toleranceSEXP);
     Rcpp::traits::input_parameter< const int >::type max_iter(max_iterSEXP);
-    Rcpp::traits::input_parameter< bool >::type parallel(parallelSEXP);
     Rcpp::traits::input_parameter< bool >::type debug(debugSEXP);
-    rcpp_result_gen = Rcpp::wrap(do_integrate_gk(fun, lower, upper, params, tolerance, max_iter, parallel, debug));
+    rcpp_result_gen = Rcpp::wrap(do_integrate_gk_lst(fun, lower, upper, params, tolerance, max_iter, debug));
+    return rcpp_result_gen;
+END_RCPP
+}
+// do_integrate_gk_mat
+Rcpp::List do_integrate_gk_mat(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper, const arma::mat& params, const double tolerance, const int max_iter, bool debug);
+RcppExport SEXP _reservr_do_integrate_gk_mat(SEXP funSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP paramsSEXP, SEXP toleranceSEXP, SEXP max_iterSEXP, SEXP debugSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::Function& >::type fun(funSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type lower(lowerSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type upper(upperSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< const double >::type tolerance(toleranceSEXP);
+    Rcpp::traits::input_parameter< const int >::type max_iter(max_iterSEXP);
+    Rcpp::traits::input_parameter< bool >::type debug(debugSEXP);
+    rcpp_result_gen = Rcpp::wrap(do_integrate_gk_mat(fun, lower, upper, params, tolerance, max_iter, debug));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -113,7 +129,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_reservr_dgamma_matrix", (DL_FUNC) &_reservr_dgamma_matrix, 3},
     {"_reservr_pgamma_diff_matrix", (DL_FUNC) &_reservr_pgamma_diff_matrix, 4},
     {"_reservr_trunc_erlangmix_ellik", (DL_FUNC) &_reservr_trunc_erlangmix_ellik, 9},
-    {"_reservr_do_integrate_gk", (DL_FUNC) &_reservr_do_integrate_gk, 8},
+    {"_reservr_do_integrate_gk_lst", (DL_FUNC) &_reservr_do_integrate_gk_lst, 7},
+    {"_reservr_do_integrate_gk_mat", (DL_FUNC) &_reservr_do_integrate_gk_mat, 7},
     {"_reservr_softmax_mat", (DL_FUNC) &_reservr_softmax_mat, 1},
     {"_reservr_softmax_vec", (DL_FUNC) &_reservr_softmax_vec, 1},
     {"_reservr_dsoftmax_vec", (DL_FUNC) &_reservr_dsoftmax_vec, 1},

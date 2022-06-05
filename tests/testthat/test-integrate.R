@@ -12,6 +12,12 @@ test_that("test integration of function with parameters", {
     integrate_gk(intfun, lower, upper, params),
     dist$probability(upper, with_params = params)
   )
+
+  intfun_cmp <- dist$compile_density()
+  expect_equal(
+    integrate_gk(function(x, p) intfun_cmp(x, p), lower, upper, flatten_params_matrix(params)),
+    dist$probability(upper, with_params = params)
+  )
 })
 
 test_that("slow convergence still yields acceptable results", {

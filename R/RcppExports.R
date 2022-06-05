@@ -13,8 +13,12 @@ trunc_erlangmix_ellik <- function(xmin, xmax, tmin, tmax, weight, shapes, scale,
     .Call(`_reservr_trunc_erlangmix_ellik`, xmin, xmax, tmin, tmax, weight, shapes, scale, zadj, parallel)
 }
 
-do_integrate_gk <- function(fun, lower, upper, params, tolerance, max_iter, parallel, debug) {
-    .Call(`_reservr_do_integrate_gk`, fun, lower, upper, params, tolerance, max_iter, parallel, debug)
+do_integrate_gk_lst <- function(fun, lower, upper, params, tolerance, max_iter, debug) {
+    .Call(`_reservr_do_integrate_gk_lst`, fun, lower, upper, params, tolerance, max_iter, debug)
+}
+
+do_integrate_gk_mat <- function(fun, lower, upper, params, tolerance, max_iter, debug) {
+    .Call(`_reservr_do_integrate_gk_mat`, fun, lower, upper, params, tolerance, max_iter, debug)
 }
 
 softmax_mat <- function(x) {

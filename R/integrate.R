@@ -44,6 +44,7 @@ GK_QUAD <- list(
 #' @param params Parameters to pass as a second argument to `fun`.
 #' The actual parameters must have the same length as the number of integrals to
 #' compute. Can be a possibly nested list structures containing numeric vectors.
+#' Alternatively, can be a matrix with the same number of rows as the number of integrals to compute.
 #'
 #' @param .tolerance Absolute element-wise tolerance.
 #' @param .max_iter Maximum number of iterations. The number of
@@ -95,10 +96,18 @@ integrate_gk <- function(fun, lower, upper, params = list(),
     params <- list()
   }
 
+  if (is.null(params)) {
+    params <- list()
+  }
+
   if (n_args == 1L) {
     fun_noargs <- fun
     fun <- function(x, params) fun_noargs(x)
   }
 
-  do_integrate_gk(fun, lower, upper, params, .tolerance, .max_iter, FALSE, FALSE)$value
+  if (is.list(params)) {
+    do_integrate_gk_lst(fun, lower, upper, params, .tolerance, .max_iter, FALSE)$value
+  } else {
+    do_integrate_gk_mat(fun, lower, upper, params, .tolerance, .max_iter, FALSE)$value
+  }
 }

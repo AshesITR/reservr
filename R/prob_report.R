@@ -14,6 +14,7 @@
 #' relevant up to a multiplicative constant.
 #' @param with_params Parameters of `dist` to use. Can be a parameter set with
 #' different values for each interval.
+#' @param .try_compile Try compiling the distributions probability function to speed up integration?
 #' @inheritParams integrate_gk
 #'
 #' @details The reporting probability is given by
@@ -43,7 +44,8 @@
 #'
 #' @export
 prob_report <- function(dist, intervals, expo = NULL, with_params = list(),
-                        .tolerance = .Machine$double.eps^0.5, .max_iter = 100L) {
+                        .tolerance = .Machine$double.eps^0.5, .max_iter = 100L,
+                        .try_compile = TRUE) {
   if (!is.null(expo)) {
     total_expo <- integrate_gk(
       function(x, params) {
@@ -51,7 +53,7 @@ prob_report <- function(dist, intervals, expo = NULL, with_params = list(),
       },
       lower = intervals$xmin,
       upper = intervals$xmax,
-      params = NULL,
+      params = list(),
       .tolerance = .tolerance,
       .max_iter = .max_iter
     )
@@ -59,33 +61,65 @@ prob_report <- function(dist, intervals, expo = NULL, with_params = list(),
     total_expo <- intervals$xmax - intervals$xmin
   }
 
-  exp_nclaims_reported <- integrate_gk(
-    function(x, params) {
-      repdel_max <- params$tmax - x
-      repdel_min <- params$tmin - x
-      pars <- params$dist_params
-      p_report <- dist$probability(repdel_max, with_params = pars) -
-        dist$probability(repdel_min, with_params = pars)
+  prob_int <- if (.try_compile) tryCatch(dist$compile_probability_interval(), error = function(e) NULL)
+  if (!is.null(prob_int)) {
+    wp_matrix <- flatten_params_matrix(with_params)
+    if (nrow(wp_matrix) == 0L) wp_matrix <- matrix(nrow = nrow(intervals), ncol = 0L)
+    exp_nclaims_reported <- integrate_gk(
+      if (!is.null(expo)) {
+        function(x, params) {
+          p_report <- prob_int(
+            qmin = params[, 1L] - x,
+            qmax = params[, 2L] - x,
+            param_matrix = params[, -(1L:2L)]
+          )
+          expo(x) * p_report
+        }
+      } else {
+        function(x, params) {
+          prob_int(
+            qmin = params[, 1L] - x,
+            qmax = params[, 2L] - x,
+            param_matrix = params[, -(1L:2L)]
+          )
+        }
+      },
+      lower = intervals$xmin,
+      upper = intervals$xmax,
+      params = cbind(intervals$tmin, intervals$tmax, wp_matrix),
+      .tolerance = .tolerance,
+      .max_iter = .max_iter
+    )
+  } else {
+    exp_nclaims_reported <- integrate_gk(
+      function(x, params) {
+        repdel_max <- params$tmax - x
+        repdel_min <- params$tmin - x
+        pars <- params$dist_params
+        p_report <- dist$probability(repdel_max, with_params = pars) -
+          dist$probability(repdel_min, with_params = pars)
 
-      if (!dist$is_continuous()) {
-        disc <- dist$is_discrete_at(repdel_min, with_params = pars)
-        p_report[disc] <- p_report[disc] + dist$density(
-          repdel_min[disc], with_params = pick_params_at(pars, disc)
-        )
-      }
+        if (!dist$is_continuous()) {
+          disc <- dist$is_discrete_at(repdel_min, with_params = pars)
+          p_report[disc] <- p_report[disc] + dist$density(
+            repdel_min[disc], with_params = pick_params_at(pars, disc)
+          )
+        }
 
-      if (!is.null(expo)) expo(x) * p_report else p_report
-    },
-    lower = intervals$xmin,
-    upper = intervals$xmax,
-    params = list(
-      tmax = intervals$tmax,
-      tmin = intervals$tmin,
-      dist_params = with_params
-    ),
-    .tolerance = .tolerance,
-    .max_iter = .max_iter
-  )
+        if (!is.null(expo)) expo(x) * p_report else p_report
+      },
+      lower = intervals$xmin,
+      upper = intervals$xmax,
+      params = list(
+        tmax = intervals$tmax,
+        tmin = intervals$tmin,
+        dist_params = with_params
+      ),
+      .tolerance = .tolerance,
+      .max_iter = .max_iter
+    )
+  }
+
 
   exp_nclaims_reported / total_expo
 }
