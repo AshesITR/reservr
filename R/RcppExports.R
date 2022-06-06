@@ -57,6 +57,38 @@ dist_erlangmix_density_fixed_probs_scale_shape <- function(x, log_p, probs, scal
     .Call(`_reservr_dist_erlangmix_density_fixed_probs_scale_shape`, x, log_p, probs, scale, shapes)
 }
 
+dist_erlangmix_probability_free <- function(q, params, lower_tail, log_p) {
+    .Call(`_reservr_dist_erlangmix_probability_free`, q, params, lower_tail, log_p)
+}
+
+dist_erlangmix_probability_fixed_shape <- function(q, params, lower_tail, log_p, shapes) {
+    .Call(`_reservr_dist_erlangmix_probability_fixed_shape`, q, params, lower_tail, log_p, shapes)
+}
+
+dist_erlangmix_probability_fixed_scale <- function(q, params, lower_tail, log_p, scale) {
+    .Call(`_reservr_dist_erlangmix_probability_fixed_scale`, q, params, lower_tail, log_p, scale)
+}
+
+dist_erlangmix_probability_fixed_probs <- function(q, params, lower_tail, log_p, probs) {
+    .Call(`_reservr_dist_erlangmix_probability_fixed_probs`, q, params, lower_tail, log_p, probs)
+}
+
+dist_erlangmix_probability_fixed_probs_scale <- function(q, params, lower_tail, log_p, probs, scale) {
+    .Call(`_reservr_dist_erlangmix_probability_fixed_probs_scale`, q, params, lower_tail, log_p, probs, scale)
+}
+
+dist_erlangmix_probability_fixed_probs_shape <- function(q, params, lower_tail, log_p, probs, shapes) {
+    .Call(`_reservr_dist_erlangmix_probability_fixed_probs_shape`, q, params, lower_tail, log_p, probs, shapes)
+}
+
+dist_erlangmix_probability_fixed_scale_shape <- function(q, params, lower_tail, log_p, scale, shapes) {
+    .Call(`_reservr_dist_erlangmix_probability_fixed_scale_shape`, q, params, lower_tail, log_p, scale, shapes)
+}
+
+dist_erlangmix_probability_fixed_probs_scale_shape <- function(q, lower_tail, log_p, probs, scale, shapes) {
+    .Call(`_reservr_dist_erlangmix_probability_fixed_probs_scale_shape`, q, lower_tail, log_p, probs, scale, shapes)
+}
+
 dgamma_matrix <- function(x, shape, scale) {
     .Call(`_reservr_dgamma_matrix`, x, shape, scale)
 }

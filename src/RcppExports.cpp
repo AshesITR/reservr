@@ -111,13 +111,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // dist_erlangmix_density_free
-arma::vec dist_erlangmix_density_free(const arma::vec x, const arma::vec params, bool log_p);
+arma::vec dist_erlangmix_density_free(const arma::vec x, const arma::mat params, bool log_p);
 RcppExport SEXP _reservr_dist_erlangmix_density_free(SEXP xSEXP, SEXP paramsSEXP, SEXP log_pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const arma::vec >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
     Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
     rcpp_result_gen = Rcpp::wrap(dist_erlangmix_density_free(x, params, log_p));
     return rcpp_result_gen;
@@ -222,6 +222,129 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec >::type scale(scaleSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type shapes(shapesSEXP);
     rcpp_result_gen = Rcpp::wrap(dist_erlangmix_density_fixed_probs_scale_shape(x, log_p, probs, scale, shapes));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_erlangmix_probability_free
+arma::vec dist_erlangmix_probability_free(const arma::vec q, const arma::mat params, bool lower_tail, bool log_p);
+RcppExport SEXP _reservr_dist_erlangmix_probability_free(SEXP qSEXP, SEXP paramsSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_erlangmix_probability_free(q, params, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_erlangmix_probability_fixed_shape
+arma::vec dist_erlangmix_probability_fixed_shape(const arma::vec q, const arma::mat params, bool lower_tail, bool log_p, const arma::vec shapes);
+RcppExport SEXP _reservr_dist_erlangmix_probability_fixed_shape(SEXP qSEXP, SEXP paramsSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP shapesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type shapes(shapesSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_erlangmix_probability_fixed_shape(q, params, lower_tail, log_p, shapes));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_erlangmix_probability_fixed_scale
+arma::vec dist_erlangmix_probability_fixed_scale(const arma::vec q, const arma::mat params, bool lower_tail, bool log_p, const arma::vec scale);
+RcppExport SEXP _reservr_dist_erlangmix_probability_fixed_scale(SEXP qSEXP, SEXP paramsSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP scaleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type scale(scaleSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_erlangmix_probability_fixed_scale(q, params, lower_tail, log_p, scale));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_erlangmix_probability_fixed_probs
+arma::vec dist_erlangmix_probability_fixed_probs(const arma::vec q, const arma::mat params, bool lower_tail, bool log_p, const arma::vec probs);
+RcppExport SEXP _reservr_dist_erlangmix_probability_fixed_probs(SEXP qSEXP, SEXP paramsSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_erlangmix_probability_fixed_probs(q, params, lower_tail, log_p, probs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_erlangmix_probability_fixed_probs_scale
+arma::vec dist_erlangmix_probability_fixed_probs_scale(const arma::vec q, const arma::mat params, bool lower_tail, bool log_p, const arma::vec probs, const arma::vec scale);
+RcppExport SEXP _reservr_dist_erlangmix_probability_fixed_probs_scale(SEXP qSEXP, SEXP paramsSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP probsSEXP, SEXP scaleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type scale(scaleSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_erlangmix_probability_fixed_probs_scale(q, params, lower_tail, log_p, probs, scale));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_erlangmix_probability_fixed_probs_shape
+arma::vec dist_erlangmix_probability_fixed_probs_shape(const arma::vec q, const arma::mat params, bool lower_tail, bool log_p, const arma::vec probs, const arma::vec shapes);
+RcppExport SEXP _reservr_dist_erlangmix_probability_fixed_probs_shape(SEXP qSEXP, SEXP paramsSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP probsSEXP, SEXP shapesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type shapes(shapesSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_erlangmix_probability_fixed_probs_shape(q, params, lower_tail, log_p, probs, shapes));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_erlangmix_probability_fixed_scale_shape
+arma::vec dist_erlangmix_probability_fixed_scale_shape(const arma::vec q, const arma::mat params, bool lower_tail, bool log_p, const arma::vec scale, const arma::vec shapes);
+RcppExport SEXP _reservr_dist_erlangmix_probability_fixed_scale_shape(SEXP qSEXP, SEXP paramsSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP scaleSEXP, SEXP shapesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type shapes(shapesSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_erlangmix_probability_fixed_scale_shape(q, params, lower_tail, log_p, scale, shapes));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_erlangmix_probability_fixed_probs_scale_shape
+arma::vec dist_erlangmix_probability_fixed_probs_scale_shape(const arma::vec q, bool lower_tail, bool log_p, const arma::vec probs, const arma::vec scale, const arma::vec shapes);
+RcppExport SEXP _reservr_dist_erlangmix_probability_fixed_probs_scale_shape(SEXP qSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP probsSEXP, SEXP scaleSEXP, SEXP shapesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type q(qSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type shapes(shapesSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_erlangmix_probability_fixed_probs_scale_shape(q, lower_tail, log_p, probs, scale, shapes));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -354,6 +477,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"_reservr_dist_erlangmix_density_fixed_probs_shape", (DL_FUNC) &_reservr_dist_erlangmix_density_fixed_probs_shape, 5},
     {"_reservr_dist_erlangmix_density_fixed_scale_shape", (DL_FUNC) &_reservr_dist_erlangmix_density_fixed_scale_shape, 5},
     {"_reservr_dist_erlangmix_density_fixed_probs_scale_shape", (DL_FUNC) &_reservr_dist_erlangmix_density_fixed_probs_scale_shape, 5},
+    {"_reservr_dist_erlangmix_probability_free", (DL_FUNC) &_reservr_dist_erlangmix_probability_free, 4},
+    {"_reservr_dist_erlangmix_probability_fixed_shape", (DL_FUNC) &_reservr_dist_erlangmix_probability_fixed_shape, 5},
+    {"_reservr_dist_erlangmix_probability_fixed_scale", (DL_FUNC) &_reservr_dist_erlangmix_probability_fixed_scale, 5},
+    {"_reservr_dist_erlangmix_probability_fixed_probs", (DL_FUNC) &_reservr_dist_erlangmix_probability_fixed_probs, 5},
+    {"_reservr_dist_erlangmix_probability_fixed_probs_scale", (DL_FUNC) &_reservr_dist_erlangmix_probability_fixed_probs_scale, 6},
+    {"_reservr_dist_erlangmix_probability_fixed_probs_shape", (DL_FUNC) &_reservr_dist_erlangmix_probability_fixed_probs_shape, 6},
+    {"_reservr_dist_erlangmix_probability_fixed_scale_shape", (DL_FUNC) &_reservr_dist_erlangmix_probability_fixed_scale_shape, 6},
+    {"_reservr_dist_erlangmix_probability_fixed_probs_scale_shape", (DL_FUNC) &_reservr_dist_erlangmix_probability_fixed_probs_scale_shape, 6},
     {"_reservr_dgamma_matrix", (DL_FUNC) &_reservr_dgamma_matrix, 3},
     {"_reservr_pgamma_diff_matrix", (DL_FUNC) &_reservr_pgamma_diff_matrix, 4},
     {"_reservr_trunc_erlangmix_ellik", (DL_FUNC) &_reservr_trunc_erlangmix_ellik, 9},
