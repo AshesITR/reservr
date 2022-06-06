@@ -406,59 +406,40 @@ ErlangMixtureDistribution <- distribution_class(
 
     n_params <- (as.integer(ph_shapes) + as.integer(ph_probs)) * k + as.integer(ph_scale)
 
-    scale_expr <- if (ph_scale) substitute(param_matrix[, i_scale], list(
-      i_scale = 1L + if (ph_shapes) k else 0L
-    )) else self$default_params$scale
-
-    probs_expr <- if (ph_shapes || ph_scale) {
-      substitute(param_matrix[, i_prob:j_prob, drop = FALSE], list(
-        i_prob = 1L + if (ph_shapes) k else 0L + as.integer(ph_scale),
-        j_prob = k + if (ph_shapes) k else 0L + as.integer(ph_scale)
-      ))
-    } else {
-      quote(param_matrix)
+    if (!ph_probs) {
+      prob_expr <- as.numeric(self$default_params$probs)
     }
 
-    densmat_code <- if (ph_shapes) {
-      substitute(
-        densmat <- dgamma(x, shape = param_matrix[, 1L:k, drop = FALSE], scale = scale_expr),
-        list(k = k, scale_expr = scale_expr)
-      )
-    } else {
-      cl <- substitute({
-        densmat <- matrix(nrow = length(x), ncol = k)
-        scale <- scale_expr
-      }, list(k = k, scale_expr = scale_expr))
-
-      for (i in seq_len(k)) {
-        cl[[i + 3L]] <- substitute(
-          densmat[, i] <- dgamma(x, shape = shape, scale = scale),
-          list(i = i, shape = self$get_params()$shapes[[i]])
-        )
-      }
-
-      cl
+    if (!ph_scale) {
+      scale_expr <- self$default_params$scale
     }
 
-    densmix_code <- if (ph_probs) {
-      substitute({
-        probmat <- probs_expr
-        probmat <- probmat / rowSums(probmat)
-        res <- rowSums(densmat * probmat)
-      }, list(probs_expr = probs_expr))
+    if (!ph_shapes) {
+      shapes_expr <- as.numeric(self$default_params$shapes)
+    }
+
+    dens_code <- if (!ph_probs && !ph_scale && !ph_shapes) {
+      bquote(drop(dist_erlangmix_density_fixed_probs_scale_shape(x, log, .(prob_expr), .(scale_expr), .(shapes_expr))))
+    } else if (!ph_probs && !ph_scale) {
+      bquote(drop(dist_erlangmix_density_fixed_probs_scale(x, param_matrix, log, .(prob_expr), .(scale_expr))))
+    } else if (!ph_probs && !ph_shapes) {
+      bquote(drop(dist_erlangmix_density_fixed_probs_shape(x, param_matrix, log, .(prob_expr), .(shapes_expr))))
+    } else if (!ph_scale && !ph_shapes) {
+      bquote(drop(dist_erlangmix_density_fixed_scale_shape(x, param_matrix, log, .(scale_expr), .(shapes_expr))))
+    } else if (!ph_probs) {
+      bquote(drop(dist_erlangmix_density_fixed_probs(x, param_matrix, log, .(prob_expr))))
+    } else if (!ph_scale) {
+      bquote(drop(dist_erlangmix_density_fixed_scale(x, param_matrix, log, .(scale_expr))))
+    } else if (!ph_shapes) {
+      bquote(drop(dist_erlangmix_density_fixed_shape(x, param_matrix, log, .(shapes_expr))))
     } else {
-      probs <- as.numeric(self$get_params()$probs)
-      probs <- probs / sum(probs)
-      substitute(res <- drop(densmat %*% probs), list(probs = probs))
+      bquote(drop(dist_erlangmix_density_free(x, param_matrix, log)))
     }
 
     as_compiled_distribution_function(
-      eval(substitute(function(x, param_matrix, log = FALSE) {
-        densmat_code
-        densmix_code
-        if (log) res <- log(res)
-        res
-      }, list(densmat_code = densmat_code, densmix_code = densmix_code))),
+      eval(bquote(function(x, param_matrix, log = FALSE) {
+        .(dens_code)
+      })),
       n_params
     )
   },

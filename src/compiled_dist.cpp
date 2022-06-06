@@ -15,10 +15,53 @@ arma::vec aggregate_mixture<arma::subview_cols<double>>(const arma::mat compmat,
 }
 
 template <>
+arma::vec aggregate_mixture<arma::mat>(const arma::mat compmat, const arma::mat probs) {
+  arma::vec res = arma::sum(compmat % probs, 1);
+  res /= arma::sum(probs, 1);
+  return res;
+}
+
+template <>
 arma::vec aggregate_mixture<arma::vec>(const arma::mat compmat, const arma::vec probs) {
   arma::vec res = compmat * probs;
   res /= arma::accu(probs);
   return res;
+}
+
+template <typename T>
+int num_components(const T probs);
+
+template <>
+int num_components<arma::subview_cols<double>>(const arma::subview_cols<double> probs) {
+  return probs.n_cols;
+}
+
+template <>
+int num_components<arma::mat>(const arma::mat probs) {
+  return probs.n_cols;
+}
+
+template <>
+int num_components<arma::vec>(const arma::vec probs) {
+  return probs.n_elem;
+}
+
+template <typename T>
+bool is_matrix(const T x);
+
+template <>
+bool is_matrix<arma::vec>(const arma::vec x) {
+  return false;
+}
+
+template <>
+bool is_matrix<arma::mat>(const arma::mat x) {
+  return true;
+}
+
+template <>
+bool is_matrix<arma::subview_cols<double>>(const arma::subview_cols<double> x) {
+  return true;
 }
 
 // efficiently compute mixture densities with possibly fixed probs
@@ -127,4 +170,76 @@ arma::vec dist_mixture_iprobability_free(const arma::vec qmin, const arma::vec q
 // [[Rcpp::export]]
 arma::vec dist_mixture_iprobability_fixed(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec probs) {
   return dist_mixture_iprobability_impl(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs);
+}
+
+// efficiently compute erlang mixture densities with possibly fixed parameters
+
+template <typename TP, typename TS>
+arma::vec dist_erlangmix_density_impl(const arma::vec x, bool log_p, const TP probs, const arma::vec scale, const TS shapes) {
+  int k = num_components(probs);
+  int n = std::max(std::max(x.n_elem, probs.n_rows), std::max(scale.n_elem, shapes.n_rows));
+  bool shape_is_matrix = is_matrix(shapes);
+  arma::mat compdens(n, k);
+  int i_x = 0, d_x = x.n_elem > 1 ? 1 : 0;
+  int i_s = 0, d_s = scale.n_elem > 1 ? 1 : 0;
+  double curr_shape;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < k; j++) {
+      if (shape_is_matrix) {
+        curr_shape = shapes(i, j);
+      } else {
+        curr_shape = shapes[j];
+      }
+      compdens(i, j) = R::dgamma(x[i_x], curr_shape, scale[i_s], 0);
+    }
+    i_x += d_x;
+    i_s += d_s;
+  }
+  arma::vec res = aggregate_mixture(compdens, probs);
+  if (log_p) res = log(res);
+  return res;
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_density_free(const arma::vec x, const arma::vec params, bool log_p) {
+  int k = (params.n_cols - 1) / 2;
+  return dist_erlangmix_density_impl(x, log_p, params.tail_cols(k), params.col(k), params.head_cols(k));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_density_fixed_shape(const arma::vec x, const arma::mat params, bool log_p, const arma::vec shapes) {
+  int k = shapes.n_elem;
+  return dist_erlangmix_density_impl(x, log_p, params.tail_cols(k), params.col(0), shapes);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_density_fixed_scale(const arma::vec x, const arma::mat params, bool log_p, const arma::vec scale) {
+  int k = params.n_cols / 2;
+  return dist_erlangmix_density_impl(x, log_p, params.tail_cols(k), scale, params.head_cols(k));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_density_fixed_probs(const arma::vec x, const arma::mat params, bool log_p, const arma::vec probs) {
+  int k = probs.n_elem;
+  return dist_erlangmix_density_impl(x, log_p, probs, params.col(k), params.head_cols(k));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_density_fixed_probs_scale(const arma::vec x, const arma::mat params, bool log_p, const arma::vec probs, const arma::vec scale) {
+  return dist_erlangmix_density_impl(x, log_p, probs, scale, params);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_density_fixed_probs_shape(const arma::vec x, const arma::mat params, bool log_p, const arma::vec probs, const arma::vec shapes) {
+  return dist_erlangmix_density_impl(x, log_p, probs, params.col(0), shapes);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_density_fixed_scale_shape(const arma::vec x, const arma::mat params, bool log_p, const arma::vec scale, const arma::vec shapes) {
+  return dist_erlangmix_density_impl(x, log_p, params, scale, shapes);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_density_fixed_probs_scale_shape(const arma::vec x, bool log_p, const arma::vec probs, const arma::vec scale, const arma::vec shapes) {
+  return dist_erlangmix_density_impl(x, log_p, probs, scale, shapes);
 }
