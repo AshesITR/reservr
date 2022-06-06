@@ -880,14 +880,14 @@ arma::vec dist_blended_iprobability_impl(const arma::vec qmin, const arma::vec q
     blend_transform(curr_qmaxblend, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
 
     if (curr_u_low.n_elem > 1) {
-      curr_qminblend.elem(find_low(qmin, curr_u_low, curr_e_low)) = curr_u_low;
+      curr_qminblend.elem(find_low(qmin.elem(curr_relevant), curr_u_low, curr_e_low)) = curr_u_low;
     } else {
-      curr_qminblend.elem(find_low(qmin, curr_u_low, curr_e_low)).fill(curr_u_low[0]);
+      curr_qminblend.elem(find_low(qmin.elem(curr_relevant), curr_u_low, curr_e_low)).fill(curr_u_low[0]);
     }
     if (curr_u_high.n_elem > 1) {
-      curr_qmaxblend.elem(find_high(qmax, curr_u_high, curr_e_high)) = curr_u_high;
+      curr_qmaxblend.elem(find_high(qmax.elem(curr_relevant), curr_u_high, curr_e_high)) = curr_u_high;
     } else {
-      curr_qmaxblend.elem(find_high(qmax, curr_u_high, curr_e_high)).fill(curr_u_high[0]);
+      curr_qmaxblend.elem(find_high(qmax.elem(curr_relevant), curr_u_high, curr_e_high)).fill(curr_u_high[0]);
     }
 
     if (param_sizes[j] > 0) {
