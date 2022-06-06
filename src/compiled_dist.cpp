@@ -100,43 +100,43 @@ arma::vec column_or_element<arma::subview_cols<double>>(const arma::subview_cols
   return x.col(col);
 }
 
-arma::uvec find_relevant(const arma::vec x, const arma::vec u_lo, const arma::vec e_lo, const arma::vec u_hi, const arma::vec e_hi) {
+arma::uvec find_relevant(const arma::vec xmin, const arma::vec xmax, const arma::vec u_lo, const arma::vec e_lo, const arma::vec u_hi, const arma::vec e_hi) {
   if (u_lo.n_elem > 1 && e_lo.n_elem > 1 && u_hi.n_elem > 1 && e_hi.n_elem > 1) { // all vec
-    return arma::find(u_lo - e_lo <= x && x <= u_hi + e_hi);
+    return arma::find(u_lo - e_lo <= xmax && xmin <= u_hi + e_hi);
 
   } else if (u_lo.n_elem > 1 && e_lo.n_elem > 1 && u_hi.n_elem > 1) { // 1 const
-    return arma::find(u_lo - e_lo <= x && x <= u_hi + e_hi[0]);
+    return arma::find(u_lo - e_lo <= xmax && xmin <= u_hi + e_hi[0]);
   } else if (u_lo.n_elem > 1 && e_lo.n_elem > 1 && e_hi.n_elem > 1) {
-    return arma::find(u_lo - e_lo <= x && x <= u_hi[0] + e_hi);
+    return arma::find(u_lo - e_lo <= xmax && xmin <= u_hi[0] + e_hi);
   } else if (u_lo.n_elem > 1 && u_hi.n_elem > 1 && e_hi.n_elem > 1) {
-    return arma::find(u_lo - e_lo[0] <= x && x <= u_hi + e_hi);
+    return arma::find(u_lo - e_lo[0] <= xmax && xmin <= u_hi + e_hi);
   } else if (e_lo.n_elem > 1 && u_hi.n_elem > 1 && e_hi.n_elem > 1) {
-    return arma::find(u_lo[0] - e_lo <= x && x <= u_hi + e_hi);
+    return arma::find(u_lo[0] - e_lo <= xmax && xmin <= u_hi + e_hi);
 
   } else if (u_lo.n_elem > 1 && e_lo.n_elem > 1) { // 2 const
-    return arma::find(u_lo - e_lo <= x && x <= u_hi[0] + e_hi[0]);
+    return arma::find(u_lo - e_lo <= xmax && xmin <= u_hi[0] + e_hi[0]);
   } else if (u_lo.n_elem > 1 && u_hi.n_elem > 1) {
-    return arma::find(u_lo - e_lo[0] <= x && x <= u_hi + e_hi[0]);
+    return arma::find(u_lo - e_lo[0] <= xmax && xmin <= u_hi + e_hi[0]);
   } else if (e_lo.n_elem > 1 && u_hi.n_elem > 1) {
-    return arma::find(u_lo[0] - e_lo <= x && x <= u_hi + e_hi[0]);
+    return arma::find(u_lo[0] - e_lo <= xmax && xmin <= u_hi + e_hi[0]);
   } else if (u_lo.n_elem > 1 && e_hi.n_elem > 1) {
-    return arma::find(u_lo - e_lo[0] <= x && x <= u_hi[0] + e_hi);
+    return arma::find(u_lo - e_lo[0] <= xmax && xmin <= u_hi[0] + e_hi);
   } else if (e_lo.n_elem > 1 && e_hi.n_elem > 1) {
-    return arma::find(u_lo[0] - e_lo <= x && x <= u_hi[0] + e_hi);
+    return arma::find(u_lo[0] - e_lo <= xmax && xmin <= u_hi[0] + e_hi);
   } else if (u_hi.n_elem > 1 && e_hi.n_elem > 1) {
-    return arma::find(u_lo[0] - e_lo[0] <= x && x <= u_hi + e_hi);
+    return arma::find(u_lo[0] - e_lo[0] <= xmax && xmin <= u_hi + e_hi);
 
   } else if (u_lo.n_elem > 1) { // 3 const
-    return arma::find(u_lo - e_lo[0] <= x && x <= u_hi[0] + e_hi[0]);
+    return arma::find(u_lo - e_lo[0] <= xmax && xmin <= u_hi[0] + e_hi[0]);
   } else if (e_lo.n_elem > 1) {
-    return arma::find(u_lo[0] - e_lo <= x && x <= u_hi[0] + e_hi[0]);
+    return arma::find(u_lo[0] - e_lo <= xmax && xmin <= u_hi[0] + e_hi[0]);
   } else if (u_hi.n_elem > 1) {
-    return arma::find(u_lo[0] - e_lo[0] <= x && x <= u_hi + e_hi[0]);
+    return arma::find(u_lo[0] - e_lo[0] <= xmax && xmin <= u_hi + e_hi[0]);
   } else if (e_hi.n_elem > 1) {
-    return arma::find(u_lo[0] - e_lo[0] <= x && x <= u_hi[0] + e_hi);
+    return arma::find(u_lo[0] - e_lo[0] <= xmax && xmin <= u_hi[0] + e_hi);
 
   } else { // all const
-    return arma::find(u_lo[0] - e_lo[0] <= x && x <= u_hi[0] + e_hi[0]);
+    return arma::find(u_lo[0] - e_lo[0] <= xmax && xmin <= u_hi[0] + e_hi[0]);
   }
 }
 
@@ -589,7 +589,7 @@ arma::vec dist_blended_density_impl(const arma::vec x, const arma::mat params, b
       curr_e_high = column_or_element(epsilons, j);
       curr_u_low = arma::vec::fixed<1>{-std::numeric_limits<double>::infinity()};
       curr_e_low = arma::zeros<arma::vec>(1);
-      curr_relevant = find_relevant(x, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      curr_relevant = find_relevant(x, x, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
       if (breaks_is_matrix) curr_u_high = curr_u_high(curr_relevant);
       if (epsilons_is_matrix) curr_e_high = curr_e_high(curr_relevant);
     } else if (j == k - 1) {
@@ -597,7 +597,7 @@ arma::vec dist_blended_density_impl(const arma::vec x, const arma::mat params, b
       curr_e_high = arma::zeros<arma::vec>(1);
       curr_u_low = column_or_element(breaks, j - 1);
       curr_e_low = column_or_element(epsilons, j - 1);
-      curr_relevant = find_relevant(x, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      curr_relevant = find_relevant(x, x, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
       if (breaks_is_matrix) curr_u_low = curr_u_low(curr_relevant);
       if (epsilons_is_matrix) curr_e_low = curr_e_low(curr_relevant);
     } else {
@@ -605,7 +605,7 @@ arma::vec dist_blended_density_impl(const arma::vec x, const arma::mat params, b
       curr_e_low = column_or_element(epsilons, j - 1);
       curr_u_high = column_or_element(breaks, j);
       curr_e_high = column_or_element(epsilons, j);
-      curr_relevant = find_relevant(x, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      curr_relevant = find_relevant(x, x, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
       if (breaks_is_matrix) {
         curr_u_low = curr_u_low(curr_relevant);
         curr_u_high = curr_u_high(curr_relevant);
@@ -712,14 +712,13 @@ arma::vec dist_blended_probability_impl(const arma::vec q, const arma::mat param
   for (int j = 0; j < k; j++) {
     arma::uvec curr_relevant;
     arma::vec curr_xblend;
-    arma::vec curr_dblend;
     arma::vec curr_u_high, curr_e_high, curr_u_low, curr_e_low;
     if (j == 0) {
       curr_u_high = column_or_element(breaks, j);
       curr_e_high = column_or_element(epsilons, j);
       curr_u_low = arma::vec::fixed<1>{-std::numeric_limits<double>::infinity()};
       curr_e_low = arma::zeros<arma::vec>(1);
-      curr_relevant = find_relevant(q, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      curr_relevant = find_relevant(q, q, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
       if (breaks_is_matrix) curr_u_high = curr_u_high(curr_relevant);
       if (epsilons_is_matrix) curr_e_high = curr_e_high(curr_relevant);
     } else if (j == k - 1) {
@@ -727,7 +726,7 @@ arma::vec dist_blended_probability_impl(const arma::vec q, const arma::mat param
       curr_e_high = arma::zeros<arma::vec>(1);
       curr_u_low = column_or_element(breaks, j - 1);
       curr_e_low = column_or_element(epsilons, j - 1);
-      curr_relevant = find_relevant(q, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      curr_relevant = find_relevant(q, q, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
       if (breaks_is_matrix) curr_u_low = curr_u_low(curr_relevant);
       if (epsilons_is_matrix) curr_e_low = curr_e_low(curr_relevant);
     } else {
@@ -735,7 +734,7 @@ arma::vec dist_blended_probability_impl(const arma::vec q, const arma::mat param
       curr_e_low = column_or_element(epsilons, j - 1);
       curr_u_high = column_or_element(breaks, j);
       curr_e_high = column_or_element(epsilons, j);
-      curr_relevant = find_relevant(q, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      curr_relevant = find_relevant(q, q, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
       if (breaks_is_matrix) {
         curr_u_low = curr_u_low(curr_relevant);
         curr_u_high = curr_u_high(curr_relevant);
@@ -827,4 +826,140 @@ arma::vec dist_blended_probability_fixed_breaks_eps(const arma::vec q, const arm
 // [[Rcpp::export]]
 arma::vec dist_blended_probability_fixed_probs_breaks_eps(const arma::vec q, const arma::mat params, bool lower_tail, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec probs, const arma::vec breaks, const arma::vec epsilons) {
   return dist_blended_probability_impl(q, params, lower_tail, log_p, param_sizes, comp_iprobabilities, probs, breaks, epsilons);
+}
+
+// efficiently compute blended interval probabilities with possibly fixed parameters
+
+template <typename TP, typename TU, typename TE>
+arma::vec dist_blended_iprobability_impl(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const TP probs, const TU breaks, const TE epsilons) {
+  int k = comp_iprobabilities.size();
+  int n = std::max(std::max(qmin.n_elem, qmax.n_elem), std::max(std::max(params.n_rows, num_observations(probs)), std::max(num_observations(breaks), num_observations(epsilons))));
+  int i = 0;
+  arma::mat compprob(n, k, arma::fill::zeros);
+  SEXP curr_params;
+  bool breaks_is_matrix = is_matrix(breaks);
+  bool epsilons_is_matrix = is_matrix(epsilons);
+  for (int j = 0; j < k; j++) {
+    arma::uvec curr_relevant;
+    arma::vec curr_qminblend, curr_qmaxblend;
+    arma::vec curr_u_high, curr_e_high, curr_u_low, curr_e_low;
+    if (j == 0) {
+      curr_u_high = column_or_element(breaks, j);
+      curr_e_high = column_or_element(epsilons, j);
+      curr_u_low = arma::vec::fixed<1>{-std::numeric_limits<double>::infinity()};
+      curr_e_low = arma::zeros<arma::vec>(1);
+      curr_relevant = find_relevant(qmin, qmax, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      if (breaks_is_matrix) curr_u_high = curr_u_high(curr_relevant);
+      if (epsilons_is_matrix) curr_e_high = curr_e_high(curr_relevant);
+    } else if (j == k - 1) {
+      curr_u_high = arma::vec::fixed<1>{std::numeric_limits<double>::infinity()};
+      curr_e_high = arma::zeros<arma::vec>(1);
+      curr_u_low = column_or_element(breaks, j - 1);
+      curr_e_low = column_or_element(epsilons, j - 1);
+      curr_relevant = find_relevant(qmin, qmax, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      if (breaks_is_matrix) curr_u_low = curr_u_low(curr_relevant);
+      if (epsilons_is_matrix) curr_e_low = curr_e_low(curr_relevant);
+    } else {
+      curr_u_low = column_or_element(breaks, j - 1);
+      curr_e_low = column_or_element(epsilons, j - 1);
+      curr_u_high = column_or_element(breaks, j);
+      curr_e_high = column_or_element(epsilons, j);
+      curr_relevant = find_relevant(qmin, qmax, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      if (breaks_is_matrix) {
+        curr_u_low = curr_u_low(curr_relevant);
+        curr_u_high = curr_u_high(curr_relevant);
+      }
+      if (epsilons_is_matrix) {
+        curr_e_low = curr_e_low(curr_relevant);
+        curr_e_high = curr_e_high(curr_relevant);
+      }
+    }
+    curr_qminblend = qmin.elem(curr_relevant);
+    curr_qmaxblend = qmax.elem(curr_relevant);
+    blend_transform(curr_qminblend, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+    blend_transform(curr_qmaxblend, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+
+    if (curr_u_low.n_elem > 1) {
+      curr_qminblend.elem(find_low(qmin, curr_u_low, curr_e_low)) = curr_u_low;
+    } else {
+      curr_qminblend.elem(find_low(qmin, curr_u_low, curr_e_low)).fill(curr_u_low[0]);
+    }
+    if (curr_u_high.n_elem > 1) {
+      curr_qmaxblend.elem(find_high(qmax, curr_u_high, curr_e_high)) = curr_u_high;
+    } else {
+      curr_qmaxblend.elem(find_high(qmax, curr_u_high, curr_e_high)).fill(curr_u_high[0]);
+    }
+
+    if (param_sizes[j] > 0) {
+      arma::mat curr_params_mat = params.submat(curr_relevant, arma::regspace<arma::uvec>(i, i + param_sizes[j] - 1));
+      curr_params = Rcpp::wrap(curr_params_mat);
+      i += param_sizes[j];
+    } else {
+      curr_params = R_NilValue;
+    }
+
+    Rcpp::Function curr_ipfun = comp_iprobabilities[j];
+
+    arma::vec curr_prob(n, arma::fill::zeros);
+    arma::vec ptrunc = Rcpp::as<arma::vec>(curr_ipfun(curr_u_low, curr_u_high, curr_params, false));
+    arma::vec pobs = Rcpp::as<arma::vec>(curr_ipfun(curr_qminblend, curr_qmaxblend, curr_params, false));
+    
+    if (ptrunc.n_elem > 1) {
+      curr_prob(curr_relevant) = pobs / ptrunc;
+    } else {
+      curr_prob(curr_relevant) = pobs / ptrunc[0];
+    }
+
+    compprob.col(j) = curr_prob;
+  }
+  arma::vec res = aggregate_mixture(compprob, probs);
+  if (log_p) res = log(res);
+  return res;
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_iprobability_free(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities) {
+  int k = comp_iprobabilities.size();
+  return dist_blended_iprobability_impl(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, params.tail_cols(k), params.cols(arma::span(params.n_cols - 3 * k + 2, params.n_cols - 2 * k)), params.cols(arma::span(params.n_cols - 2 * k + 1, params.n_cols - k - 1)));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_iprobability_fixed_probs(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec probs) {
+  int k = comp_iprobabilities.size();
+  return dist_blended_iprobability_impl(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, params.cols(arma::span(params.n_cols - 2 * k + 2, params.n_cols - k)), params.tail_cols(k - 1));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_iprobability_fixed_breaks(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec breaks) {
+  int k = comp_iprobabilities.size();
+  return dist_blended_iprobability_impl(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, params.tail_cols(k), breaks, params.cols(params.n_cols - 2 * k + 1, params.n_cols - k - 1));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_iprobability_fixed_eps(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec epsilons) {
+  int k = comp_iprobabilities.size();
+  return dist_blended_iprobability_impl(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, params.tail_cols(k), params.cols(params.n_cols - 2 * k + 1, params.n_cols - k - 1), epsilons);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_iprobability_fixed_probs_breaks(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec probs, const arma::vec breaks) {
+  int k = comp_iprobabilities.size();
+  return dist_blended_iprobability_impl(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, breaks, params.tail_cols(k - 1));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_iprobability_fixed_probs_eps(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec probs, const arma::vec epsilons) {
+  int k = comp_iprobabilities.size();
+  return dist_blended_iprobability_impl(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, params.tail_cols(k - 1), epsilons);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_iprobability_fixed_breaks_eps(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec breaks, const arma::vec epsilons) {
+  int k = comp_iprobabilities.size();
+  return dist_blended_iprobability_impl(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, params.tail_cols(k), breaks, epsilons);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_iprobability_fixed_probs_breaks_eps(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec probs, const arma::vec breaks, const arma::vec epsilons) {
+  return dist_blended_iprobability_impl(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, breaks, epsilons);
 }

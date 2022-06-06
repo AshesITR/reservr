@@ -759,6 +759,146 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dist_blended_iprobability_free
+arma::vec dist_blended_iprobability_free(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities);
+RcppExport SEXP _reservr_dist_blended_iprobability_free(SEXP qminSEXP, SEXP qmaxSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_iprobabilitiesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type qmin(qminSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type qmax(qmaxSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_iprobability_free(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_iprobability_fixed_probs
+arma::vec dist_blended_iprobability_fixed_probs(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec probs);
+RcppExport SEXP _reservr_dist_blended_iprobability_fixed_probs(SEXP qminSEXP, SEXP qmaxSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type qmin(qminSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type qmax(qmaxSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_iprobability_fixed_probs(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_iprobability_fixed_breaks
+arma::vec dist_blended_iprobability_fixed_breaks(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec breaks);
+RcppExport SEXP _reservr_dist_blended_iprobability_fixed_breaks(SEXP qminSEXP, SEXP qmaxSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP breaksSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type qmin(qminSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type qmax(qmaxSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type breaks(breaksSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_iprobability_fixed_breaks(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, breaks));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_iprobability_fixed_eps
+arma::vec dist_blended_iprobability_fixed_eps(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec epsilons);
+RcppExport SEXP _reservr_dist_blended_iprobability_fixed_eps(SEXP qminSEXP, SEXP qmaxSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP epsilonsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type qmin(qminSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type qmax(qmaxSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type epsilons(epsilonsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_iprobability_fixed_eps(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, epsilons));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_iprobability_fixed_probs_breaks
+arma::vec dist_blended_iprobability_fixed_probs_breaks(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec probs, const arma::vec breaks);
+RcppExport SEXP _reservr_dist_blended_iprobability_fixed_probs_breaks(SEXP qminSEXP, SEXP qmaxSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP probsSEXP, SEXP breaksSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type qmin(qminSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type qmax(qmaxSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type breaks(breaksSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_iprobability_fixed_probs_breaks(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, breaks));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_iprobability_fixed_probs_eps
+arma::vec dist_blended_iprobability_fixed_probs_eps(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec probs, const arma::vec epsilons);
+RcppExport SEXP _reservr_dist_blended_iprobability_fixed_probs_eps(SEXP qminSEXP, SEXP qmaxSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP probsSEXP, SEXP epsilonsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type qmin(qminSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type qmax(qmaxSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type epsilons(epsilonsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_iprobability_fixed_probs_eps(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, epsilons));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_iprobability_fixed_breaks_eps
+arma::vec dist_blended_iprobability_fixed_breaks_eps(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec breaks, const arma::vec epsilons);
+RcppExport SEXP _reservr_dist_blended_iprobability_fixed_breaks_eps(SEXP qminSEXP, SEXP qmaxSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP breaksSEXP, SEXP epsilonsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type qmin(qminSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type qmax(qmaxSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type breaks(breaksSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type epsilons(epsilonsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_iprobability_fixed_breaks_eps(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, breaks, epsilons));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_iprobability_fixed_probs_breaks_eps
+arma::vec dist_blended_iprobability_fixed_probs_breaks_eps(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_iprobabilities, const arma::vec probs, const arma::vec breaks, const arma::vec epsilons);
+RcppExport SEXP _reservr_dist_blended_iprobability_fixed_probs_breaks_eps(SEXP qminSEXP, SEXP qmaxSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP probsSEXP, SEXP breaksSEXP, SEXP epsilonsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type qmin(qminSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type qmax(qmaxSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type breaks(breaksSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type epsilons(epsilonsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_iprobability_fixed_probs_breaks_eps(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, breaks, epsilons));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dgamma_matrix
 NumericMatrix dgamma_matrix(NumericVector x, NumericVector shape, double scale);
 RcppExport SEXP _reservr_dgamma_matrix(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP) {
@@ -920,6 +1060,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"_reservr_dist_blended_probability_fixed_probs_eps", (DL_FUNC) &_reservr_dist_blended_probability_fixed_probs_eps, 8},
     {"_reservr_dist_blended_probability_fixed_breaks_eps", (DL_FUNC) &_reservr_dist_blended_probability_fixed_breaks_eps, 8},
     {"_reservr_dist_blended_probability_fixed_probs_breaks_eps", (DL_FUNC) &_reservr_dist_blended_probability_fixed_probs_breaks_eps, 9},
+    {"_reservr_dist_blended_iprobability_free", (DL_FUNC) &_reservr_dist_blended_iprobability_free, 6},
+    {"_reservr_dist_blended_iprobability_fixed_probs", (DL_FUNC) &_reservr_dist_blended_iprobability_fixed_probs, 7},
+    {"_reservr_dist_blended_iprobability_fixed_breaks", (DL_FUNC) &_reservr_dist_blended_iprobability_fixed_breaks, 7},
+    {"_reservr_dist_blended_iprobability_fixed_eps", (DL_FUNC) &_reservr_dist_blended_iprobability_fixed_eps, 7},
+    {"_reservr_dist_blended_iprobability_fixed_probs_breaks", (DL_FUNC) &_reservr_dist_blended_iprobability_fixed_probs_breaks, 8},
+    {"_reservr_dist_blended_iprobability_fixed_probs_eps", (DL_FUNC) &_reservr_dist_blended_iprobability_fixed_probs_eps, 8},
+    {"_reservr_dist_blended_iprobability_fixed_breaks_eps", (DL_FUNC) &_reservr_dist_blended_iprobability_fixed_breaks_eps, 8},
+    {"_reservr_dist_blended_iprobability_fixed_probs_breaks_eps", (DL_FUNC) &_reservr_dist_blended_iprobability_fixed_probs_breaks_eps, 9},
     {"_reservr_dgamma_matrix", (DL_FUNC) &_reservr_dgamma_matrix, 3},
     {"_reservr_pgamma_diff_matrix", (DL_FUNC) &_reservr_pgamma_diff_matrix, 4},
     {"_reservr_trunc_erlangmix_ellik", (DL_FUNC) &_reservr_trunc_erlangmix_ellik, 9},

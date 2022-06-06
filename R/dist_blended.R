@@ -883,133 +883,42 @@ BlendedDistribution <- distribution_class(
     comp_prob_int <- lapply(comps, function(comp) comp$compile_probability_interval())
 
     comp_param_counts <- vapply(comp_prob_int, function(fun) attr(fun, "n_params"), integer(1L))
-    comp_param_ends <- cumsum(comp_param_counts)
-    comp_param_starts <- comp_param_ends - comp_param_counts + 1L
 
     n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L + if (ph_u) k - 1L else 0L + if (ph_eps) k - 1L else 0L
 
-    component_code <- bquote({
-      compmat <- matrix(
-        data = 0.0,
-        nrow = .(if (n_params == 0L) quote(max(length(qmin), length(qmax))) else quote(nrow(param_matrix))),
-        ncol = .(k)
-      )
-    })
-
-    for (i in seq_len(k)) {
-      q_lo_expr <- if (i == 1L) {
-        TRUE
-      } else if (!ph_u && !ph_eps) {
-        bquote(qmax >= .(self$default_params$breaks[[i - 1L]] - self$default_params$bandwidths[[i - 1L]]))
-      } else {
-        bquote(
-          qmax >= .(
-            if (ph_u) bquote(param_matrix[, .(sum(comp_param_counts) + i - 1L)]) else self$default_params$breaks[[i - 1L]]
-          ) - .(
-            if (ph_eps) bquote(param_matrix[, .(sum(comp_param_counts) + k + i - 2L)]) else self$default_params$bandwidths[[i - 1L]]
-          )
-        )
-      }
-
-      q_hi_expr <- if (i == k) {
-        TRUE
-      } else if (!ph_u && !ph_eps) {
-        bquote(qmin <= .(self$default_params$breaks[[i]] + self$default_params$bandwidths[[i]]))
-      } else {
-        bquote(
-          qmin <= .(
-            if (ph_u) bquote(param_matrix[, .(sum(comp_param_counts) + i)]) else self$default_params$breaks[[i]]
-          ) + .(
-            if (ph_eps) bquote(param_matrix[, .(sum(comp_param_counts) + k + i - 1L)]) else self$default_params$bandwidths[[i]]
-          )
-        )
-      }
-
-      comp_param_expr <- if (comp_param_counts[i] > 0L) {
-        bquote(param_matrix[q_relevant, .(comp_param_starts[i]):.(comp_param_ends[i]), drop = FALSE])
-      } else {
-        NULL
-      }
-
-      break_min_expr <- if (i == 1L) {
-        -Inf
-      } else if (ph_u) {
-        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + i - 1L)])
-      } else {
-        self$default_params$breaks[[i - 1L]]
-      }
-
-      epsilon_min_expr <- if (i == 1L) {
-        0.0
-      } else if (ph_eps) {
-        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + k + i - 2L)])
-      } else {
-        self$default_params$bandwidths[[i - 1L]]
-      }
-
-      break_max_expr <- if (i == k) {
-        Inf
-      } else if (ph_u) {
-        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + i)])
-      } else {
-        self$default_params$breaks[[i]]
-      }
-
-      epsilon_max_expr <- if (i == k) {
-        0.0
-      } else if (ph_eps) {
-        bquote(param_matrix[q_relevant, .(sum(comp_param_counts) + k + i - 1L)])
-      } else {
-        self$default_params$bandwidths[[i]]
-      }
-
-      component_code[[i + 2L]] <- bquote({
-        q_relevant <- .(q_lo_expr) & .(q_hi_expr)
-        if (any(q_relevant)) {
-          blend_min <- pmax(blended_transition_fst(
-            qmin[q_relevant],
-            .(break_min_expr),
-            .(break_max_expr),
-            .(epsilon_min_expr),
-            .(epsilon_max_expr),
-            blend_left = .(i > 1L),
-            blend_right = .(i < k)
-          )[[1L]], .(break_min_expr))
-
-          blend_max <- pmin(blended_transition_fst(
-            qmax[q_relevant],
-            .(break_min_expr),
-            .(break_max_expr),
-            .(epsilon_min_expr),
-            .(epsilon_max_expr),
-            blend_left = .(i > 1L),
-            blend_right = .(i < k)
-          )[[1L]], .(break_max_expr))
-
-          ptrunc <- comp_prob_int[[.(i)]](.(break_min_expr), .(break_max_expr), .(comp_param_expr))
-
-          compmat[q_relevant, .(i)] <- comp_prob_int[[.(i)]](blend_min, blend_max, .(comp_param_expr)) / ptrunc
-        }
-      })
+    if (!ph_probs) {
+      prob_expr <- as.numeric(self$default_params$probs)
     }
 
-    mixture_code <- if (ph_probs) {
-      bquote({
-        probmat <- param_matrix[, .(n_params - k + 1L):.(n_params), drop = FALSE]
-        probmat <- probmat / rowSums(probmat)
-        res <- rowSums(compmat * probmat)
-      })
+    if (!ph_u) {
+      u_expr <- as.numeric(self$default_params$breaks)
+    }
+
+    if (!ph_eps) {
+      eps_expr <- as.numeric(self$default_params$bandwidths)
+    }
+
+    prob_code <- if (!ph_probs && !ph_u && !ph_eps) {
+      bquote(drop(dist_blended_iprobability_fixed_probs_breaks_eps(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(u_expr), .(eps_expr))))
+    } else if (!ph_probs && !ph_u) {
+      bquote(drop(dist_blended_iprobability_fixed_probs_breaks(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(u_expr))))
+    } else if (!ph_probs && !ph_eps) {
+      bquote(drop(dist_blended_iprobability_fixed_probs_eps(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(eps_expr))))
+    } else if (!ph_u && !ph_eps) {
+      bquote(drop(dist_blended_iprobability_fixed_breaks_eps(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(u_expr), .(eps_expr))))
+    } else if (!ph_probs) {
+      bquote(drop(dist_blended_iprobability_fixed_probs(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr))))
+    } else if (!ph_u) {
+      bquote(drop(dist_blended_iprobability_fixed_breaks(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(u_expr))))
+    } else if (!ph_eps) {
+      bquote(drop(dist_blended_iprobability_fixed_eps(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(eps_expr))))
     } else {
-      probs <- as.numeric(self$get_params()$probs)
-      probs <- probs / sum(probs)
-      bquote(res <- drop(compmat %*% .(probs)))
+      bquote(drop(dist_blended_iprobability_free(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int)))
     }
 
     as_compiled_distribution_function(
       eval(bquote(function(qmin, qmax, param_matrix, log.p = FALSE) {
-        .(component_code)
-        .(mixture_code)
-        if (log.p) log(res) else res
+        .(prob_code)
       })),
       n_params
     )

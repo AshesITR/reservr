@@ -185,6 +185,38 @@ dist_blended_probability_fixed_probs_breaks_eps <- function(q, params, lower_tai
     .Call(`_reservr_dist_blended_probability_fixed_probs_breaks_eps`, q, params, lower_tail, log_p, param_sizes, comp_iprobabilities, probs, breaks, epsilons)
 }
 
+dist_blended_iprobability_free <- function(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities) {
+    .Call(`_reservr_dist_blended_iprobability_free`, qmin, qmax, params, log_p, param_sizes, comp_iprobabilities)
+}
+
+dist_blended_iprobability_fixed_probs <- function(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs) {
+    .Call(`_reservr_dist_blended_iprobability_fixed_probs`, qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs)
+}
+
+dist_blended_iprobability_fixed_breaks <- function(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, breaks) {
+    .Call(`_reservr_dist_blended_iprobability_fixed_breaks`, qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, breaks)
+}
+
+dist_blended_iprobability_fixed_eps <- function(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, epsilons) {
+    .Call(`_reservr_dist_blended_iprobability_fixed_eps`, qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, epsilons)
+}
+
+dist_blended_iprobability_fixed_probs_breaks <- function(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, breaks) {
+    .Call(`_reservr_dist_blended_iprobability_fixed_probs_breaks`, qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, breaks)
+}
+
+dist_blended_iprobability_fixed_probs_eps <- function(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, epsilons) {
+    .Call(`_reservr_dist_blended_iprobability_fixed_probs_eps`, qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, epsilons)
+}
+
+dist_blended_iprobability_fixed_breaks_eps <- function(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, breaks, epsilons) {
+    .Call(`_reservr_dist_blended_iprobability_fixed_breaks_eps`, qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, breaks, epsilons)
+}
+
+dist_blended_iprobability_fixed_probs_breaks_eps <- function(qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, breaks, epsilons) {
+    .Call(`_reservr_dist_blended_iprobability_fixed_probs_breaks_eps`, qmin, qmax, params, log_p, param_sizes, comp_iprobabilities, probs, breaks, epsilons)
+}
+
 dgamma_matrix <- function(x, shape, scale) {
     .Call(`_reservr_dgamma_matrix`, x, shape, scale)
 }
