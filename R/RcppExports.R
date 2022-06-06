@@ -89,6 +89,38 @@ dist_erlangmix_probability_fixed_probs_scale_shape <- function(q, lower_tail, lo
     .Call(`_reservr_dist_erlangmix_probability_fixed_probs_scale_shape`, q, lower_tail, log_p, probs, scale, shapes)
 }
 
+dist_erlangmix_iprobability_free <- function(qmin, qmax, params, log_p) {
+    .Call(`_reservr_dist_erlangmix_iprobability_free`, qmin, qmax, params, log_p)
+}
+
+dist_erlangmix_iprobability_fixed_shape <- function(qmin, qmax, params, log_p, shapes) {
+    .Call(`_reservr_dist_erlangmix_iprobability_fixed_shape`, qmin, qmax, params, log_p, shapes)
+}
+
+dist_erlangmix_iprobability_fixed_scale <- function(qmin, qmax, params, log_p, scale) {
+    .Call(`_reservr_dist_erlangmix_iprobability_fixed_scale`, qmin, qmax, params, log_p, scale)
+}
+
+dist_erlangmix_iprobability_fixed_probs <- function(qmin, qmax, params, log_p, probs) {
+    .Call(`_reservr_dist_erlangmix_iprobability_fixed_probs`, qmin, qmax, params, log_p, probs)
+}
+
+dist_erlangmix_iprobability_fixed_probs_scale <- function(qmin, qmax, params, log_p, probs, scale) {
+    .Call(`_reservr_dist_erlangmix_iprobability_fixed_probs_scale`, qmin, qmax, params, log_p, probs, scale)
+}
+
+dist_erlangmix_iprobability_fixed_probs_shape <- function(qmin, qmax, params, log_p, probs, shapes) {
+    .Call(`_reservr_dist_erlangmix_iprobability_fixed_probs_shape`, qmin, qmax, params, log_p, probs, shapes)
+}
+
+dist_erlangmix_iprobability_fixed_scale_shape <- function(qmin, qmax, params, log_p, scale, shapes) {
+    .Call(`_reservr_dist_erlangmix_iprobability_fixed_scale_shape`, qmin, qmax, params, log_p, scale, shapes)
+}
+
+dist_erlangmix_iprobability_fixed_probs_scale_shape <- function(qmin, qmax, log_p, probs, scale, shapes) {
+    .Call(`_reservr_dist_erlangmix_iprobability_fixed_probs_scale_shape`, qmin, qmax, log_p, probs, scale, shapes)
+}
+
 dgamma_matrix <- function(x, shape, scale) {
     .Call(`_reservr_dgamma_matrix`, x, shape, scale)
 }

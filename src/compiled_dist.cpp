@@ -315,3 +315,77 @@ arma::vec dist_erlangmix_probability_fixed_scale_shape(const arma::vec q, const 
 arma::vec dist_erlangmix_probability_fixed_probs_scale_shape(const arma::vec q, bool lower_tail, bool log_p, const arma::vec probs, const arma::vec scale, const arma::vec shapes) {
   return dist_erlangmix_probability_impl(q, lower_tail, log_p, probs, scale, shapes);
 }
+
+// efficiently compute erlang mixture interval probabilities with possibly fixed parameters
+
+template <typename TP, typename TS>
+arma::vec dist_erlangmix_iprobability_impl(const arma::vec qmin, const arma::vec qmax, bool log_p, const TP probs, const arma::vec scale, const TS shapes) {
+  int k = num_components(probs);
+  int n = std::max(std::max(qmin.n_elem, qmax.n_rows), std::max(probs.n_rows, std::max(scale.n_elem, shapes.n_rows)));
+  bool shape_is_matrix = is_matrix(shapes);
+  arma::mat compprob(n, k);
+  int i_qmin = 0, d_qmin = qmin.n_elem > 1 ? 1 : 0;
+  int i_qmax = 0, d_qmax = qmax.n_elem > 1 ? 1 : 0;
+  int i_s = 0, d_s = scale.n_elem > 1 ? 1 : 0;
+  double curr_shape;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < k; j++) {
+      if (shape_is_matrix) {
+        curr_shape = shapes(i, j);
+      } else {
+        curr_shape = shapes[j];
+      }
+      compprob(i, j) = R::pgamma(qmax[i_qmax], curr_shape, scale[i_s], 1, 0) - R::pgamma(qmin[i_qmin], curr_shape, scale[i_s], 1, 0);
+    }
+    i_qmin += d_qmin;
+    i_qmax += d_qmax;
+    i_s += d_s;
+  }
+  arma::vec res = aggregate_mixture(compprob, probs);
+  if (log_p) res = log(res);
+  return res;
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_iprobability_free(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p) {
+  int k = (params.n_cols - 1) / 2;
+  return dist_erlangmix_iprobability_impl(qmin, qmax, log_p, params.tail_cols(k), params.col(k), params.head_cols(k));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_iprobability_fixed_shape(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::vec shapes) {
+  int k = shapes.n_elem;
+  return dist_erlangmix_iprobability_impl(qmin, qmax, log_p, params.tail_cols(k), params.col(0), shapes);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_iprobability_fixed_scale(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::vec scale) {
+  int k = params.n_cols / 2;
+  return dist_erlangmix_iprobability_impl(qmin, qmax, log_p, params.tail_cols(k), scale, params.head_cols(k));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_iprobability_fixed_probs(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::vec probs) {
+  int k = probs.n_elem;
+  return dist_erlangmix_iprobability_impl(qmin, qmax, log_p, probs, params.col(k), params.head_cols(k));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_iprobability_fixed_probs_scale(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::vec probs, const arma::vec scale) {
+  return dist_erlangmix_iprobability_impl(qmin, qmax, log_p, probs, scale, params);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_iprobability_fixed_probs_shape(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::vec probs, const arma::vec shapes) {
+  return dist_erlangmix_iprobability_impl(qmin, qmax, log_p, probs, params.col(0), shapes);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_iprobability_fixed_scale_shape(const arma::vec qmin, const arma::vec qmax, const arma::mat params, bool log_p, const arma::vec scale, const arma::vec shapes) {
+  return dist_erlangmix_iprobability_impl(qmin, qmax, log_p, params, scale, shapes);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_erlangmix_iprobability_fixed_probs_scale_shape(const arma::vec qmin, const arma::vec qmax, bool log_p, const arma::vec probs, const arma::vec scale, const arma::vec shapes) {
+  return dist_erlangmix_iprobability_impl(qmin, qmax, log_p, probs, scale, shapes);
+}

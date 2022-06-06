@@ -500,54 +500,40 @@ ErlangMixtureDistribution <- distribution_class(
 
     n_params <- (as.integer(ph_shapes) + as.integer(ph_probs)) * k + as.integer(ph_scale)
 
-    scale_expr <- if (ph_scale) substitute(param_matrix[, i_scale], list(
-      i_scale = 1L + if (ph_shapes) k else 0L
-    )) else self$default_params$scale
-
-    probs_expr <- if (ph_shapes || ph_scale) {
-      substitute(param_matrix[, i_prob:j_prob, drop = FALSE], list(
-        i_prob = 1L + if (ph_shapes) k else 0L + as.integer(ph_scale),
-        j_prob = k + if (ph_shapes) k else 0L + as.integer(ph_scale)
-      ))
-    } else {
-      quote(param_matrix)
+    if (!ph_probs) {
+      prob_expr <- as.numeric(self$default_params$probs)
     }
 
-    cdfmat_code <- if (ph_shapes) {
-      substitute(
-        cdfmat <- pgamma(qmax, shape = param_matrix[, 1L:k, drop = FALSE], scale = scale_expr) -
-          pgamma(qmin, shape = param_matrix[, 1L:k, drop = FALSE], scale = scale_expr),
-        list(k = k, scale_expr = scale_expr)
-      )
-    } else {
-      bquote({
-        cdfmat <- pgamma_diff_matrix(
-          lower = qmin,
-          upper = qmax,
-          shape = .(as.numeric(self$default_params$shapes)),
-          scale = .(scale_expr)
-        )
-      })
+    if (!ph_scale) {
+      scale_expr <- self$default_params$scale
     }
 
-    probmix_code <- if (ph_probs) {
-      substitute({
-        probmat <- probs_expr
-        res <- rowSums(cdfmat * probmat) / rowSums(probmat)
-      }, list(probs_expr = probs_expr))
+    if (!ph_shapes) {
+      shapes_expr <- as.numeric(self$default_params$shapes)
+    }
+
+    prob_code <- if (!ph_probs && !ph_scale && !ph_shapes) {
+      bquote(drop(dist_erlangmix_iprobability_fixed_probs_scale_shape(qmin, qmax, log.p, .(prob_expr), .(scale_expr), .(shapes_expr))))
+    } else if (!ph_probs && !ph_scale) {
+      bquote(drop(dist_erlangmix_iprobability_fixed_probs_scale(qmin, qmax, param_matrix, log.p, .(prob_expr), .(scale_expr))))
+    } else if (!ph_probs && !ph_shapes) {
+      bquote(drop(dist_erlangmix_iprobability_fixed_probs_shape(qmin, qmax, param_matrix, log.p, .(prob_expr), .(shapes_expr))))
+    } else if (!ph_scale && !ph_shapes) {
+      bquote(drop(dist_erlangmix_iprobability_fixed_scale_shape(qmin, qmax, param_matrix, log.p, .(scale_expr), .(shapes_expr))))
+    } else if (!ph_probs) {
+      bquote(drop(dist_erlangmix_iprobability_fixed_probs(qmin, qmax, param_matrix, log.p, .(prob_expr))))
+    } else if (!ph_scale) {
+      bquote(drop(dist_erlangmix_iprobability_fixed_scale(qmin, qmax, param_matrix, log.p, .(scale_expr))))
+    } else if (!ph_shapes) {
+      bquote(drop(dist_erlangmix_iprobability_fixed_shape(qmin, qmax, param_matrix, log.p, .(shapes_expr))))
     } else {
-      probs <- as.numeric(self$get_params()$probs)
-      probs <- probs / sum(probs)
-      substitute(res <- drop(cdfmat %*% probs), list(probs = probs))
+      bquote(drop(dist_erlangmix_iprobability_free(qmin, qmax, param_matrix, log.p)))
     }
 
     as_compiled_distribution_function(
-      eval(substitute(function(qmin, qmax, param_matrix, log.p = FALSE) {
-        cdfmat_code
-        probmix_code
-        if (log.p) res <- log(res)
-        res
-      }, list(cdfmat_code = cdfmat_code, probmix_code = probmix_code))),
+      eval(bquote(function(qmin, qmax, param_matrix, log.p = FALSE) {
+        .(prob_code)
+      })),
       n_params
     )
   }
