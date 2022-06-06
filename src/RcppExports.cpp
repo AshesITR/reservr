@@ -471,6 +471,154 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dist_blended_density_free
+arma::vec dist_blended_density_free(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete);
+RcppExport SEXP _reservr_dist_blended_density_free(SEXP xSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_densitiesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP is_discreteSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_densities(comp_densitiesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type is_discrete(is_discreteSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_density_free(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_density_fixed_probs
+arma::vec dist_blended_density_fixed_probs(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec probs);
+RcppExport SEXP _reservr_dist_blended_density_fixed_probs(SEXP xSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_densitiesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP is_discreteSEXP, SEXP probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_densities(comp_densitiesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type is_discrete(is_discreteSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_density_fixed_probs(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_density_fixed_breaks
+arma::vec dist_blended_density_fixed_breaks(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec breaks);
+RcppExport SEXP _reservr_dist_blended_density_fixed_breaks(SEXP xSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_densitiesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP is_discreteSEXP, SEXP breaksSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_densities(comp_densitiesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type is_discrete(is_discreteSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type breaks(breaksSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_density_fixed_breaks(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, breaks));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_density_fixed_eps
+arma::vec dist_blended_density_fixed_eps(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec epsilons);
+RcppExport SEXP _reservr_dist_blended_density_fixed_eps(SEXP xSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_densitiesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP is_discreteSEXP, SEXP epsilonsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_densities(comp_densitiesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type is_discrete(is_discreteSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type epsilons(epsilonsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_density_fixed_eps(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, epsilons));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_density_fixed_probs_breaks
+arma::vec dist_blended_density_fixed_probs_breaks(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec probs, const arma::vec breaks);
+RcppExport SEXP _reservr_dist_blended_density_fixed_probs_breaks(SEXP xSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_densitiesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP is_discreteSEXP, SEXP probsSEXP, SEXP breaksSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_densities(comp_densitiesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type is_discrete(is_discreteSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type breaks(breaksSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_density_fixed_probs_breaks(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, breaks));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_density_fixed_probs_eps
+arma::vec dist_blended_density_fixed_probs_eps(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec probs, const arma::vec epsilons);
+RcppExport SEXP _reservr_dist_blended_density_fixed_probs_eps(SEXP xSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_densitiesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP is_discreteSEXP, SEXP probsSEXP, SEXP epsilonsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_densities(comp_densitiesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type is_discrete(is_discreteSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type epsilons(epsilonsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_density_fixed_probs_eps(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, epsilons));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_density_fixed_breaks_eps
+arma::vec dist_blended_density_fixed_breaks_eps(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec breaks, const arma::vec epsilons);
+RcppExport SEXP _reservr_dist_blended_density_fixed_breaks_eps(SEXP xSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_densitiesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP is_discreteSEXP, SEXP breaksSEXP, SEXP epsilonsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_densities(comp_densitiesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type is_discrete(is_discreteSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type breaks(breaksSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type epsilons(epsilonsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_density_fixed_breaks_eps(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, breaks, epsilons));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_blended_density_fixed_probs_breaks_eps
+arma::vec dist_blended_density_fixed_probs_breaks_eps(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec probs, const arma::vec breaks, const arma::vec epsilons);
+RcppExport SEXP _reservr_dist_blended_density_fixed_probs_breaks_eps(SEXP xSEXP, SEXP paramsSEXP, SEXP log_pSEXP, SEXP param_sizesSEXP, SEXP comp_densitiesSEXP, SEXP comp_iprobabilitiesSEXP, SEXP is_discreteSEXP, SEXP probsSEXP, SEXP breaksSEXP, SEXP epsilonsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type param_sizes(param_sizesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_densities(comp_densitiesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type comp_iprobabilities(comp_iprobabilitiesSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec >::type is_discrete(is_discreteSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type probs(probsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type breaks(breaksSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type epsilons(epsilonsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_blended_density_fixed_probs_breaks_eps(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, breaks, epsilons));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dgamma_matrix
 NumericMatrix dgamma_matrix(NumericVector x, NumericVector shape, double scale);
 RcppExport SEXP _reservr_dgamma_matrix(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP) {
@@ -616,6 +764,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"_reservr_dist_erlangmix_iprobability_fixed_probs_shape", (DL_FUNC) &_reservr_dist_erlangmix_iprobability_fixed_probs_shape, 6},
     {"_reservr_dist_erlangmix_iprobability_fixed_scale_shape", (DL_FUNC) &_reservr_dist_erlangmix_iprobability_fixed_scale_shape, 6},
     {"_reservr_dist_erlangmix_iprobability_fixed_probs_scale_shape", (DL_FUNC) &_reservr_dist_erlangmix_iprobability_fixed_probs_scale_shape, 6},
+    {"_reservr_dist_blended_density_free", (DL_FUNC) &_reservr_dist_blended_density_free, 7},
+    {"_reservr_dist_blended_density_fixed_probs", (DL_FUNC) &_reservr_dist_blended_density_fixed_probs, 8},
+    {"_reservr_dist_blended_density_fixed_breaks", (DL_FUNC) &_reservr_dist_blended_density_fixed_breaks, 8},
+    {"_reservr_dist_blended_density_fixed_eps", (DL_FUNC) &_reservr_dist_blended_density_fixed_eps, 8},
+    {"_reservr_dist_blended_density_fixed_probs_breaks", (DL_FUNC) &_reservr_dist_blended_density_fixed_probs_breaks, 9},
+    {"_reservr_dist_blended_density_fixed_probs_eps", (DL_FUNC) &_reservr_dist_blended_density_fixed_probs_eps, 9},
+    {"_reservr_dist_blended_density_fixed_breaks_eps", (DL_FUNC) &_reservr_dist_blended_density_fixed_breaks_eps, 9},
+    {"_reservr_dist_blended_density_fixed_probs_breaks_eps", (DL_FUNC) &_reservr_dist_blended_density_fixed_probs_breaks_eps, 10},
     {"_reservr_dgamma_matrix", (DL_FUNC) &_reservr_dgamma_matrix, 3},
     {"_reservr_pgamma_diff_matrix", (DL_FUNC) &_reservr_pgamma_diff_matrix, 4},
     {"_reservr_trunc_erlangmix_ellik", (DL_FUNC) &_reservr_trunc_erlangmix_ellik, 9},

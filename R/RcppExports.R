@@ -121,6 +121,38 @@ dist_erlangmix_iprobability_fixed_probs_scale_shape <- function(qmin, qmax, log_
     .Call(`_reservr_dist_erlangmix_iprobability_fixed_probs_scale_shape`, qmin, qmax, log_p, probs, scale, shapes)
 }
 
+dist_blended_density_free <- function(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete) {
+    .Call(`_reservr_dist_blended_density_free`, x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete)
+}
+
+dist_blended_density_fixed_probs <- function(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs) {
+    .Call(`_reservr_dist_blended_density_fixed_probs`, x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs)
+}
+
+dist_blended_density_fixed_breaks <- function(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, breaks) {
+    .Call(`_reservr_dist_blended_density_fixed_breaks`, x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, breaks)
+}
+
+dist_blended_density_fixed_eps <- function(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, epsilons) {
+    .Call(`_reservr_dist_blended_density_fixed_eps`, x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, epsilons)
+}
+
+dist_blended_density_fixed_probs_breaks <- function(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, breaks) {
+    .Call(`_reservr_dist_blended_density_fixed_probs_breaks`, x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, breaks)
+}
+
+dist_blended_density_fixed_probs_eps <- function(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, epsilons) {
+    .Call(`_reservr_dist_blended_density_fixed_probs_eps`, x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, epsilons)
+}
+
+dist_blended_density_fixed_breaks_eps <- function(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, breaks, epsilons) {
+    .Call(`_reservr_dist_blended_density_fixed_breaks_eps`, x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, breaks, epsilons)
+}
+
+dist_blended_density_fixed_probs_breaks_eps <- function(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, breaks, epsilons) {
+    .Call(`_reservr_dist_blended_density_fixed_probs_breaks_eps`, x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, breaks, epsilons)
+}
+
 dgamma_matrix <- function(x, shape, scale) {
     .Call(`_reservr_dgamma_matrix`, x, shape, scale)
 }

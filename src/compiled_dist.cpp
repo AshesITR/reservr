@@ -29,21 +29,39 @@ arma::vec aggregate_mixture<arma::vec>(const arma::mat compmat, const arma::vec 
 }
 
 template <typename T>
-int num_components(const T probs);
+const unsigned int num_components(const T x);
 
 template <>
-int num_components<arma::subview_cols<double>>(const arma::subview_cols<double> probs) {
-  return probs.n_cols;
+const unsigned int num_components<arma::subview_cols<double>>(const arma::subview_cols<double> x) {
+  return x.n_cols;
 }
 
 template <>
-int num_components<arma::mat>(const arma::mat probs) {
-  return probs.n_cols;
+const unsigned int num_components<arma::mat>(const arma::mat x) {
+  return x.n_cols;
 }
 
 template <>
-int num_components<arma::vec>(const arma::vec probs) {
-  return probs.n_elem;
+const unsigned int num_components<arma::vec>(const arma::vec x) {
+  return x.n_elem;
+}
+
+template <typename T>
+const unsigned int num_observations(const T x);
+
+template <>
+const unsigned int num_observations<arma::subview_cols<double>>(const arma::subview_cols<double> x) {
+  return x.n_rows;
+}
+
+template <>
+const unsigned int num_observations<arma::mat>(const arma::mat x) {
+  return x.n_rows;
+}
+
+template <>
+const unsigned int num_observations<arma::vec>(const arma::vec x) {
+  return 1;
 }
 
 template <typename T>
@@ -62,6 +80,142 @@ bool is_matrix<arma::mat>(const arma::mat x) {
 template <>
 bool is_matrix<arma::subview_cols<double>>(const arma::subview_cols<double> x) {
   return true;
+}
+
+template <typename T>
+arma::vec column_or_element(const T x, int col);
+
+template <>
+arma::vec column_or_element<arma::vec>(const arma::vec x, int col) {
+  return x.subvec(col, col);
+}
+
+template <>
+arma::vec column_or_element<arma::mat>(const arma::mat x, int col) {
+  return x.col(col);
+}
+
+template <>
+arma::vec column_or_element<arma::subview_cols<double>>(const arma::subview_cols<double> x, int col) {
+  return x.col(col);
+}
+
+arma::uvec find_relevant(const arma::vec x, const arma::vec u_lo, const arma::vec e_lo, const arma::vec u_hi, const arma::vec e_hi) {
+  if (u_lo.n_elem > 1 && e_lo.n_elem > 1 && u_hi.n_elem > 1 && e_hi.n_elem > 1) { // all vec
+    return arma::find(u_lo - e_lo <= x && x <= u_hi + e_hi);
+
+  } else if (u_lo.n_elem > 1 && e_lo.n_elem > 1 && u_hi.n_elem > 1) { // 1 const
+    return arma::find(u_lo - e_lo <= x && x <= u_hi + e_hi[0]);
+  } else if (u_lo.n_elem > 1 && e_lo.n_elem > 1 && e_hi.n_elem > 1) {
+    return arma::find(u_lo - e_lo <= x && x <= u_hi[0] + e_hi);
+  } else if (u_lo.n_elem > 1 && u_hi.n_elem > 1 && e_hi.n_elem > 1) {
+    return arma::find(u_lo - e_lo[0] <= x && x <= u_hi + e_hi);
+  } else if (e_lo.n_elem > 1 && u_hi.n_elem > 1 && e_hi.n_elem > 1) {
+    return arma::find(u_lo[0] - e_lo <= x && x <= u_hi + e_hi);
+
+  } else if (u_lo.n_elem > 1 && e_lo.n_elem > 1) { // 2 const
+    return arma::find(u_lo - e_lo <= x && x <= u_hi[0] + e_hi[0]);
+  } else if (u_lo.n_elem > 1 && u_hi.n_elem > 1) {
+    return arma::find(u_lo - e_lo[0] <= x && x <= u_hi + e_hi[0]);
+  } else if (e_lo.n_elem > 1 && u_hi.n_elem > 1) {
+    return arma::find(u_lo[0] - e_lo <= x && x <= u_hi + e_hi[0]);
+  } else if (u_lo.n_elem > 1 && e_hi.n_elem > 1) {
+    return arma::find(u_lo - e_lo[0] <= x && x <= u_hi[0] + e_hi);
+  } else if (e_lo.n_elem > 1 && e_hi.n_elem > 1) {
+    return arma::find(u_lo[0] - e_lo <= x && x <= u_hi[0] + e_hi);
+  } else if (u_hi.n_elem > 1 && e_hi.n_elem > 1) {
+    return arma::find(u_lo[0] - e_lo[0] <= x && x <= u_hi + e_hi);
+
+  } else if (u_lo.n_elem > 1) { // 3 const
+    return arma::find(u_lo - e_lo[0] <= x && x <= u_hi[0] + e_hi[0]);
+  } else if (e_lo.n_elem > 1) {
+    return arma::find(u_lo[0] - e_lo <= x && x <= u_hi[0] + e_hi[0]);
+  } else if (u_hi.n_elem > 1) {
+    return arma::find(u_lo[0] - e_lo[0] <= x && x <= u_hi + e_hi[0]);
+  } else if (e_hi.n_elem > 1) {
+    return arma::find(u_lo[0] - e_lo[0] <= x && x <= u_hi[0] + e_hi);
+
+  } else { // all const
+    return arma::find(u_lo[0] - e_lo[0] <= x && x <= u_hi[0] + e_hi[0]);
+  }
+}
+
+void blend_transform(arma::vec& x, const arma::vec u_lo, const arma::vec e_lo, const arma::vec u_hi, const arma::vec e_hi) {
+  if (e_lo.n_elem > 1 || e_lo[0] != 0.0) {
+    // blend lower region, x < u_lo + e_lo
+    arma::uvec i;
+    if (u_lo.n_elem > 1 && e_lo.n_elem > 1) {
+      i = arma::find(x < u_lo + e_lo);
+      x(i) = 0.5 * (x(i) + u_lo(i) + e_lo(i)) - e_lo(i) / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_lo(i)) / e_lo(i));
+    } else if (u_lo.n_elem > 1) {
+      i = arma::find(x < u_lo + e_lo[0]);
+      x(i) = 0.5 * (x(i) + u_lo(i) + e_lo[0]) - e_lo[0] / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_lo(i)) / e_lo[0]);
+    } else if (e_lo.n_elem > 1) {
+      i = arma::find(x < u_lo[0] + e_lo);
+      x(i) = 0.5 * (x(i) + u_lo[0] + e_lo(i)) - e_lo(i) / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_lo[0]) / e_lo(i));
+    } else {
+      i = arma::find(x < u_lo[0] + e_lo[0]);
+      x(i) = 0.5 * (x(i) + u_lo[0] + e_lo[0]) - e_lo[0] / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_lo[0]) / e_lo[0]);
+    }
+  }
+
+  if (e_hi.n_elem > 1 || e_hi[0] != 0.0) {
+    arma::uvec i;
+    if (u_hi.n_elem > 1 && e_hi.n_elem > 1) {
+      i = arma::find(x > u_hi - e_hi);
+      x(i) = 0.5 * (x(i) + u_hi(i) - e_hi(i)) + e_hi(i) / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_hi(i)) / e_hi(i));
+    } else if (u_hi.n_elem > 1) {
+      i = arma::find(x > u_hi - e_hi[0]);
+      x(i) = 0.5 * (x(i) + u_hi(i) - e_hi[0]) + e_hi[0] / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_hi(i)) / e_hi[0]);
+    } else if (e_hi.n_elem > 1) {
+      i = arma::find(x > u_hi[0] - e_hi);
+      x(i) = 0.5 * (x(i) + u_hi[0] - e_hi(i)) + e_hi(i) / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_hi[0]) / e_hi(i));
+    } else {
+      i = arma::find(x > u_hi[0] - e_hi[0]);
+      x(i) = 0.5 * (x(i) + u_hi[0] - e_hi[0]) + e_hi[0] / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_hi[0]) / e_hi[0]);
+    }
+  }
+}
+
+arma::vec dblend_transform(const arma::vec x, const arma::vec u_lo, const arma::vec e_lo, const arma::vec u_hi, const arma::vec e_hi) {
+  arma::vec dout(arma::size(x), arma::fill::ones);
+
+  if (e_lo.n_elem > 1 || e_lo[0] != 0.0) {
+    // blend lower region, x < u_lo + e_lo
+    arma::uvec i;
+    if (u_lo.n_elem > 1 && e_lo.n_elem > 1) {
+      i = arma::find(x < u_lo + e_lo);
+      dout(i) = 0.5 + 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_lo(i)) / e_lo(i));
+    } else if (u_lo.n_elem > 1) {
+      i = arma::find(x < u_lo + e_lo[0]);
+      dout(i) = 0.5 + 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_lo(i)) / e_lo[0]);
+    } else if (e_lo.n_elem > 1) {
+      i = arma::find(x < u_lo[0] + e_lo);
+      dout(i) = 0.5 + 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_lo[0]) / e_lo(i));
+    } else {
+      i = arma::find(x < u_lo[0] + e_lo[0]);
+      dout(i) = 0.5 + 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_lo[0]) / e_lo[0]);
+    }
+  }
+
+  if (e_hi.n_elem > 1 || e_hi[0] != 0.0) {
+    arma::uvec i;
+    if (u_hi.n_elem > 1 && e_hi.n_elem > 1) {
+      i = arma::find(x > u_hi - e_hi);
+      dout(i) = 0.5 - 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_hi(i)) / e_hi(i));
+    } else if (u_hi.n_elem > 1) {
+      i = arma::find(x > u_hi - e_hi[0]);
+      dout(i) = 0.5 - 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_hi(i)) / e_hi[0]);
+    } else if (e_hi.n_elem > 1) {
+      i = arma::find(x > u_hi[0] - e_hi);
+      dout(i) = 0.5 - 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_hi[0]) / e_hi(i));
+    } else {
+      i = arma::find(x > u_hi[0] - e_hi[0]);
+      dout(i) = 0.5 - 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_hi[0]) / e_hi[0]);
+    }
+  }
+
+  return dout;
 }
 
 // efficiently compute mixture densities with possibly fixed probs
@@ -83,10 +237,10 @@ arma::vec dist_mixture_density_impl(const arma::vec x, const arma::mat params, b
     Rcpp::Function curr_fun = comp_densities[j];
     compdens.col(j) = Rcpp::as<arma::vec>(curr_fun(x, curr_params, false));
   }
-  if (!all(is_discrete) && any(is_discrete)) {
+  if (arma::any(is_discrete == 1) && arma::any(is_discrete == 0)) {
     // mixed type => need to conditionally zero continuous densities
-    arma::uvec cont_components = find(is_discrete == 0);
-    arma::uvec disc_points  = any(compdens.cols(find(is_discrete)), 1);
+    arma::uvec cont_components = arma::find(is_discrete == 0);
+    arma::uvec disc_points = arma::find(arma::any(compdens.cols(arma::find(is_discrete == 1)), 1));
     compdens.submat(disc_points, cont_components).fill(0.0);
   }
   arma::vec res = aggregate_mixture(compdens, probs);
@@ -177,7 +331,7 @@ arma::vec dist_mixture_iprobability_fixed(const arma::vec qmin, const arma::vec 
 template <typename TP, typename TS>
 arma::vec dist_erlangmix_density_impl(const arma::vec x, bool log_p, const TP probs, const arma::vec scale, const TS shapes) {
   int k = num_components(probs);
-  int n = std::max(std::max(x.n_elem, probs.n_rows), std::max(scale.n_elem, shapes.n_rows));
+  int n = std::max(std::max(x.n_elem, num_observations(probs)), std::max(scale.n_elem, num_observations(shapes)));
   bool shape_is_matrix = is_matrix(shapes);
   arma::mat compdens(n, k);
   int i_x = 0, d_x = x.n_elem > 1 ? 1 : 0;
@@ -249,7 +403,7 @@ arma::vec dist_erlangmix_density_fixed_probs_scale_shape(const arma::vec x, bool
 template <typename TP, typename TS>
 arma::vec dist_erlangmix_probability_impl(const arma::vec q, bool lower_tail, bool log_p, const TP probs, const arma::vec scale, const TS shapes) {
   int k = num_components(probs);
-  int n = std::max(std::max(q.n_elem, probs.n_rows), std::max(scale.n_elem, shapes.n_rows));
+  int n = std::max(std::max(q.n_elem, num_observations(probs)), std::max(scale.n_elem, num_observations(shapes)));
   bool shape_is_matrix = is_matrix(shapes);
   arma::mat compprob(n, k);
   int i_q = 0, d_q = q.n_elem > 1 ? 1 : 0;
@@ -321,7 +475,7 @@ arma::vec dist_erlangmix_probability_fixed_probs_scale_shape(const arma::vec q, 
 template <typename TP, typename TS>
 arma::vec dist_erlangmix_iprobability_impl(const arma::vec qmin, const arma::vec qmax, bool log_p, const TP probs, const arma::vec scale, const TS shapes) {
   int k = num_components(probs);
-  int n = std::max(std::max(qmin.n_elem, qmax.n_rows), std::max(probs.n_rows, std::max(scale.n_elem, shapes.n_rows)));
+  int n = std::max(std::max(qmin.n_elem, qmax.n_elem), std::max(num_observations(probs), std::max(scale.n_elem, num_observations(shapes))));
   bool shape_is_matrix = is_matrix(shapes);
   arma::mat compprob(n, k);
   int i_qmin = 0, d_qmin = qmin.n_elem > 1 ? 1 : 0;
@@ -388,4 +542,134 @@ arma::vec dist_erlangmix_iprobability_fixed_scale_shape(const arma::vec qmin, co
 // [[Rcpp::export]]
 arma::vec dist_erlangmix_iprobability_fixed_probs_scale_shape(const arma::vec qmin, const arma::vec qmax, bool log_p, const arma::vec probs, const arma::vec scale, const arma::vec shapes) {
   return dist_erlangmix_iprobability_impl(qmin, qmax, log_p, probs, scale, shapes);
+}
+
+// efficiently compute blended densities with possibly fixed parameters
+
+template <typename TP, typename TU, typename TE>
+arma::vec dist_blended_density_impl(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const TP probs, const TU breaks, const TE epsilons) {
+  int k = comp_densities.size();
+  int n = std::max(std::max(x.n_elem, params.n_rows), std::max(num_observations(probs), std::max(num_observations(breaks), num_observations(epsilons))));
+  int i = 0;
+  arma::mat compdens(n, k, arma::fill::zeros);
+  SEXP curr_params;
+  bool breaks_is_matrix = is_matrix(breaks);
+  bool epsilons_is_matrix = is_matrix(epsilons);
+  for (int j = 0; j < k; j++) {
+    arma::uvec curr_relevant;
+    arma::vec curr_xblend;
+    arma::vec curr_dblend;
+    arma::vec curr_u_high, curr_e_high, curr_u_low, curr_e_low;
+    if (j == 0) {
+      curr_u_high = column_or_element(breaks, j);
+      curr_e_high = column_or_element(epsilons, j);
+      curr_u_low = arma::vec::fixed<1>{-std::numeric_limits<double>::infinity()};
+      curr_e_low = arma::zeros<arma::vec>(1);
+      curr_relevant = find_relevant(x, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      if (breaks_is_matrix) curr_u_high = curr_u_high(curr_relevant);
+      if (epsilons_is_matrix) curr_e_high = curr_e_high(curr_relevant);
+    } else if (j == k - 1) {
+      curr_u_high = arma::vec::fixed<1>{std::numeric_limits<double>::infinity()};
+      curr_e_high = arma::zeros<arma::vec>(1);
+      curr_u_low = column_or_element(breaks, j - 1);
+      curr_e_low = column_or_element(epsilons, j - 1);
+      curr_relevant = find_relevant(x, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      if (breaks_is_matrix) curr_u_low = curr_u_low(curr_relevant);
+      if (epsilons_is_matrix) curr_e_low = curr_e_low(curr_relevant);
+    } else {
+      curr_u_low = column_or_element(breaks, j - 1);
+      curr_e_low = column_or_element(epsilons, j - 1);
+      curr_u_high = column_or_element(breaks, j);
+      curr_e_high = column_or_element(epsilons, j);
+      curr_relevant = find_relevant(x, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+      if (breaks_is_matrix) {
+        curr_u_low = curr_u_low(curr_relevant);
+        curr_u_high = curr_u_high(curr_relevant);
+      }
+      if (epsilons_is_matrix) {
+        curr_e_low = curr_e_low(curr_relevant);
+        curr_e_high = curr_e_high(curr_relevant);
+      }
+    }
+    curr_xblend = x.elem(curr_relevant);
+    curr_dblend = dblend_transform(curr_xblend, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+    blend_transform(curr_xblend, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
+
+    if (param_sizes[j] > 0) {
+      arma::mat curr_params_mat = params.submat(curr_relevant, arma::regspace<arma::uvec>(i, i + param_sizes[j] - 1));
+      curr_params = Rcpp::wrap(curr_params_mat);
+      i += param_sizes[j];
+    } else {
+      curr_params = R_NilValue;
+    }
+
+    Rcpp::Function curr_dfun = comp_densities[j];
+    Rcpp::Function curr_ipfun = comp_iprobabilities[j];
+
+    arma::vec curr_dens(n, arma::fill::zeros);
+    arma::vec ptrunc = Rcpp::as<arma::vec>(curr_ipfun(curr_u_low, curr_u_high, curr_params, false));
+    if (ptrunc.n_elem > 1) {
+      curr_dens(curr_relevant) = Rcpp::as<arma::vec>(curr_dfun(curr_xblend, curr_params, false)) % curr_dblend / ptrunc;
+    } else {
+      curr_dens(curr_relevant) = Rcpp::as<arma::vec>(curr_dfun(curr_xblend, curr_params, false)) % curr_dblend / ptrunc[0];
+    }
+
+    compdens.col(j) = curr_dens;
+  }
+  if (arma::any(is_discrete == 1) && arma::any(is_discrete == 0)) {
+    // mixed type => need to conditionally zero continuous densities
+    arma::uvec cont_components = arma::find(is_discrete == 0);
+    arma::uvec disc_points = arma::find(arma::any(compdens.cols(arma::find(is_discrete == 1)), 1));
+    compdens.submat(disc_points, cont_components).fill(0.0);
+  }
+  arma::vec res = aggregate_mixture(compdens, probs);
+  if (log_p) res = log(res);
+  return res;
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_density_free(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete) {
+  int k = comp_densities.size();
+  return dist_blended_density_impl(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, params.tail_cols(k), params.cols(arma::span(params.n_cols - 3 * k + 2, params.n_cols - 2 * k)), params.cols(arma::span(params.n_cols - 2 * k + 1, params.n_cols - k - 1)));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_density_fixed_probs(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec probs) {
+  int k = comp_densities.size();
+  return dist_blended_density_impl(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, params.cols(arma::span(params.n_cols - 2 * k + 2, params.n_cols - k)), params.tail_cols(k - 1));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_density_fixed_breaks(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec breaks) {
+  int k = comp_densities.size();
+  return dist_blended_density_impl(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, params.tail_cols(k), breaks, params.cols(params.n_cols - 2 * k + 1, params.n_cols - k - 1));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_density_fixed_eps(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec epsilons) {
+  int k = comp_densities.size();
+  return dist_blended_density_impl(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, params.tail_cols(k), params.cols(params.n_cols - 2 * k + 1, params.n_cols - k - 1), epsilons);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_density_fixed_probs_breaks(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec probs, const arma::vec breaks) {
+  int k = comp_densities.size();
+  return dist_blended_density_impl(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, breaks, params.tail_cols(k - 1));
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_density_fixed_probs_eps(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec probs, const arma::vec epsilons) {
+  int k = comp_densities.size();
+  return dist_blended_density_impl(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, params.tail_cols(k - 1), epsilons);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_density_fixed_breaks_eps(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec breaks, const arma::vec epsilons) {
+  int k = comp_densities.size();
+  return dist_blended_density_impl(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, params.tail_cols(k), breaks, epsilons);
+}
+
+// [[Rcpp::export]]
+arma::vec dist_blended_density_fixed_probs_breaks_eps(const arma::vec x, const arma::mat params, bool log_p, const arma::uvec param_sizes, const Rcpp::List comp_densities, const Rcpp::List comp_iprobabilities, const arma::uvec is_discrete, const arma::vec probs, const arma::vec breaks, const arma::vec epsilons) {
+  return dist_blended_density_impl(x, params, log_p, param_sizes, comp_densities, comp_iprobabilities, is_discrete, probs, breaks, epsilons);
 }
