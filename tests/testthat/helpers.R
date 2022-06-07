@@ -27,6 +27,19 @@ expect_density <- function(dist, dfun, args, x) {
     dist$density(x, log = TRUE, with_params = args),
     do.call(dfun, c(list(x = x, log = TRUE), args))
   )
+  if (utils::hasName(dist, "compile_density")) {
+    cmp <- dist$compile_density()
+    acmp <- flatten_params_matrix(args)
+    acmp <- acmp[rep(1L, length(x)), , drop = FALSE]
+    expect_equal(
+      cmp(x, acmp),
+      do.call(dfun, c(list(x = x), args))
+    )
+    expect_equal(
+      cmp(x, acmp, TRUE),
+      do.call(dfun, c(list(x = x, log = TRUE), args))
+    )
+  }
 }
 
 expect_probability <- function(dist, pfun, args, q) {
@@ -46,6 +59,27 @@ expect_probability <- function(dist, pfun, args, q) {
     dist$probability(q, lower.tail = FALSE, log.p = TRUE, with_params = args),
     do.call(pfun, c(list(q = q, lower.tail = FALSE, log.p = TRUE), args))
   )
+  if (utils::hasName(dist, "compile_probability")) {
+    cmp <- dist$compile_probability()
+    acmp <- flatten_params_matrix(args)
+    acmp <- acmp[rep(1L, length(1)), , drop = FALSE]
+    expect_equal(
+      cmp(q, acmp),
+      do.call(pfun, c(list(q = q), args))
+    )
+    expect_equal(
+      cmp(q, acmp, lower.tail = FALSE),
+      do.call(pfun, c(list(q = q, lower.tail = FALSE), args))
+    )
+    expect_equal(
+      cmp(q, acmp, log.p = TRUE),
+      do.call(pfun, c(list(q = q, log.p = TRUE), args))
+    )
+    expect_equal(
+      cmp(q, acmp, lower.tail = FALSE, log.p = TRUE),
+      do.call(pfun, c(list(q = q, lower.tail = FALSE, log.p = TRUE), args))
+    )
+  }
 }
 
 expect_quantile <- function(dist, qfun, args,
@@ -66,6 +100,27 @@ expect_quantile <- function(dist, qfun, args,
     dist$quantile(log(p), lower.tail = FALSE, log.p = TRUE, with_params = args),
     do.call(qfun, c(list(p = log(p), lower.tail = FALSE, log.p = TRUE), args))
   )
+  if (utils::hasName(dist, "compile_quantile")) {
+    cmp <- dist$compile_quantile()
+    acmp <- flatten_params_matrix(args)
+    acmp <- acmp[rep(1L, length(1)), , drop = FALSE]
+    expect_equal(
+      cmp(p, acmp),
+      do.call(qfun, c(list(p = p), args))
+    )
+    expect_equal(
+      cmp(p, acmp, lower.tail = FALSE),
+      do.call(qfun, c(list(p = p, lower.tail = FALSE), args))
+    )
+    expect_equal(
+      cmp(log(p), acmp, log.p = TRUE),
+      do.call(qfun, c(list(p = log(p), log.p = TRUE), args))
+    )
+    expect_equal(
+      cmp(log(p), acmp, lower.tail = FALSE, log.p = TRUE),
+      do.call(qfun, c(list(p = log(p), lower.tail = FALSE, log.p = TRUE), args))
+    )
+  }
 }
 
 expect_diff_density <- function(dist, x, args, vars = NULL, lvars = NULL,

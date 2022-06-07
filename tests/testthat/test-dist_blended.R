@@ -9,13 +9,13 @@ test_that("test dist_blended", {
   )
 
   params <- list(
-    probs = list(0.9, 0.1),
     dists = list(
       list(rate = 2.0),
       list(u = 1.5, xi = 0.2, sigmau = 1.0)
     ),
     breaks = list(1.5),
-    bandwidths = list(0.3)
+    bandwidths = list(0.3),
+    probs = list(0.9, 0.1)
   )
 
   x <- dist$sample(100L, with_params = params)
@@ -31,20 +31,23 @@ test_that("test dist_blended", {
   x_lhs <- x[x < params$breaks[[1L]] - params$bandwidths[[1L]]]
   x_rhs <- x[x > params$breaks[[1L]] + params$bandwidths[[1L]]]
 
+  # Necessary for compiled tests: params must contain all parameters in a fixed sequence and only those that are free.
+  free_params <- params[c("dists", "probs")]
+
   expect_density(
     dist,
     function(x, log = FALSE, ...) {
       if (log) {
         log(list(...)$probs[[1L]]) +
           dexp(x, rate = list(...)$dists[[1L]]$rate, log = TRUE) -
-          pexp(list(...)$breaks[[1L]], rate = list(...)$dists[[1L]]$rate, log = TRUE)
+          pexp(params$breaks[[1L]], rate = list(...)$dists[[1L]]$rate, log = TRUE)
       } else {
         list(...)$probs[[1L]] *
           dexp(x, rate = list(...)$dists[[1L]]$rate) /
-          pexp(list(...)$breaks[[1L]], rate = list(...)$dists[[1L]]$rate)
+          pexp(params$breaks[[1L]], rate = list(...)$dists[[1L]]$rate)
       }
     },
-    params,
+    free_params,
     x_lhs
   )
 
@@ -55,14 +58,14 @@ test_that("test dist_blended", {
       if (log) {
         log(list(...)$probs[[2L]]) +
           do.call(dgpd, c(list(x = x, log = TRUE), params_gpd)) -
-          do.call(pgpd, c(list(q = list(...)$breaks[[1L]], lower.tail = FALSE, log = TRUE), params_gpd))
+          do.call(pgpd, c(list(q = params$breaks[[1L]], lower.tail = FALSE, log = TRUE), params_gpd))
       } else {
         list(...)$probs[[2L]] *
           do.call(dgpd, c(list(x = x), params_gpd)) /
-          do.call(pgpd, c(list(q = list(...)$breaks[[1L]], lower.tail = FALSE), params_gpd))
+          do.call(pgpd, c(list(q = params$breaks[[1L]], lower.tail = FALSE), params_gpd))
       }
     },
-    params,
+    free_params,
     x_rhs
   )
 
@@ -71,12 +74,12 @@ test_that("test dist_blended", {
     function(q, log.p = FALSE, lower.tail = TRUE, ...) {
       pr <- list(...)$probs[[1L]] *
         pexp(q, rate = list(...)$dists[[1L]]$rate) /
-        pexp(list(...)$breaks[[1L]], rate = list(...)$dists[[1L]]$rate)
+        pexp(params$breaks[[1L]], rate = list(...)$dists[[1L]]$rate)
       if (!lower.tail) pr <- 1 - pr
       if (log.p) pr <- log(pr)
       pr
     },
-    params,
+    free_params,
     x_lhs
   )
 
@@ -94,7 +97,7 @@ test_that("test dist_blended", {
       if (log.p) pr <- log(pr)
       pr
     },
-    params,
+    free_params,
     x_rhs
   )
 

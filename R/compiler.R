@@ -16,6 +16,9 @@ compile_simple_function <- function(simple_fun, dist) {
       fcall[[para]] <- dist$default_params[[para]]
     }
   }
+  for (extra_arg in setdiff(names(fmls), c("x", "n", "p", "q", "lower.tail", "log", "log.p", names(dist$get_params())))) {
+    fcall[[extra_arg]] <- NULL
+  }
   fmls_outer <- c(
     fmls[names(fmls) %in% c("x", "n", "p", "q")],
     alist(param_matrix = ),

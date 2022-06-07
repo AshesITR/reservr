@@ -9,11 +9,11 @@ test_that("test dist_mixture", {
   )
 
   params <- list(
-    probs = list(0.1, 0.9),
     dists = list(
       list(),
       list(rate = 1.0)
-    )
+    ),
+    probs = list(0.1, 0.9)
   )
 
   x <- dist$sample(100L, with_params = params)
