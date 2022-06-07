@@ -4,6 +4,8 @@ test_that("discrete distribution works", {
   params <- list(probs = list(0.5, 0.25, 0.15, 0.1))
   x <- dist$sample(100L, with_params = params)
 
+  cmp(x, flatten_params_matrix(params))
+
   expect_silent(fit(dist, trunc_obs(x, tmin = 0)))
   expect_identical(dist$get_type(), "discrete")
   expect_density(dist, function(x, log = FALSE, probs) {

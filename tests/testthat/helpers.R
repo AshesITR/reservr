@@ -62,7 +62,7 @@ expect_probability <- function(dist, pfun, args, q) {
   if (utils::hasName(dist, "compile_probability")) {
     cmp <- dist$compile_probability()
     acmp <- flatten_params_matrix(args)
-    acmp <- acmp[rep(1L, length(1)), , drop = FALSE]
+    acmp <- acmp[rep(1L, length(q)), , drop = FALSE]
     expect_equal(
       cmp(q, acmp),
       do.call(pfun, c(list(q = q), args))
@@ -103,7 +103,7 @@ expect_quantile <- function(dist, qfun, args,
   if (utils::hasName(dist, "compile_quantile")) {
     cmp <- dist$compile_quantile()
     acmp <- flatten_params_matrix(args)
-    acmp <- acmp[rep(1L, length(1)), , drop = FALSE]
+    acmp <- acmp[rep(1L, length(p)), , drop = FALSE]
     expect_equal(
       cmp(p, acmp),
       do.call(qfun, c(list(p = p), args))
