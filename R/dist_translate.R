@@ -365,7 +365,7 @@ TranslatedDistribution <- distribution_class(
     as_compiled_distribution_function(
       eval(bquote(function(p, param_matrix, lower.tail = TRUE, log.p = FALSE) {
         dist_probability(
-          (x - .(offset_expr)) / .(multiplier_expr),
+          (p - .(offset_expr)) / .(multiplier_expr),
           .(dist_param_expr),
           lower.tail = lower.tail,
           log.p = log.p
