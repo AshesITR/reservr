@@ -708,54 +708,47 @@ arma::vec dist_blended_probability_impl(const arma::vec q, const arma::mat param
   int i = 0;
   arma::mat compprob(n, k, arma::fill::zeros);
   SEXP curr_params;
-  bool breaks_is_matrix = is_matrix(breaks);
-  bool epsilons_is_matrix = is_matrix(epsilons);
   for (int j = 0; j < k; j++) {
-    arma::uvec curr_relevant;
-    arma::vec curr_xblend;
     arma::vec curr_u_high, curr_e_high, curr_u_low, curr_e_low;
     if (j == 0) {
-      curr_u_high = column_or_element(breaks, j);
-      curr_e_high = column_or_element(epsilons, j);
       curr_u_low = arma::vec::fixed<1>{-std::numeric_limits<double>::infinity()};
       curr_e_low = arma::zeros<arma::vec>(1);
-      curr_relevant = find_relevant(q, q, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
-      if (breaks_is_matrix) curr_u_high = curr_u_high(curr_relevant);
-      if (epsilons_is_matrix) curr_e_high = curr_e_high(curr_relevant);
-    } else if (j == k - 1) {
-      curr_u_high = arma::vec::fixed<1>{std::numeric_limits<double>::infinity()};
-      curr_e_high = arma::zeros<arma::vec>(1);
-      curr_u_low = column_or_element(breaks, j - 1);
-      curr_e_low = column_or_element(epsilons, j - 1);
-      curr_relevant = find_relevant(q, q, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
-      if (breaks_is_matrix) curr_u_low = curr_u_low(curr_relevant);
-      if (epsilons_is_matrix) curr_e_low = curr_e_low(curr_relevant);
     } else {
       curr_u_low = column_or_element(breaks, j - 1);
       curr_e_low = column_or_element(epsilons, j - 1);
+    }
+    if (j == k - 1) {
+      curr_u_high = arma::vec::fixed<1>{std::numeric_limits<double>::infinity()};
+      curr_e_high = arma::zeros<arma::vec>(1);
+    } else {
       curr_u_high = column_or_element(breaks, j);
       curr_e_high = column_or_element(epsilons, j);
-      curr_relevant = find_relevant(q, q, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
-      if (breaks_is_matrix) {
-        curr_u_low = curr_u_low(curr_relevant);
-        curr_u_high = curr_u_high(curr_relevant);
-      }
-      if (epsilons_is_matrix) {
-        curr_e_low = curr_e_low(curr_relevant);
-        curr_e_high = curr_e_high(curr_relevant);
-      }
     }
+
     arma::vec curr_prob(n, arma::fill::zeros);
     if (lower_tail) {
       curr_prob(find_high(q, curr_u_high, curr_e_high)).fill(1.0);
     } else {
       curr_prob(find_low(q, curr_u_low, curr_e_low)).fill(1.0);
     }
+    arma::uvec curr_relevant = find_relevant(q, q, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
     if (curr_relevant.n_elem == 0) {
       compprob.col(j) = curr_prob;
       continue;
     }
-    curr_xblend = q.elem(curr_relevant);
+    arma::vec curr_xblend = q.elem(curr_relevant);
+    if (curr_u_low.n_elem > 1) {
+      curr_u_low = curr_u_low(curr_relevant);
+    }
+    if (curr_e_low.n_elem > 1) {
+      curr_e_low = curr_e_low(curr_relevant);
+    }
+    if (curr_u_high.n_elem > 1) {
+      curr_u_high = curr_u_high(curr_relevant);
+    }
+    if (curr_e_high.n_elem > 1) {
+      curr_e_high = curr_e_high(curr_relevant);
+    }
     blend_transform(curr_xblend, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
 
     if (param_sizes[j] > 0) {
