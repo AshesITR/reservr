@@ -745,7 +745,16 @@ arma::vec dist_blended_probability_impl(const arma::vec q, const arma::mat param
         curr_e_high = curr_e_high(curr_relevant);
       }
     }
-    if (curr_relevant.n_elem == 0) continue;
+    arma::vec curr_prob(n, arma::fill::zeros);
+    if (lower_tail) {
+      curr_prob(find_high(q, curr_u_high, curr_e_high)).fill(1.0);
+    } else {
+      curr_prob(find_low(q, curr_u_low, curr_e_low)).fill(1.0);
+    }
+    if (curr_relevant.n_elem == 0) {
+      compprob.col(j) = curr_prob;
+      continue;
+    }
     curr_xblend = q.elem(curr_relevant);
     blend_transform(curr_xblend, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
 
@@ -759,15 +768,12 @@ arma::vec dist_blended_probability_impl(const arma::vec q, const arma::mat param
 
     Rcpp::Function curr_ipfun = comp_iprobabilities[j];
 
-    arma::vec curr_prob(n, arma::fill::zeros);
     arma::vec ptrunc = Rcpp::as<arma::vec>(curr_ipfun(curr_u_low, curr_u_high, curr_params, false));
     arma::vec pobs;
     if (lower_tail) {
       pobs = Rcpp::as<arma::vec>(curr_ipfun(curr_u_low, curr_xblend, curr_params, false));
-      curr_prob(find_high(q, curr_u_high, curr_e_high)).fill(1.0);
     } else {
       pobs = Rcpp::as<arma::vec>(curr_ipfun(curr_xblend, curr_u_high, curr_params, false));
-      curr_prob(find_low(q, curr_u_low, curr_e_low)).fill(1.0);
     }
     
     if (ptrunc.n_elem > 1) {

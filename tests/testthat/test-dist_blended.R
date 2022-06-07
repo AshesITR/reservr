@@ -11,7 +11,7 @@ test_that("test dist_blended", {
   params <- list(
     dists = list(
       list(rate = 2.0),
-      list(u = 1.5, xi = 0.2, sigmau = 1.0)
+      list(u = 1.5, sigmau = 1.0, xi = 0.2)
     ),
     breaks = list(1.5),
     bandwidths = list(0.3),
