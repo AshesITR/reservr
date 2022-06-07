@@ -420,7 +420,7 @@ TruncatedDistribution <- distribution_class(
     dist <- self$get_components()[[1L]]
     dist_prob_int <- dist$compile_probability_interval()
 
-    n_params_dist <- attr(dist_dens, "n_params")
+    n_params_dist <- attr(dist_prob_int, "n_params")
     n_params <- as.integer(ph_min) + as.integer(ph_max) + as.integer(ph_offset) + as.integer(ph_max_retry) +
       n_params_dist
 
