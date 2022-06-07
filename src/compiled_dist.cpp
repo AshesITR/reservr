@@ -169,16 +169,16 @@ void blend_transform(arma::vec& x, const arma::vec u_lo, const arma::vec e_lo, c
     // blend lower region, x < u_lo + e_lo
     arma::uvec i;
     if (u_lo.n_elem > 1 && e_lo.n_elem > 1) {
-      i = arma::find(x < u_lo + e_lo);
+      i = arma::find(u_lo - e_lo < x && x < u_lo + e_lo);
       x(i) = 0.5 * (x(i) + u_lo(i) + e_lo(i)) - e_lo(i) / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_lo(i)) / e_lo(i));
     } else if (u_lo.n_elem > 1) {
-      i = arma::find(x < u_lo + e_lo[0]);
+      i = arma::find(u_lo - e_lo[0] < x && x < u_lo + e_lo[0]);
       x(i) = 0.5 * (x(i) + u_lo(i) + e_lo[0]) - e_lo[0] / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_lo(i)) / e_lo[0]);
     } else if (e_lo.n_elem > 1) {
-      i = arma::find(x < u_lo[0] + e_lo);
+      i = arma::find(u_lo[0] - e_lo < x && x < u_lo[0] + e_lo);
       x(i) = 0.5 * (x(i) + u_lo[0] + e_lo(i)) - e_lo(i) / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_lo[0]) / e_lo(i));
     } else {
-      i = arma::find(x < u_lo[0] + e_lo[0]);
+      i = arma::find(u_lo[0] - e_lo[0] < x && x < u_lo[0] + e_lo[0]);
       x(i) = 0.5 * (x(i) + u_lo[0] + e_lo[0]) - e_lo[0] / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_lo[0]) / e_lo[0]);
     }
   }
@@ -186,16 +186,16 @@ void blend_transform(arma::vec& x, const arma::vec u_lo, const arma::vec e_lo, c
   if (e_hi.n_elem > 1 || e_hi[0] != 0.0) {
     arma::uvec i;
     if (u_hi.n_elem > 1 && e_hi.n_elem > 1) {
-      i = arma::find(x > u_hi - e_hi);
+      i = arma::find(u_hi - e_hi < x && x < u_hi + e_hi);
       x(i) = 0.5 * (x(i) + u_hi(i) - e_hi(i)) + e_hi(i) / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_hi(i)) / e_hi(i));
     } else if (u_hi.n_elem > 1) {
-      i = arma::find(x > u_hi - e_hi[0]);
+      i = arma::find(u_hi - e_hi[0] < x && x < u_hi + e_hi[0]);
       x(i) = 0.5 * (x(i) + u_hi(i) - e_hi[0]) + e_hi[0] / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_hi(i)) / e_hi[0]);
     } else if (e_hi.n_elem > 1) {
-      i = arma::find(x > u_hi[0] - e_hi);
+      i = arma::find(u_hi[0] - e_hi < x && x < u_hi[0] + e_hi);
       x(i) = 0.5 * (x(i) + u_hi[0] - e_hi(i)) + e_hi(i) / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_hi[0]) / e_hi(i));
     } else {
-      i = arma::find(x > u_hi[0] - e_hi[0]);
+      i = arma::find(u_hi[0] - e_hi[0] < x && x < u_hi[0] + e_hi[0]);
       x(i) = 0.5 * (x(i) + u_hi[0] - e_hi[0]) + e_hi[0] / arma::datum::pi * cos(arma::datum::pi * 0.5 * (x(i) - u_hi[0]) / e_hi[0]);
     }
   }
@@ -208,16 +208,16 @@ arma::vec dblend_transform(const arma::vec x, const arma::vec u_lo, const arma::
     // blend lower region, x < u_lo + e_lo
     arma::uvec i;
     if (u_lo.n_elem > 1 && e_lo.n_elem > 1) {
-      i = arma::find(x < u_lo + e_lo);
+      i = arma::find(u_lo - e_lo < x && x < u_lo + e_lo);
       dout(i) = 0.5 + 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_lo(i)) / e_lo(i));
     } else if (u_lo.n_elem > 1) {
-      i = arma::find(x < u_lo + e_lo[0]);
+      i = arma::find(u_lo - e_lo[0] < x && x < u_lo + e_lo[0]);
       dout(i) = 0.5 + 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_lo(i)) / e_lo[0]);
     } else if (e_lo.n_elem > 1) {
-      i = arma::find(x < u_lo[0] + e_lo);
+      i = arma::find(u_lo[0] - e_lo < x && x < u_lo[0] + e_lo);
       dout(i) = 0.5 + 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_lo[0]) / e_lo(i));
     } else {
-      i = arma::find(x < u_lo[0] + e_lo[0]);
+      i = arma::find(u_lo[0] - e_lo[0] < x && x < u_lo[0] + e_lo[0]);
       dout(i) = 0.5 + 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_lo[0]) / e_lo[0]);
     }
   }
@@ -225,16 +225,16 @@ arma::vec dblend_transform(const arma::vec x, const arma::vec u_lo, const arma::
   if (e_hi.n_elem > 1 || e_hi[0] != 0.0) {
     arma::uvec i;
     if (u_hi.n_elem > 1 && e_hi.n_elem > 1) {
-      i = arma::find(x > u_hi - e_hi);
+      i = arma::find(u_hi - e_hi < x && x < u_hi + e_hi);
       dout(i) = 0.5 - 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_hi(i)) / e_hi(i));
     } else if (u_hi.n_elem > 1) {
-      i = arma::find(x > u_hi - e_hi[0]);
+      i = arma::find(u_hi - e_hi[0] < x && x < u_hi + e_hi[0]);
       dout(i) = 0.5 - 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_hi(i)) / e_hi[0]);
     } else if (e_hi.n_elem > 1) {
-      i = arma::find(x > u_hi[0] - e_hi);
+      i = arma::find(u_hi[0] - e_hi < x && x < u_hi[0] + e_hi);
       dout(i) = 0.5 - 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_hi[0]) / e_hi(i));
     } else {
-      i = arma::find(x > u_hi[0] - e_hi[0]);
+      i = arma::find(u_hi[0] - e_hi[0] < x && x < u_hi[0] + e_hi[0]);
       dout(i) = 0.5 - 0.5 * sin(arma::datum::pi * 0.5 * (x(i) - u_hi[0]) / e_hi[0]);
     }
   }
