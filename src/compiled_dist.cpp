@@ -615,7 +615,10 @@ arma::vec dist_blended_density_impl(const arma::vec x, const arma::mat params, b
         curr_e_high = curr_e_high(curr_relevant);
       }
     }
-    if (curr_relevant.n_elem == 0) continue;
+    if (curr_relevant.n_elem == 0) {
+      i += param_sizes[j];
+      continue;
+    }
     curr_xblend = x.elem(curr_relevant);
     curr_dblend = dblend_transform(curr_xblend, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
     blend_transform(curr_xblend, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
@@ -734,6 +737,7 @@ arma::vec dist_blended_probability_impl(const arma::vec q, const arma::mat param
     arma::uvec curr_relevant = find_relevant(q, q, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
     if (curr_relevant.n_elem == 0) {
       compprob.col(j) = curr_prob;
+      i += param_sizes[j];
       continue;
     }
     arma::vec curr_xblend = q.elem(curr_relevant);
@@ -875,7 +879,10 @@ arma::vec dist_blended_iprobability_impl(const arma::vec qmin, const arma::vec q
         curr_e_high = curr_e_high(curr_relevant);
       }
     }
-    if (curr_relevant.n_elem == 0) continue;
+    if (curr_relevant.n_elem == 0) {
+      i += param_sizes[j];
+      continue;
+    }
     curr_qminblend = qmin.elem(curr_relevant);
     curr_qmaxblend = qmax.elem(curr_relevant);
     blend_transform(curr_qminblend, curr_u_low, curr_e_low, curr_u_high, curr_e_high);
