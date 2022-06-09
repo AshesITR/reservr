@@ -58,16 +58,6 @@ BlendedDistribution <- distribution_class(
     u_mat <- do.call(cbind, params$breaks)
     eps_mat <- do.call(cbind, params$bandwidths)
 
-    pick_idx <- function(p, idx) {
-      if (is.list(p)) {
-        lapply(p, pick_idx, idx = idx)
-      } else if (is.null(p) || length(p) == 1) {
-        p
-      } else {
-        p[idx]
-      }
-    }
-
     res <- numeric(n)
     for (i in seq_len(k)) {
       c_min <- if (i == 1L) -Inf else params$breaks[[i - 1L]]
@@ -76,7 +66,7 @@ BlendedDistribution <- distribution_class(
       idx <- which(slot == i)
       trunc_smps <- comp_dist_trunc$sample(
         n = length(idx),
-        with_params = list(dist = pick_idx(params$dists[[i]]$params, idx))
+        with_params = list(dist = pick_params_at_idx(params$dists[[i]]$params, idx - 1L))
       )
       res[idx] <- blended_transition_inv(trunc_smps, u_mat[idx, , drop = FALSE], eps_mat[idx, , drop = FALSE], i)
     }

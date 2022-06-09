@@ -82,6 +82,34 @@ expect_probability <- function(dist, pfun, args, q) {
   }
 }
 
+expect_iprobability <- function(dist, args, xmin, xmax) {
+  n <- check_lengths(xmin, xmax)
+  xmin <- rep_len(xmin, n)
+  xmax <- rep_len(xmax, n)
+
+  interval_prob <- dist$probability(xmax, with_params = args) -
+    dist$probability(xmin, with_params = args)
+
+  disc <- dist$is_discrete_at(xmin, with_params = args)
+  if (any(disc)) {
+    interval_prob[disc] <- interval_prob[disc] +
+      dist$density(xmin[disc], with_params = args)
+  }
+
+  cmp <- dist$compile_probability_interval()
+  acmp <- flatten_params_matrix(args)
+  acmp <- acmp[rep(1L, n), , drop = FALSE]
+
+  expect_equal(
+    cmp(xmin, xmax, acmp),
+    interval_prob
+  )
+  expect_equal(
+    cmp(xmin, xmax, acmp, log.p = TRUE),
+    log(interval_prob)
+  )
+}
+
 expect_quantile <- function(dist, qfun, args,
                             p = seq(0.0, 1.0, length.out = 100)) {
   expect_equal(

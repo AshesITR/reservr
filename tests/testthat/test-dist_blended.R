@@ -110,4 +110,7 @@ test_that("test dist_blended", {
   expect_tf_logprobability(dist, params, x, x + 1.0)
   expect_tf_logprobability(dist, params, 0, x)
   expect_tf_logprobability(dist, params, x, Inf)
+  expect_iprobability(dist, free_params, x, x + 1.0)
+  expect_iprobability(dist, free_params, 0, x)
+  expect_iprobability(dist, free_params, x, Inf)
 })
