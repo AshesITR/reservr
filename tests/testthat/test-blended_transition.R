@@ -27,4 +27,8 @@ test_that("test blended_transition", {
   expect_equal(blended_transition_inv(blend_mat[x > 13, 1], 10, 3, 1), rep(13, sum(x > 13)))
   expect_equal(blended_transition_inv(blend_mat[x >= 7, 2], 10, 3, 2), x[x >= 7], tolerance = 1.0e-6)
   expect_equal(blended_transition_inv(blend_mat[x < 7, 2], 10, 3, 2), rep(7, sum(x < 7)))
+
+  # error condition is helpful
+  expect_error(blended_transition(1, c(1, 3), c(2, 2)), "\\(1 \u00b1 2\\) overlaps \\(3 \u00b1 2\\)")
+  expect_error(blended_transition_inv(1, c(1, 3), c(2, 2), .component = 1), "\\(1 \u00b1 2\\) overlaps \\(3 \u00b1 2\\)")
 })
