@@ -5,7 +5,7 @@
 #' time between `t_min` and `t_max` are reported between `tau_min` and
 #' `tau_max`.
 #'
-#' @param dist A reporting delay Distribution.
+#' @param dist A reporting delay Distribution, or a compiled interval probability function.
 #' @param intervals A data frame with columns `xmin`, `xmax`, `tmin`, `tmax`.
 #' Claims occur within `[xmin, xmax]` and be reported within `[tmin, tmax]`.
 #' @param expo Poisson intensity. If given, must be a vectorised function that
@@ -13,7 +13,8 @@
 #' `expo = NULL` is equivalent to a constant intensity function. `expo` is only
 #' relevant up to a multiplicative constant.
 #' @param with_params Parameters of `dist` to use. Can be a parameter set with
-#' different values for each interval.
+#' different values for each interval. If `dist` is a compiled interval probability function, `with_params` can be a
+#' matrix instead.
 #' @param .try_compile Try compiling the distributions probability function to speed up integration?
 #' @inheritParams integrate_gk
 #'
@@ -61,9 +62,17 @@ prob_report <- function(dist, intervals, expo = NULL, with_params = list(),
     total_expo <- intervals$xmax - intervals$xmin
   }
 
-  prob_int <- if (.try_compile) tryCatch(dist$compile_probability_interval(), error = function(e) NULL)
+  if (inherits(dist, "compiled_distribution_function")) {
+    prob_int <- dist
+    wp_matrix <- if (is.matrix(with_params)) with_params else flatten_params_matrix(with_params)
+  } else if (.try_compile) {
+    prob_int <- if (.try_compile) tryCatch(dist$compile_probability_interval(), error = function(e) NULL)
+    if (!is.null(prob_int)) {
+      wp_matrix <- flatten_params_matrix(with_params)
+    }
+  }
+
   if (!is.null(prob_int)) {
-    wp_matrix <- flatten_params_matrix(with_params)
     if (nrow(wp_matrix) == 0L) wp_matrix <- matrix(nrow = nrow(intervals), ncol = 0L)
     exp_nclaims_reported <- integrate_gk(
       if (!is.null(expo)) {

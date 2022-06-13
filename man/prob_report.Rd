@@ -15,7 +15,7 @@ prob_report(
 )
 }
 \arguments{
-\item{dist}{A reporting delay Distribution.}
+\item{dist}{A reporting delay Distribution, or a compiled interval probability function.}
 
 \item{intervals}{A data frame with columns \code{xmin}, \code{xmax}, \code{tmin}, \code{tmax}.
 Claims occur within \verb{[xmin, xmax]} and be reported within \verb{[tmin, tmax]}.}
@@ -26,7 +26,8 @@ yields the intensity of the claim arrival process at a specified time.
 relevant up to a multiplicative constant.}
 
 \item{with_params}{Parameters of \code{dist} to use. Can be a parameter set with
-different values for each interval.}
+different values for each interval. If \code{dist} is a compiled interval probability function, \code{with_params} can be a
+matrix instead.}
 
 \item{.tolerance}{Absolute element-wise tolerance.}
 
