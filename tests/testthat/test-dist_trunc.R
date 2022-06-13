@@ -41,4 +41,8 @@ test_that("test dist_trunc", {
   # expect_diff_probability(dist, x, list(dist = list(rate = 4.0)))
   expect_tf_logdensity(dist, params, x)
   expect_tf_logprobability(dist, params, x, x + 1.0)
+
+  expect_iprobability(dist, params, x, x + 1.0)
+  expect_iprobability(dist, params, 0, x)
+  expect_iprobability(dist, params, x, Inf)
 })
