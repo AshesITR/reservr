@@ -43,11 +43,11 @@
 predict.reservr_keras_model <- function(object, data, as_matrix = FALSE, ...) {
   keras_preds <- object$model(data)
   if (as_matrix) {
+    dummy_output <- keras_preds[1, ]
     keras_preds <- as.matrix(keras_preds)
-    dummy_output <- matrix(nrow = 1, ncol = ncol(keras_preds))
     dummy_output <- object$output_splitter(dummy_output)
     dummy_output <- object$output_inflater(dummy_output)
-    colnames(keras_preds) <- colnames(flatten_params_matrix(dummy_output))
+    colnames(keras_preds) <- colnames(flatten_params_matrix(as_params(dummy_output)))
     keras_preds
   } else {
     keras_preds <- object$output_splitter(keras_preds)
