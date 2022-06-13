@@ -70,6 +70,8 @@ prob_report <- function(dist, intervals, expo = NULL, with_params = list(),
     if (!is.null(prob_int)) {
       wp_matrix <- flatten_params_matrix(with_params)
     }
+  } else {
+    prob_int <- NULL
   }
 
   if (!is.null(prob_int)) {
