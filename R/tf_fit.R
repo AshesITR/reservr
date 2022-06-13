@@ -2,6 +2,7 @@
 #'
 #' @param object A compiled and trained `reservr_keras_model`.
 #' @param data Input data compatible with the model.
+#' @param as_matrix Return a parameter matrix instead of a list structure?
 #' @param ... ignored
 #'
 #' @return A parameter list suitable for the `with_params` argument of the distribution family used for the model.
@@ -39,11 +40,20 @@
 #' }
 #'
 #' @export
-predict.reservr_keras_model <- function(object, data, ...) {
+predict.reservr_keras_model <- function(object, data, as_matrix = FALSE, ...) {
   keras_preds <- object$model(data)
-  keras_preds <- object$output_splitter(keras_preds)
-  keras_preds <- object$output_inflater(keras_preds)
-  as_params(keras_preds)
+  if (as_matrix) {
+    keras_preds <- as.matrix(keras_preds)
+    dummy_output <- matrix(nrow = 1, ncol = ncol(keras_preds))
+    dummy_output <- object$output_splitter(dummy_output)
+    dummy_output <- object$output_inflater(dummy_output)
+    colnames(keras_preds) <- colnames(flatten_params_matrix(dummy_output))
+    keras_preds
+  } else {
+    keras_preds <- object$output_splitter(keras_preds)
+    keras_preds <- object$output_inflater(keras_preds)
+    as_params(keras_preds)
+  }
 }
 
 #' @importFrom generics fit

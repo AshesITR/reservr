@@ -46,6 +46,10 @@ test_that("test tf_fit for full data", {
   expect_vector(tf_preds$rate, numeric(), size = N)
   expect_gt(min(tf_preds$rate), 0)
 
+  tf_preds_mat <- predict(mod, data = k_matrix(rand_input), as_matrix = TRUE)
+  expect_equal(colnames(tf_preds_mat), "rate")
+  expect_equal(drop(tf_preds_mat), tf_preds$rate)
+
   expect_error(
     fit(
       mod,
