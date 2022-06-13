@@ -61,4 +61,8 @@ test_that("test dist_mixture", {
   expect_tf_logprobability(dist, params, x, x + 1.0)
   expect_tf_logprobability(dist, params, 0, x)
   expect_tf_logprobability(dist, params, x, Inf)
+
+  expect_iprobability(dist, params, x, x + 1.0)
+  expect_iprobability(dist, params, 0, x)
+  expect_iprobability(dist, params, x, Inf)
 })
