@@ -21,8 +21,43 @@ test_that("erlang mixture distribution works", {
   expect_silent(fit(dist, x, init = "cmm"))
 
   expect_identical(dist$get_type(), "continuous")
-  # TODO test density and probability for correctness
-  # use gamma as reference
+  expect_density(
+    dist,
+    function(x, log = FALSE, ...) {
+      params <- list(...)
+      res <- (
+        params$probs[[1L]] *
+          dgamma(x, shape = params$shapes[[1L]], scale = params$scale) +
+        params$probs[[2L]] *
+          dgamma(x, shape = params$shapes[[2L]], scale = params$scale) +
+        params$probs[[3L]] *
+          dgamma(x, shape = params$shapes[[3L]], scale = params$scale)
+      ) / sum(as.numeric(params$probs))
+      if (log) log(res) else res
+    },
+    params,
+    x
+  )
+  expect_probability(
+    dist,
+    function(q, lower.tail = TRUE, log.p = FALSE, ...) {
+      params <- list(...)
+      res <- (
+        params$probs[[1L]] *
+          pgamma(q, shape = params$shapes[[1L]], scale = params$scale,
+                 lower.tail = lower.tail) +
+        params$probs[[2L]] *
+          pgamma(q, shape = params$shapes[[2L]], scale = params$scale,
+                 lower.tail = lower.tail) +
+        params$probs[[3L]] *
+          pgamma(q, shape = params$shapes[[3L]], scale = params$scale,
+                 lower.tail = lower.tail)
+      ) / sum(as.numeric(params$probs))
+      if (log.p) log(res) else res
+    },
+    params,
+    x
+  )
   expect_identical(dist$is_in_support(x), rep_len(TRUE, length(x)))
   expect_diff_density(dist, x, params)
   expect_diff_density(dist, x, alt_params)
@@ -38,6 +73,10 @@ test_that("erlang mixture distribution works", {
   # Extreme outliers can't be handled, so we need a good sample
   x_alt <- dist$sample(100L, with_params = alt_params)
   expect_tf_logprobability(dist, alt_params, x_alt, x_alt + 1.0)
+
+  expect_iprobability(dist, params, x, x + 1.0)
+  expect_iprobability(dist, params, 0, x)
+  expect_iprobability(dist, params, x, Inf)
 })
 
 test_that("can use erlang mixtures with 1 component", {
