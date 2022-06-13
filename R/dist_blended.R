@@ -305,7 +305,7 @@ BlendedDistribution <- distribution_class(
       )
   },
   is_discrete = function(x, params) {
-    if (self$get_type() == "mixed") {
+    if (!self$is_continuous()) {
       comps <- self$get_components()
       k_types <- purrr::map_chr(comps, ~.$get_type())
 

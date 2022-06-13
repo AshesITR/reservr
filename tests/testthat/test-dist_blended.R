@@ -114,3 +114,42 @@ test_that("test dist_blended", {
   expect_iprobability(dist, free_params, 0, x)
   expect_iprobability(dist, free_params, x, Inf)
 })
+
+test_that("blending works for discrete distributions", {
+  dist <- dist_blended(
+    dists = list(dist_dirac(1), dist_dirac(2), dist_dirac(3)),
+    breaks = list(1.5, 2.5),
+    bandwidths = list(0.3, 0.3),
+    probs = as.list(c(1, 1, 1) / 3)
+  )
+
+  expect_identical(dist$get_type(), "discrete")
+  expect_length(dist$get_components(), 3L)
+
+  x <- dist$sample(100L)
+  equivalent_dist <- dist_discrete(3, probs = as.list(c(1, 1, 1) / 3))
+  expect_density(
+    dist,
+    function(x, ..., log = FALSE) equivalent_dist$density(x, log = log),
+    list(NULL),
+    x
+  )
+  # FIXME Evaluation error: non-conformable arrays.
+  #> expect_probability(
+  #>   dist,
+  #>   function(q, ..., lower.tail = TRUE, log.p = FALSE)
+  #>     equivalent_dist$probability(q, lower.tail = lower.tail, log.p = log.p),
+  #>   list(NULL),
+  #>   x
+  #> )
+
+  expect_identical(dist$is_in_support(x), rep_len(TRUE, length(x)))
+  # TODO enable once > 2 components are supported
+  #> expect_tf_logdensity(dist, list(), x)
+  #> expect_tf_logprobability(dist, list(), x, x + 1.0)
+  #> expect_tf_logprobability(dist, list(), 0, x)
+  #> expect_tf_logprobability(dist, list(), x, Inf)
+  expect_iprobability(dist, list(), x, x + 1.0)
+  expect_iprobability(dist, list(), 0, x)
+  expect_iprobability(dist, list(), x, Inf)
+})

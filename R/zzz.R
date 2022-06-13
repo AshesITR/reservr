@@ -90,6 +90,15 @@ map2_lgl_matrix <- function(.x, .y, .f, .n, ...) {
 #' @keywords internal
 #' @noRd
 muffle_nans_produced <- function(expr, .envir = parent.frame()) {
+  old_lang <- Sys.getenv("LANGUAGE", unset = NA_character_)
+  Sys.setenv(LANGUGAGE = "en")
+  on.exit({
+    if (!is.na(old_lang)) {
+      Sys.setenv(LANGUAGE = old_lang)
+    } else {
+      Sys.unsetenv("LANGUAGE")
+    }
+  }, add = TRUE)
   muffle_warning(expr, "NaNs produced", .envir = .envir)
 }
 

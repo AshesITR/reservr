@@ -47,16 +47,12 @@ flatten_params <- function(params) {
 #'
 #' @export
 flatten_params_matrix <- function(params) {
-  # nolint start
-  #
-  # Input      | Output
-  #     --     |     --
-  # named list | c(.nm = ..., .nm2 = ...)
-  # list       | c([1] = ..., [2] = ...)
-  # list()     | numeric()
-  # NULL       | NA_real_
-  #
-  # nolint end
+  # Input      | Output                   |
+  #     --     |     --                   |
+  # named list | c(.nm = ..., .nm2 = ...) |
+  # list       | c([1] = ..., [2] = ...)  |
+  # list()     | numeric()                |
+  # NULL       | NA_real_                 |
 
   flatten_element_matrix <- function(elem) {
     if (is.null(elem)) {
