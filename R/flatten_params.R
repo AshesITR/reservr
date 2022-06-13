@@ -83,7 +83,8 @@ flatten_params_matrix <- function(params) {
         },
         nm = nms,
         res = ress,
-        SIMPLIFY = FALSE
+        SIMPLIFY = FALSE,
+        USE.NAMES = FALSE
       )
       res <- do.call(cbind, ress)
       colnames(res) <- do.call(c, nmss)
