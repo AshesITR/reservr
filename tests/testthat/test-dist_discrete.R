@@ -23,9 +23,14 @@ test_that("discrete distribution works", {
     params,
     x
   )
-  # expect_quantile(dist, function(x) {
-  #   # TODO implement quantile reference
-  # }, params)
+  expect_quantile(dist, function(p, lower.tail = TRUE, log.p = FALSE, probs) {
+    pr <- c(0, cumsum(as.numeric(probs)))
+    if (!lower.tail) pr <- rev(1.0 - pr)
+    if (log.p) p <- exp(p)
+    res <- findInterval(p, pr, left.open = TRUE, all.inside = TRUE)
+    if (!lower.tail) res <- length(probs) - res + 1L
+    res
+  }, params)
   expect_identical(
     dist$is_in_support(x, with_params = params),
     rep_len(TRUE, length(x))
@@ -35,4 +40,8 @@ test_that("discrete distribution works", {
   expect_tf_logprobability(dist, params, x, x + 1.0)
   expect_tf_logprobability(dist, params, 0, x)
   expect_tf_logprobability(dist, params, x, length(params$probs))
+
+  expect_iprobability(dist, params, x, x + 1.0)
+  expect_iprobability(dist, params, 0, x)
+  expect_iprobability(dist, params, x, length(params$probs))
 })
