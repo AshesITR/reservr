@@ -76,42 +76,73 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>Observations</p></dd>
+
+
 <dt>xmin, xmax</dt>
 <dd><p>Censoring bounds. If <code>xmin != xmax</code>, <code>x</code> must be <code>NA</code>.</p></dd>
+
+
 <dt>tmin, tmax</dt>
 <dd><p>Truncation bounds. May vary per observation.</p></dd>
+
+
 <dt>w</dt>
 <dd><p>Case weights</p></dd>
+
+
 <dt>.data</dt>
 <dd><p>A data frame or numeric vector.</p></dd>
+
+
 <dt>tmin_new</dt>
 <dd><p>New truncation minimum</p></dd>
+
+
 <dt>tmax_new</dt>
 <dd><p>New truncation maximum</p></dd>
+
+
 <dt>.partial</dt>
 <dd><p>Enable partial truncation of censored observations?
 This could potentially create inconsistent data if the actual observation
 lies outside of the truncation bounds but the censoring interval overlaps.</p></dd>
+
+
 <dt>accident</dt>
 <dd><p>accident time (unquoted, evaluated in <code>.data</code>)</p></dd>
+
+
 <dt>delay</dt>
 <dd><p>reporting delay (unquoted, evaluated in <code>.data</code>)</p></dd>
+
+
 <dt>time</dt>
 <dd><p>evaluation time (unquoted, evaluated in <code>.data</code>)</p></dd>
+
+
 <dt>.truncate</dt>
 <dd><p>Should claims reported after <code>time</code> be silently discarded?
 If there are claims reported after <code>time</code> and <code>.truncate</code> is <code>FALSE</code>,
 an error will be raised.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><strong>trunc_obs</strong>: A <code>trunc_obs</code> tibble with columns <code>x</code>, <code>xmin</code>, <code>xmax</code>,
+    
+
+<p><strong>trunc_obs</strong>: A <code>trunc_obs</code> tibble with columns <code>x</code>, <code>xmin</code>, <code>xmax</code>,
 <code>tmin</code> and <code>tmax</code> describing possibly interval-censored observations with
-truncation
-<code>as_trunc_obs</code> returns a <code>trunc_obs</code> tibble.
-<code>truncate_obs</code> returns a <code>trunc_obs</code> tibble with possibly fewer
-observations than <code>.data</code> and updated truncation bounds.
-<code>repdel_obs</code> returns a <code>trunc_obs</code> tibble corresponding to the reporting
+truncation</p>
+
+
+<p><code>as_trunc_obs</code> returns a <code>trunc_obs</code> tibble.</p>
+
+
+<p><code>truncate_obs</code> returns a <code>trunc_obs</code> tibble with possibly fewer
+observations than <code>.data</code> and updated truncation bounds.</p>
+
+
+<p><code>repdel_obs</code> returns a <code>trunc_obs</code> tibble corresponding to the reporting
 delay observations of each claim. If <code>.truncate</code> is <code>FALSE</code>, the result is
 guaranteed to have the same number of rows as <code>.data</code>.</p>
     </div>
@@ -147,20 +178,20 @@ Censored observations must satisfy <code>tmin &lt;= xmin &lt; xmax &lt;= tmax</c
 <span class="r-in"><span class="va">x</span><span class="op">[</span><span class="va">cens</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">trunc_obs</span><span class="op">(</span><span class="va">x</span>, <span class="va">xmin</span>, <span class="va">xmax</span>, <span class="va">tmin</span>, <span class="va">tmax</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 42 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         x  xmin  xmax  tmin  tmax     w</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  1.05  1.05  1.05  0.932  2.87     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  1.57  1.57  1.57  0.927  2.09     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  0.473 0.473 0.473 0.296  1.38     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  1.90  1.90  1.90  0.983  2.15     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  0.426 0.426 0.426 0.226  1.45     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> <span style="color: #BB0000;">NA</span>     0.438 1     0.438  2.40     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  1.05  1.05  1.05  0.879  2.33     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  1.99  1.99  1.99  0.884  2.02     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> <span style="color: #BB0000;">NA</span>     0.374 1     0.374  2.12     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  1.03  1.03  1.03  0.322  1.64     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 32 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 40 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         x  xmin  xmax   tmin  tmax     w</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> <span style="color: #BB0000;">NA</span>     1     2     0.664   2.55     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  0.844 0.844 0.844 0.527   2.26     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> <span style="color: #BB0000;">NA</span>     1     1.85  0.426   1.85     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  1.58  1.58  1.58  0.728   2.58     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  1.78  1.78  1.78  0.869   2.50     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  0.837 0.837 0.837 0.099<span style="text-decoration: underline;">4</span>  1.18     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  1.59  1.59  1.59  0.973   2.18     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> <span style="color: #BB0000;">NA</span>     2     2.65  0.960   2.65     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  0.792 0.792 0.792 0.545   1.73     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> <span style="color: #BB0000;">NA</span>     1     2     0.712   2.71     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 30 more rows</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">as_trunc_obs</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 6</span></span>
@@ -207,7 +238,7 @@ Censored observations must satisfy <code>tmin &lt;= xmin &lt; xmax &lt;= tmax</c
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

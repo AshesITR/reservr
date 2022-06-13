@@ -78,22 +78,38 @@
 <dd><p>A named list of parameters to be flattened.
 Should be in a form to be passed as the <code>with_params</code> argument to most
 distribution functions.</p></dd>
+
+
 <dt>bounds</dt>
 <dd><p>List of parameter bounds as returned by
 <code>dist$get_param_bounds()</code></p></dd>
+
+
 <dt>flat_params</dt>
 <dd><p>A named numeric vector of parameters</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>flatten_params</code> returns a 'flattened' vector of parameters.
+    
+
+<p><code>flatten_params</code> returns a 'flattened' vector of parameters.
 It is intended as an adapter for multi-dimensional optimisation functions
-to distribution objects.
-<code>flatten_params_matrix</code> returns a 'flattened' matrix of parameters.
+to distribution objects.</p>
+
+
+<p><code>flatten_params_matrix</code> returns a 'flattened' matrix of parameters.
 It is intended as an adapter for multi-dimensional optimisation functions
-to distribution objects. Each column corresponds to one input element.
-<code>flatten_bounds</code> returns a named list of vectors with names <code>lower</code>and <code>upper</code>. Containing the upper and lower bounds of each parameter.
-<code>inflate_params</code> returns an 'inflated' list of parameters.
+to distribution objects. Each column corresponds to one input element.</p>
+
+
+<p><code>flatten_bounds</code> returns a named list of vectors with names <code>lower</code></p>
+
+
+<p>and <code>upper</code>. Containing the upper and lower bounds of each parameter.</p>
+
+
+<p><code>inflate_params</code> returns an 'inflated' list of parameters.
 This can be passed as the <code>with_params</code> argument to most distribution
 functions.</p>
     </div>
@@ -139,7 +155,7 @@ functions.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

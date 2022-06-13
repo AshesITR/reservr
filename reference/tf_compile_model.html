@@ -81,23 +81,35 @@
     <h2>Arguments</h2>
     <dl><dt>inputs</dt>
 <dd><p>List of keras input layers</p></dd>
+
+
 <dt>intermediate_output</dt>
 <dd><p>Intermediate model layer to be used as input to
 distribution parameters</p></dd>
+
+
 <dt>dist</dt>
 <dd><p>A <code>Distribution</code> to use for compiling the loss and parameter
 outputs</p></dd>
+
+
 <dt>optimizer</dt>
 <dd><p>String (name of optimizer) or optimizer instance. For most
 models, this defaults to <code>"rmsprop"</code></p></dd>
+
+
 <dt>censoring</dt>
 <dd><p>A flag, whether the compiled model should support censored
 observations. Set to <code>FALSE</code> for higher efficiency. <code>fit(...)</code> will error if
 the resulting model is used to fit censored observations.</p></dd>
+
+
 <dt>truncation</dt>
 <dd><p>A flag, whether the compiled model should support truncated
 observations. Set to <code>FALSE</code> for higher efficiency. <code>fit(...)</code> will warn if
 the resuting model is used to fit truncated observations.</p></dd>
+
+
 <dt>metrics</dt>
 <dd><p>List of metrics to be evaluated by the model during training
 and testing. Each of this can be a string (name of a built-in function),
@@ -114,14 +126,20 @@ specify a metric or a list of metrics for each output, such as
 <code>tf.keras.metrics.SparseCategoricalAccuracy</code> based on the loss function
 used and the model output shape. A similar conversion is done for the
 strings <code>'crossentropy'</code> and <code>'ce'</code>.</p></dd>
+
+
 <dt>sample_weight_mode</dt>
 <dd><p>If you need to do timestep-wise sample weighting
 (2D weights), set this to "temporal". <code>NULL</code> defaults to sample-wise
 weights (1D). If the model has multiple outputs, you can use a different
 <code>sample_weight_mode</code> on each output by passing a list of modes.</p></dd>
+
+
 <dt>weighted_metrics</dt>
 <dd><p>List of metrics to be evaluated and weighted by
 <code>sample_weight</code> or <code>class_weight</code> during training and testing.</p></dd>
+
+
 <dt>target_tensors</dt>
 <dd><p>By default, Keras will create a placeholder for the
 model's target, which will be fed with the target data during training. If
@@ -129,10 +147,13 @@ instead you would like to use your own target tensor (in turn, Keras will
 not expect external data for these targets at training time), you can
 specify them via the <code>target_tensors</code> argument. It should be a single
 tensor (for a single-output sequential model).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>reservr_keras_model</code> that can be used to train truncated
+    
+
+<p>A <code>reservr_keras_model</code> that can be used to train truncated
 and censored observations from <code>dist</code> based on input data from <code>inputs</code>.</p>
     </div>
 
@@ -170,7 +191,7 @@ and censored observations from <code>dist</code> based on input data from <code>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

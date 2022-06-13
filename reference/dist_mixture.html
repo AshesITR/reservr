@@ -79,6 +79,8 @@ The <strong>number of components</strong> cannot be overridden.</p>
     <dl><dt>dists</dt>
 <dd><p>A list of mixing distributions.
 May contain placeholders and duplicates.</p></dd>
+
+
 <dt>probs</dt>
 <dd><p>A list of mixing probabilities with the same length as <code>dists</code>.
 They are normalized to sum to one and <code>NULL</code> can be used as a placeholder
@@ -86,10 +88,13 @@ within probs.
 To reduce the number of required parameters, probs should at least be partly
 specified (<code>probs = list(NULL, NULL, ..., 1)</code> with k - 1 <code>NULL</code>s where k is
 the number of mixing components).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>MixtureDistribution</code> object.</p>
+    
+
+<p>A <code>MixtureDistribution</code> object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -149,7 +154,7 @@ the number of mixing components).</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

@@ -72,26 +72,41 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>Points to evaluate at</p></dd>
+
+
 <dt>u</dt>
 <dd><p>Sorted vector of blending thresholds, or rowwise sorted matrix of blending thresholds</p></dd>
+
+
 <dt>eps</dt>
 <dd><p>Corresponding vector or matrix of blending bandwidths.
 Must be positive and the same dimensions as <code>u</code>, or scalar.
 No rowwise blending regions (u - eps, u + eps) may overlap.</p></dd>
+
+
 <dt>.gradient</dt>
 <dd><p>Also evaluate the gradient with respect to <code>x</code>?</p></dd>
+
+
 <dt>.extend_na</dt>
 <dd><p>Extend out-of range transitions by the last in-range value (i.e. the corresponding u) or by NA?</p></dd>
+
+
 <dt>.component</dt>
 <dd><p>Component index (up to <code>length(u) + 1</code>) to invert.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>blended_transition</code> returns a matrix with <code>length(x)</code> rows and <code>length(u) + 1</code> columns containing the
+    
+
+<p><code>blended_transition</code> returns a matrix with <code>length(x)</code> rows and <code>length(u) + 1</code> columns containing the
 transformed values for each of the blending components.
 If <code>.gradient</code> is TRUE, an attribute <code>"gradient"</code> is attached with the same dimensions, containing the derivative
-of the respective transition component with respect to <code>x</code>.
-<code>blended_transition_inv</code> returns a vector with <code>length(x)</code> values containing the inverse of the transformed
+of the respective transition component with respect to <code>x</code>.</p>
+
+
+<p><code>blended_transition_inv</code> returns a vector with <code>length(x)</code> values containing the inverse of the transformed
 values for the <code>.component</code>th blending component.</p>
     </div>
 
@@ -150,7 +165,7 @@ values for the <code>.component</code>th blending component.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

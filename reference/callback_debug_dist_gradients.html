@@ -81,22 +81,35 @@ Useful for debugging TensorFlow implementations of Distributions.</p>
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A <code>reservr_keras_model</code> created by <code><a href="tf_compile_model.html">tf_compile_model()</a></code>.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>Input data for the model.</p></dd>
+
+
 <dt>obs</dt>
 <dd><p>Observations associated to <code>data</code>.</p></dd>
+
+
 <dt>keep_grads</dt>
 <dd><p>Log actual gradients? (memory hungry!)</p></dd>
+
+
 <dt>stop_on_na</dt>
 <dd><p>Stop if any likelihood component as NaN in its gradients?</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Print a message if training is halted?
 The Message will contain information about which likelihood components have
 NaN in their gradients.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>KerasCallback</code> suitable for passing to <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">keras::fit()</a></code>.</p>
+    
+
+<p>A <code>KerasCallback</code> suitable for passing to <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">keras::fit()</a></code>.</p>
     </div>
 
     <div id="ref-examples">
@@ -152,7 +165,7 @@ NaN in their gradients.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

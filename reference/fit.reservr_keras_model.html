@@ -93,30 +93,46 @@ checks to make sure <code><a href="tf_compile_model.html">tf_compile_model()</a>
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A compiled <code>reservr_keras_model</code> as obtained by <code><a href="tf_compile_model.html">tf_compile_model()</a></code>.</p></dd>
+
+
 <dt>x</dt>
 <dd><p>A list of input tensors (predictors)</p></dd>
+
+
 <dt>y</dt>
 <dd><p>A <code>trunc_obs</code> tibble of observed outcomes, or something convertible via <code><a href="trunc_obs.html">as_trunc_obs()</a></code>.</p></dd>
+
+
 <dt>batch_size</dt>
 <dd><p>Integer or <code>NULL</code>. Number of samples per gradient update.
 If unspecified, <code>batch_size</code> will default to 32.</p></dd>
+
+
 <dt>epochs</dt>
 <dd><p>Number of epochs to train the model.
 Note that in conjunction with <code>initial_epoch</code>,
 <code>epochs</code> is to be understood as "final epoch". The model is
 not trained for a number of iterations given by <code>epochs</code>, but
 merely until the epoch of index <code>epochs</code> is reached.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Verbosity mode (0 = silent, 1 = progress bar, 2 = one line per
 epoch).</p></dd>
+
+
 <dt>callbacks</dt>
 <dd><p>List of callbacks to be called during training.</p></dd>
+
+
 <dt>view_metrics</dt>
 <dd><p>View realtime plot of training metrics (by epoch). The
 default (<code>"auto"</code>) will display the plot when running within RStudio,
 <code>metrics</code> were specified during model <code><a href="https://generics.r-lib.org/reference/compile.html" class="external-link">compile()</a></code>, <code>epochs &gt; 1</code> and
 <code>verbose &gt; 0</code>. Use the global <code>keras.view_metrics</code> option to establish a
 different default.</p></dd>
+
+
 <dt>validation_split</dt>
 <dd><p>Float between 0 and 1. Fraction of the training data
 to be used as validation data. The model will set apart this fraction of
@@ -124,21 +140,29 @@ the training data, will not train on it, and will evaluate the loss and any
 model metrics on this data at the end of each epoch. The validation data
 is selected from the last samples in the <code>x</code> and <code>y</code> data provided,
 before shuffling.</p></dd>
+
+
 <dt>validation_data</dt>
 <dd><p>Data on which to evaluate the loss and any model
 metrics at the end of each epoch. The model will not be trained on this
 data. This could be a list (x_val, y_val) or a list (x_val, y_val,
 val_sample_weights). <code>validation_data</code> will override <code>validation_split</code>.</p></dd>
+
+
 <dt>shuffle</dt>
 <dd><p>shuffle: Logical (whether to shuffle the training data
 before each epoch) or string (for "batch"). "batch" is a special option
 for dealing with the limitations of HDF5 data; it shuffles in batch-sized
 chunks. Has no effect when <code>steps_per_epoch</code> is not <code>NULL</code>.</p></dd>
+
+
 <dt>class_weight</dt>
 <dd><p>Optional named list mapping indices (integers) to a
 weight (float) value, used for weighting the loss function
 (during training only). This can be useful to tell the model to
 "pay more attention" to samples from an under-represented class.</p></dd>
+
+
 <dt>sample_weight</dt>
 <dd><p>Optional array of the same length as x, containing
 weights to apply to the model's loss for each sample. In the case of
@@ -146,24 +170,35 @@ temporal data, you can pass a 2D array with shape (samples,
 sequence_length), to apply a different weight to every timestep of every
 sample. In this case you should make sure to specify
 <code>sample_weight_mode="temporal"</code> in <code><a href="https://generics.r-lib.org/reference/compile.html" class="external-link">compile()</a></code>.</p></dd>
+
+
 <dt>initial_epoch</dt>
 <dd><p>Integer, Epoch at which to start training (useful for
 resuming a previous training run).</p></dd>
+
+
 <dt>steps_per_epoch</dt>
 <dd><p>Total number of steps (batches of samples) before
 declaring one epoch finished and starting the next epoch. When training
 with input tensors such as TensorFlow data tensors, the default <code>NULL</code> is
 equal to the number of samples in your dataset divided by the batch
 size, or 1 if that cannot be determined.</p></dd>
+
+
 <dt>validation_steps</dt>
 <dd><p>Only relevant if <code>steps_per_epoch</code> is specified.
 Total number of steps (batches of samples) to validate before stopping.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Unused. If old arguments are supplied, an error message will be raised informing how to fix the issue.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>history</code> object that contains all information collected during training.
+    
+
+<p>A <code>history</code> object that contains all information collected during training.
 The model object will be updated in-place as a side-effect.</p>
     </div>
     <div id="details">
@@ -221,7 +256,7 @@ used in machine learning, leading to divergence for small batch sizes.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

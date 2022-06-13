@@ -76,8 +76,12 @@ distribution parameters given by <code>params</code>.</p>
     <h2>Arguments</h2>
     <dl><dt>model</dt>
 <dd><p>A <code>reservr_compiled_model</code> obtained by <code><a href="tf_compile_model.html">tf_compile_model()</a></code>.</p></dd>
+
+
 <dt>params</dt>
 <dd><p>A list of distribution parameters compatible with <code>model</code>.</p></dd>
+
+
 <dt>mode</dt>
 <dd><p>An initialisation mode</p><dl><dt>scale</dt>
 <dd><p>Initialise the biases according to <code>params</code> and the kernels uniform on [-0.1, 0.1] *
@@ -94,10 +98,13 @@ bias scale.</p></dd>
 
 
 </dl></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Invisibly <code>model</code> with changed weights</p>
+    
+
+<p>Invisibly <code>model</code> with changed weights</p>
     </div>
 
     <div id="ref-examples">
@@ -143,7 +150,7 @@ bias scale.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

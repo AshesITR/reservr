@@ -70,20 +70,29 @@
     <h2>Arguments</h2>
     <dl><dt>dists</dt>
 <dd><p>A list of k &gt;= 2 component Distributions.</p></dd>
+
+
 <dt>probs</dt>
 <dd><p>k Mixture weight parameters</p></dd>
+
+
 <dt>breaks</dt>
 <dd><p>k - 1 Centers of the blending zones.
 <code>dists[i]</code> will blend into <code>dists[i + 1]</code> around <code>breaks[i]</code>.</p></dd>
+
+
 <dt>bandwidths</dt>
 <dd><p>k - 1 Radii of the blending zones.
 The i-th blending zone will begin at <code>breaks[i] - bandwidths[i]</code> and end at
 <code>breaks[i] + bandwidths[i]</code>. A bandwidth of 0 corresponds to a hard cut-off,
 i.e. a jump discontinuity in the density of the blended Distribution.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>BlendedDistribution</code> object.</p>
+    
+
+<p>A <code>BlendedDistribution</code> object.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -145,7 +154,7 @@ i.e. a jump discontinuity in the density of the blended Distribution.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

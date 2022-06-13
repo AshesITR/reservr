@@ -85,34 +85,55 @@ detection.</p>
     <h2>Arguments</h2>
     <dl><dt>monitor</dt>
 <dd><p>quantity to be monitored.</p></dd>
+
+
 <dt>factor</dt>
 <dd><p>factor by which the learning rate will be reduced. <code>new_lr = old_lr * factor</code>.</p></dd>
+
+
 <dt>patience</dt>
 <dd><p>number of epochs with no significant improvement after which the learning rate will be reduced.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>integer. Set to 1 to receive update messages.</p></dd>
+
+
 <dt>mode</dt>
 <dd><p>Optimisation mode. "auto" detects the mode from the name of <code>monitor</code>. "min" monitors for decreasing
 metrics. "max" monitors for increasing metrics.</p></dd>
+
+
 <dt>delta_abs</dt>
 <dd><p>Minimum absolute metric improvement per epoch. The learning rate will be reduced if the average
 improvement is less than <code>delta_abs</code> per epoch for <code>patience</code> epochs.</p></dd>
+
+
 <dt>delta_rel</dt>
 <dd><p>Minimum relative metric improvement per epoch. The learning rate will be reduced if the average
 improvement is less than <code>|metric| * delta_rel</code> per epoch for <code>patience</code> epochs.</p></dd>
+
+
 <dt>cooldown</dt>
 <dd><p>number of epochs to wait before resuming normal operation after learning rate has been reduced.
 The minimum number of epochs between two learning rate reductions is <code>patience + cooldown</code>.</p></dd>
+
+
 <dt>min_lr</dt>
 <dd><p>lower bound for the learning rate. If a learning rate reduction would lower the learning rate below
 <code>min_lr</code>, it will be clipped at <code>min_lr</code> instead and no further reductions will be performed.</p></dd>
+
+
 <dt>restore_weights</dt>
 <dd><p>Bool. If TRUE, the best weights will be restored at each learning rate reduction.
 This is very useful if the metric oscillates.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>KerasCallback</code> suitable for passing to <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">keras::fit()</a></code>.</p>
+    
+
+<p>A <code>KerasCallback</code> suitable for passing to <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">keras::fit()</a></code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -171,7 +192,7 @@ Thus, if you want to also log the learning rate, you should add <code><a href="h
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

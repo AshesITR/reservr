@@ -82,33 +82,54 @@
     <dl><dt>dist</dt>
 <dd><p>An <code>ErlangMixtureDistribution</code>. It is assumed, that both <code>probs</code>
 and <code>scale</code> are to be estimated.</p></dd>
+
+
 <dt>obs</dt>
 <dd><p>Set of observations as produced by <code><a href="trunc_obs.html">trunc_obs()</a></code> or convertible
 via <code><a href="trunc_obs.html">as_trunc_obs()</a></code>.</p></dd>
+
+
 <dt>start</dt>
 <dd><p>Initial values of all placeholder parameters.
 If missing, starting values are obtained from <code><a href="fit_dist_start.html">fit_dist_start()</a></code>.</p></dd>
+
+
 <dt>min_iter</dt>
 <dd><p>Minimum number of EM-Iterations</p></dd>
+
+
 <dt>max_iter</dt>
 <dd><p>Maximum number of EM-Iterations (weight updates)</p></dd>
+
+
 <dt>skip_first_e</dt>
 <dd><p>Skip the first E-Step (update Probability weights)?
 This can help if the initial values cause a mixture component to vanish in
 the first E-Step before the starting values can be improved.</p></dd>
+
+
 <dt>tolerance</dt>
 <dd><p>Numerical tolerance.</p></dd>
+
+
 <dt>trace</dt>
 <dd><p>Include tracing information in output?
 If <code>TRUE</code>, additional tracing information will be added to the result list.</p></dd>
+
+
 <dt>parallel</dt>
 <dd><p>Enable experimental parallel evaluation of expected log-likelihood?</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Passed to <code><a href="fit_dist_start.html">fit_dist_start()</a></code> if <code>start</code> is missing.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with elements</p><ul><li><p><code>params</code> the fitted parameters in the same structure as <code>init</code>.</p></li>
+    
+
+<p>A list with elements</p><ul><li><p><code>params</code> the fitted parameters in the same structure as <code>init</code>.</p></li>
 <li><p><code>params_hist</code> (if <code>trace</code> is TRUE) the history of parameters
 (after each e- and m- step). Otherwise an empty list.</p></li>
 <li><p><code>iter</code> the number of outer EM-iterations</p></li>
@@ -135,13 +156,13 @@ If <code>TRUE</code>, additional tracing information will be added to the result
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$probs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$probs[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$probs[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.35</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$probs[[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$shapes</span>
@@ -149,14 +170,14 @@ If <code>TRUE</code>, additional tracing information will be added to the result
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$shapes[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$shapes[[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 17</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$scale</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.721761</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.489219</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params_hist</span>
@@ -166,7 +187,7 @@ If <code>TRUE</code>, additional tracing information will be added to the result
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $logLik</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -295.6897 (df=6)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -290.0894 (df=6)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 </code></pre></div>
@@ -183,7 +204,7 @@ If <code>TRUE</code>, additional tracing information will be added to the result
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

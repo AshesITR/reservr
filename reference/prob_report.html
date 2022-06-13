@@ -83,31 +83,47 @@ time between <code>t_min</code> and <code>t_max</code> are reported between <cod
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>dist</dt>
-<dd><p>A reporting delay Distribution.</p></dd>
+<dd><p>A reporting delay Distribution, or a compiled interval probability function.</p></dd>
+
+
 <dt>intervals</dt>
 <dd><p>A data frame with columns <code>xmin</code>, <code>xmax</code>, <code>tmin</code>, <code>tmax</code>.
 Claims occur within <code>[xmin, xmax]</code> and be reported within <code>[tmin, tmax]</code>.</p></dd>
+
+
 <dt>expo</dt>
 <dd><p>Poisson intensity. If given, must be a vectorised function that
 yields the intensity of the claim arrival process at a specified time.
 <code>expo = NULL</code> is equivalent to a constant intensity function. <code>expo</code> is only
 relevant up to a multiplicative constant.</p></dd>
+
+
 <dt>with_params</dt>
 <dd><p>Parameters of <code>dist</code> to use. Can be a parameter set with
-different values for each interval.</p></dd>
+different values for each interval. If <code>dist</code> is a compiled interval probability function, <code>with_params</code> can be a
+matrix instead.</p></dd>
+
+
 <dt>.tolerance</dt>
 <dd><p>Absolute element-wise tolerance.</p></dd>
+
+
 <dt>.max_iter</dt>
 <dd><p>Maximum number of iterations. The number of
 integration intervals will be at most <code>length(lower) * .max_iter</code>. Therefor the maximum
 number of function evaluations per integration interval will be
 <code>15 * .max_iter</code>.</p></dd>
+
+
 <dt>.try_compile</dt>
 <dd><p>Try compiling the distributions probability function to speed up integration?</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector of reporting probabilities, with one entry per row of <code>intervals</code>.</p>
+    
+
+<p>A vector of reporting probabilities, with one entry per row of <code>intervals</code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -150,7 +166,7 @@ int_[xmin, xmax] expo(x) dx</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

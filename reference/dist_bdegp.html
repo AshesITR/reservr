@@ -72,17 +72,26 @@ blending interval.</p>
     <h2>Arguments</h2>
     <dl><dt>n</dt>
 <dd><p>Number of dirac components, starting with a point mass at 0.</p></dd>
+
+
 <dt>m</dt>
 <dd><p>Number of erlang components, translated by <code>n - 0.5</code>.</p></dd>
+
+
 <dt>u</dt>
 <dd><p>Blending cut-off, must be a positive real.</p></dd>
+
+
 <dt>epsilon</dt>
 <dd><p>Blending radius, must be a positive real less than <code>u</code>.
 The blending interval will be <code>u - epsilon &lt; x &lt; u + epsilon</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <ul><li><p>A <code>MixtureDistribution</code> of</p><ul><li><p><code>n</code> <code>DiracDistribution</code>s at 0 .. n - 1 and</p></li>
+    
+
+<ul><li><p>A <code>MixtureDistribution</code> of</p><ul><li><p><code>n</code> <code>DiracDistribution</code>s at 0 .. n - 1 and</p></li>
 <li><p>a <code>BlendedDistribution</code> object with child Distributions</p><ul><li><p>a <code>TranslatedDistribution</code> with offset <code>n - 0.5</code> of an <code>ErlangMixtureDistribution</code> with <code>m</code> shapes</p></li>
 <li><p>and a <code>GeneralizedParetoDistribution</code> with shape parameter restricted to [0, 1] and location parameter fixed
 at <code>u</code>
@@ -150,7 +159,7 @@ With break <code>u</code> and bandwidth <code>epsilon</code>.</p></li>
 <span class="r-in">  .x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, length.out <span class="op">=</span> <span class="fl">101</span><span class="op">)</span>,</span>
 <span class="r-in">  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>theoretical <span class="op">=</span> <span class="va">params</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 35 row(s) containing missing values (geom_path).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 33 row(s) containing missing values (geom_path).</span>
 <span class="r-plt img"><img src="dist_bdegp-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 </code></pre></div>
@@ -167,7 +176,7 @@ With break <code>u</code> and bandwidth <code>epsilon</code>.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

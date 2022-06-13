@@ -83,26 +83,39 @@ Must be vectorized and take one or two arguments, the first being points to
 evaluate at and the second (optionally) being parameters to apply.
 It must return a numeric vector the same length as its first input.</p>
 <p>Currently, infinite bounds are not supported.</p></dd>
+
+
 <dt>lower, upper</dt>
 <dd><p>Integration bounds. Must have the same length.</p></dd>
+
+
 <dt>params</dt>
 <dd><p>Parameters to pass as a second argument to <code>fun</code>.
 The actual parameters must have the same length as the number of integrals to
 compute. Can be a possibly nested list structures containing numeric vectors.
 Alternatively, can be a matrix with the same number of rows as the number of integrals to compute.</p></dd>
+
+
 <dt>.tolerance</dt>
 <dd><p>Absolute element-wise tolerance.</p></dd>
+
+
 <dt>.max_iter</dt>
 <dd><p>Maximum number of iterations. The number of
 integration intervals will be at most <code>length(lower) * .max_iter</code>. Therefor the maximum
 number of function evaluations per integration interval will be
 <code>15 * .max_iter</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector of integrals with the i-th entry containing an approximation
-of
-int_lower[i]^upper[i] fun(t, pick_params_at(params, i)) dt</p>
+    
+
+<p>A vector of integrals with the i-th entry containing an approximation
+of</p>
+
+
+<p>int_lower[i]^upper[i] fun(t, pick_params_at(params, i)) dt</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -145,7 +158,7 @@ the same length as the number of observations.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>
