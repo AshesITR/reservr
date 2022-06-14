@@ -4,12 +4,14 @@
 \alias{predict.reservr_keras_model}
 \title{Predict individual distribution parameters}
 \usage{
-\method{predict}{reservr_keras_model}(object, data, ...)
+\method{predict}{reservr_keras_model}(object, data, as_matrix = FALSE, ...)
 }
 \arguments{
 \item{object}{A compiled and trained \code{reservr_keras_model}.}
 
 \item{data}{Input data compatible with the model.}
+
+\item{as_matrix}{Return a parameter matrix instead of a list structure?}
 
 \item{...}{ignored}
 }
