@@ -55,11 +55,18 @@
   }
 }
 
-.fit_dist_objective <- function(dist, obs, i_obs, i_cens, param_names) {
+.fit_dist_objective <- function(dist, obs, i_obs, i_cens, param_names,
+                                param_bounds = NULL) {
   if (all(dist$has_capability(c("diff_density", "diff_probability")))) {
     function(par) {
       names(par) <- param_names
       wp <- inflate_params(par)
+
+      if (anyNA(par) ||
+            any(par < param_bounds$lower) ||
+            any(par > param_bounds$upper)) {
+        return(NaN)
+      }
 
       log_f_obs <- dist$density(obs$x[i_obs], log = TRUE, with_params = wp)
       P_cens <- dist$probability(obs$xmax[i_cens], with_params = wp) -
@@ -111,6 +118,12 @@
     function(par) {
       names(par) <- param_names
       wp <- inflate_params(par)
+
+      if (anyNA(par) ||
+            any(par < param_bounds$lower) ||
+            any(par > param_bounds$upper)) {
+        return(NaN)
+      }
 
       P_cens <- dist$probability(obs$xmax[i_cens], with_params = wp) -
         dist$probability(obs$xmin[i_cens], with_params = wp)

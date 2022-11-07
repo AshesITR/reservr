@@ -226,7 +226,7 @@ BlendedDistribution <- distribution_class(
     for (i in seq_along(ph$dists)) {
       if (length(ph$dists[[i]])) {
         # Any free parameters in component i
-        comp_constr <- ph$dists[[i]]$get_param_constraints()
+        comp_constr <- self$default_params$dists[[i]]$get_param_constraints()
         if (!is.null(comp_constr)) {
           constrs <- c(constrs, function(params) {
             comp_res <- comp_constr(params$dists[[i]])
@@ -933,12 +933,31 @@ fit_dist_start.BlendedDistribution <- function(dist, obs, dists_start = NULL,
   res <- dist$get_placeholders()
   ph_dists <- lengths(res$dists) > 0L
   ph_probs <- length(res$probs) > 0L
+  ph_breaks <- length(res$breaks) > 0L
+  ph_bandwidths <- length(res$bandwidths) > 0L
 
   blend_comps <- dist$get_components()
   blend <- dist$get_params()
 
   k <- length(blend_comps)
   n <- nrow(obs)
+
+  if (ph_breaks) {
+    breaks_approx <- weighted_quantile(
+      x = obs$x,
+      w = obs$w,
+      probs = seq_len(k - 1) / (k + 1)
+    )
+    res$breaks <- as.list(breaks_approx)
+    blend$breaks <- res$breaks
+  }
+
+  if (ph_bandwidths) {
+    eps_default <- min(diff(c(min(obs$x), unlist(res$breaks), max(obs$x)))) /
+      3.0
+    res$bandwidths <- as.list(rep(eps_default, k - 1))
+    blend$bandwidths <- res$bandwidths
+  }
 
   comp_supp <- map_lgl_matrix(
     seq_len(k),

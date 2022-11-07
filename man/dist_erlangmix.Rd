@@ -50,7 +50,6 @@ Other Distributions:
 \code{\link{dist_gamma}()},
 \code{\link{dist_genpareto}()},
 \code{\link{dist_lognormal}()},
-\code{\link{dist_mde}()},
 \code{\link{dist_mixture}()},
 \code{\link{dist_negbinomial}()},
 \code{\link{dist_normal}()},

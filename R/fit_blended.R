@@ -53,6 +53,10 @@ fit_blended <- function(dist, obs, start,
   blend_comps <- dist$get_components()
   blend <- dist$get_params()
 
+  if (!is.null(start$breaks) || !is.null(start$bandwidths)) {
+    return(fit_dist_direct(dist, obs, start))
+  }
+
   n <- nrow(obs)
   k <- length(blend_comps)
 

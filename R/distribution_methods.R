@@ -161,12 +161,14 @@ fit_dist.Distribution <- function(dist, obs, start, ...) {
   i_cens <- is.na(obs$x)
   i_obs <- !i_cens
 
-  neg_loglik <- .fit_dist_objective(
-    dist, obs, i_obs, i_cens, param_names
-  )
-
   bounds <- flatten_bounds(dist$get_param_bounds())
+  bounds$lower <- bounds$lower[param_names]
+  bounds$upper <- bounds$upper[param_names]
   constraint <- dist$get_param_constraints()
+
+  neg_loglik <- .fit_dist_objective(
+    dist, obs, i_obs, i_cens, param_names, bounds
+  )
 
   if (!is.null(constraint)) {
     constraint_impl <- constraint

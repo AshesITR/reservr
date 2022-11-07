@@ -103,7 +103,6 @@ Collate:
     'gpd.R'
     'dist_genpareto.R'
     'dist_lognormal.R'
-    'dist_mde.R'
     'fit_mixture.R'
     'dist_mixture.R'
     'dist_negbinomial.R'
