@@ -58,14 +58,14 @@ PoissonDistribution <- distribution_class_simple(
 
     if ("lambda" %in% names(vars)) {
       # Compute numeric derivative
-      res$lambda <- as.numeric(numDeriv::grad(
+      res$lambda <- gradient(
         func = function(lambda) {
           sum(ppois(
             q = q, lambda = lambda, lower.tail = lower.tail, log.p = log.p
           ))
         },
         x = params$lambda
-      ))
+      )
     }
 
     res

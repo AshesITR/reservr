@@ -55,11 +55,12 @@ fit_dist_start <- function(dist, obs, ...) {
 #' better starting values?
 #'
 #' @examples
-#' dist <- dist_mixture(list(dist_normal(), dist_genpareto1(u = 6)))
+#' dist <- dist_mixture(list(dist_normal(), dist_translate(dist_exponential(), offset = 6)))
 #' params <- list(
-#'   dists = list(list(mean = 5, sd = 1), list(sigmau = 1, xi = 0)), probs = list(0.95, 0.05)
+#'   dists = list(list(mean = 5, sd = 1), list(dist = list(rate = 1))), probs = list(0.95, 0.05)
 #' )
-#' u <- runif(100, 3, 10)
+#' set.seed(2000)
+#' u <- runif(100, 10, 20)
 #' x <- dist$sample(100, with_params = params)
 #' obs <- trunc_obs(x = x[x <= u], tmin = -Inf, tmax = u[x <= u])
 #'

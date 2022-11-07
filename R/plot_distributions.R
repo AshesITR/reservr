@@ -187,7 +187,7 @@ plot_distributions <- function(..., distributions = list(), .x,
 
         ggplot2::ggplot(mapping = ggplot2::aes(x = x, y = probability, color = distribution,
                                                group = factor(paste(distribution, group)))) +
-          ggplot2::geom_line(data = plot_data_cont, size = 1) +
+          ggplot2::geom_line(data = plot_data_cont, linewidth = 1.0) +
           ggplot2::geom_line(data = plot_data_jumps, linetype = 2L) +
           ggplot2::theme_bw() +
           ggplot2::guides(color = ggplot2::guide_legend(direction = "horizontal")) +

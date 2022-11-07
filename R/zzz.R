@@ -136,3 +136,11 @@ xcx_inv <- function(yt) {
     )$root
   }, numeric(1L))
 }
+
+gradient <- function(func, x) {
+  as.numeric(numDeriv::grad(func, x))
+}
+
+jacobian <- function(func, x) {
+  as.numeric(numDeriv::jacobian(func, x))
+}

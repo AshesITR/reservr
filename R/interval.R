@@ -107,19 +107,20 @@ Interval <- R6Class(
         multip <- diag(self$range[2L] - self$range[1L], size, size)
         const <- rep_len(self$range[1L], size)
 
-        keras::layer_dense(
+        inner_layer <- keras::layer_dense(
           object = input,
           units = size,
           activation = "sigmoid",
           name = name
-        ) %>%
-          keras::layer_dense(
-            units = size, activation = "linear",
-            weights = list(
-              keras::k_constant(multip, shape = c(size, size)),
-              keras::k_constant(const, shape = size)
-            ), trainable = FALSE
-          )
+        )
+        keras::layer_dense(
+          object = inner_layer,
+          units = size, activation = "linear",
+          weights = list(
+            keras::k_constant(multip, shape = c(size, size)),
+            keras::k_constant(const, shape = size)
+          ), trainable = FALSE
+        )
       } else { # half_line
         if (self$range[1L] == -Inf) {
           # (0, Inf) -> (-Inf, a)
@@ -131,20 +132,21 @@ Interval <- R6Class(
           const <- rep_len(self$range[1L], size)
         }
 
-        keras::layer_dense(
+        inner_layer <- keras::layer_dense(
           object = input,
           units = size,
           activation = "softplus",
           name = name
-        ) %>%
-          keras::layer_dense(
-            units = size, activation = "linear",
-            weights = list(
-              keras::k_constant(multip, shape = c(size, size)),
-              keras::k_constant(const, shape = size)
-            ),
-            trainable = FALSE
-          )
+        )
+        keras::layer_dense(
+          object = inner_layer,
+          units = size, activation = "linear",
+          weights = list(
+            keras::k_constant(multip, shape = c(size, size)),
+            keras::k_constant(const, shape = size)
+          ),
+          trainable = FALSE
+        )
       }
     }
   ),

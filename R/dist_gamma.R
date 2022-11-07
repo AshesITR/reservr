@@ -88,7 +88,7 @@ GammaDistribution <- distribution_class_simple(
     if ("shape" %in% names(vars)) {
       # Analytic gradient contains Meijer G-function => compute numeric
       # derivative
-      res$shape <- as.numeric(numDeriv::grad(
+      res$shape <- gradient(
         func = function(shape) {
           sum(pgamma(
             q, shape = shape, rate = params$rate,
@@ -96,7 +96,7 @@ GammaDistribution <- distribution_class_simple(
           ))
         },
         x = params$shape
-      ))
+      )
     }
 
     res

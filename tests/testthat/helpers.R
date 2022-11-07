@@ -183,12 +183,12 @@ expect_diff_density <- function(dist, x, args, vars = NULL, lvars = NULL,
 
     expect_equal(
       diff_dens[[!!arg]],
-      as.numeric(numDeriv::jacobian(func = dfun, x = !!args[[arg]])),
+      jacobian(func = dfun, x = !!args[[arg]]),
       tolerance = tolerance
     )
     expect_equal(
       diff_log_dens[[!!arg]],
-      as.numeric(numDeriv::jacobian(func = dlogfun, x = !!args[[arg]])),
+      jacobian(func = dlogfun, x = !!args[[arg]]),
       tolerance = tolerance
     )
   }
@@ -211,12 +211,12 @@ expect_diff_density <- function(dist, x, args, vars = NULL, lvars = NULL,
 
       expect_equal(
         diff_dens[[!!arg]][[!!k]],
-        as.numeric(numDeriv::jacobian(func = dfun, x = !!args[[arg]][[k]])),
+        jacobian(func = dfun, x = !!args[[arg]][[k]]),
         tolerance = tolerance
       )
       expect_equal(
         diff_log_dens[[!!arg]][[!!k]],
-        as.numeric(numDeriv::jacobian(func = dlogfun, x = !!args[[arg]][[k]])),
+        jacobian(func = dlogfun, x = !!args[[arg]][[k]]),
         tolerance = tolerance
       )
     }
@@ -277,22 +277,22 @@ expect_diff_probability <- function(dist, q, args, vars = NULL, lvars = NULL,
 
     expect_equal(
       diff_prob[[!!arg]],
-      as.numeric(numDeriv::jacobian(func = pfun, x = !!args[[arg]])),
+      jacobian(func = pfun, x = !!args[[arg]]),
       tolerance = tolerance
     )
     expect_equal(
       diff_log_prob[[!!arg]],
-      as.numeric(numDeriv::jacobian(func = plogfun, x = !!args[[arg]])),
+      jacobian(func = plogfun, x = !!args[[arg]]),
       tolerance = tolerance
     )
     expect_equal(
       diff_prob_ut[[!!arg]],
-      as.numeric(numDeriv::jacobian(func = pfun_ut, x = !!args[[arg]])),
+      jacobian(func = pfun_ut, x = !!args[[arg]]),
       tolerance = tolerance
     )
     expect_equal(
       diff_log_prob_ut[[!!arg]],
-      as.numeric(numDeriv::jacobian(func = plogfun_ut, x = !!args[[arg]])),
+      jacobian(func = plogfun_ut, x = !!args[[arg]]),
       tolerance = tolerance
     )
   }
@@ -328,24 +328,24 @@ expect_diff_probability <- function(dist, q, args, vars = NULL, lvars = NULL,
 
       expect_equal(
         diff_prob[[!!arg]][[!!k]],
-        as.numeric(numDeriv::jacobian(func = pfun, x = !!args[[arg]][[k]])),
+        jacobian(func = pfun, x = !!args[[arg]][[k]]),
         tolerance = tolerance
       )
       expect_equal(
         diff_log_prob[[!!arg]][[!!k]],
-        as.numeric(numDeriv::jacobian(func = plogfun, x = !!args[[arg]][[k]])),
+        jacobian(func = plogfun, x = !!args[[arg]][[k]]),
         tolerance = tolerance
       )
       expect_equal(
         diff_prob_ut[[!!arg]][[!!k]],
-        as.numeric(numDeriv::jacobian(func = pfun_ut, x = !!args[[arg]][[k]])),
+        jacobian(func = pfun_ut, x = !!args[[arg]][[k]]),
         tolerance = tolerance
       )
       expect_equal(
         diff_log_prob_ut[[!!arg]][[!!k]],
-        as.numeric(numDeriv::jacobian(
+        jacobian(
           func = plogfun_ut, x = !!args[[arg]][[k]]
-        )),
+        ),
         tolerance = tolerance
       )
     }
