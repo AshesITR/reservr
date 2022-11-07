@@ -63,17 +63,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fit_blended</span><span class="op">(</span>
-  <span class="va">dist</span>,
-  <span class="va">obs</span>,
-  <span class="va">start</span>,
-  min_iter <span class="op">=</span> <span class="fl">0L</span>,
-  max_iter <span class="op">=</span> <span class="fl">100L</span>,
-  skip_first_e <span class="op">=</span> <span class="cn">FALSE</span>,
-  tolerance <span class="op">=</span> <span class="fl">1e-05</span>,
-  trace <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fit_blended</span><span class="op">(</span></span>
+<span>  <span class="va">dist</span>,</span>
+<span>  <span class="va">obs</span>,</span>
+<span>  <span class="va">start</span>,</span>
+<span>  min_iter <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>  max_iter <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  skip_first_e <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  tolerance <span class="op">=</span> <span class="fl">1e-05</span>,</span>
+<span>  trace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -140,69 +140,80 @@ If <code>TRUE</code>, additional tracing information will be added to the result
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_blended.html">dist_blended</a></span><span class="op">(</span></span>
-<span class="r-in">   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">     <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">     <span class="fu"><a href="dist_genpareto.html">dist_genpareto</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in">   <span class="op">)</span></span>
-<span class="r-in"> <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"> <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">   probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
-<span class="r-in">   dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span>,</span>
-<span class="r-in">     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>u <span class="op">=</span> <span class="fl">1.5</span>, xi <span class="op">=</span> <span class="fl">0.2</span>, sigmau <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span></span>
-<span class="r-in">   <span class="op">)</span>,</span>
-<span class="r-in">   breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1.5</span><span class="op">)</span>,</span>
-<span class="r-in">   bandwidths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.3</span><span class="op">)</span></span>
-<span class="r-in"> <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"> <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">dist</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">100L</span>, with_params <span class="op">=</span> <span class="va">params</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"> <span class="va">dist</span><span class="op">$</span><span class="va">default_params</span><span class="op">$</span><span class="va">breaks</span> <span class="op">&lt;-</span> <span class="va">params</span><span class="op">$</span><span class="va">breaks</span></span>
-<span class="r-in"> <span class="va">dist</span><span class="op">$</span><span class="va">default_params</span><span class="op">$</span><span class="va">bandwidths</span> <span class="op">&lt;-</span> <span class="va">params</span><span class="op">$</span><span class="va">bandwidths</span></span>
-<span class="r-in"> <span class="fu">fit_blended</span><span class="op">(</span><span class="va">dist</span>, <span class="va">x</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_blended.html">dist_blended</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>     <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>     <span class="fu"><a href="dist_genpareto.html">dist_genpareto</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>   probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">0.1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>u <span class="op">=</span> <span class="fl">1.5</span>, xi <span class="op">=</span> <span class="fl">0.2</span>, sigmau <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="op">)</span>,</span></span>
+<span class="r-in"><span>   breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1.5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   bandwidths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.3</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">dist</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">100L</span>, with_params <span class="op">=</span> <span class="va">params</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">dist</span><span class="op">$</span><span class="va">default_params</span><span class="op">$</span><span class="va">breaks</span> <span class="op">&lt;-</span> <span class="va">params</span><span class="op">$</span><span class="va">breaks</span></span></span>
+<span class="r-in"><span> <span class="va">dist</span><span class="op">$</span><span class="va">default_params</span><span class="op">$</span><span class="va">bandwidths</span> <span class="op">&lt;-</span> <span class="va">params</span><span class="op">$</span><span class="va">bandwidths</span></span></span>
+<span class="r-in"><span> <span class="fu">fit_blended</span><span class="op">(</span><span class="va">dist</span>, <span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$dists</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$dists[[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$dists[[1]]$rate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.568449</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.816973</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$dists[[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$dists[[2]]$sigmau</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.588161</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4852052</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$dists[[2]]$u</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.01292593</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$dists[[2]]$xi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.023009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.03188161</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$probs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$probs[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9296703</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8661809</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $params$probs[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0703297</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1338191</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $params$breaks</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $params$bandwidths</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $opt</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $opt$par</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   dists[1].rate      dists[2].u dists[2].sigmau     dists[2].xi        probs[1] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      1.81697329     -0.01292593      0.48520521     -0.03188161      0.86618088 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        probs[2] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      0.13381912 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $opt$value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 54.0937</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $iter</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $opt$iter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 51</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $opt$convergence</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $opt$message</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "NLOPT_XTOL_REACHED: Optimization stopped because xtol_rel or xtol_abs (above) was reached."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $logLik</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -47.64215 (df=5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -54.0937 (df=5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -217,7 +228,7 @@ If <code>TRUE</code>, additional tracing information will be added to the result
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

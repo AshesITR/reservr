@@ -67,26 +67,26 @@ checks to make sure <code><a href="tf_compile_model.html">tf_compile_model()</a>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for reservr_keras_model</span>
-<span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span>
-  <span class="va">object</span>,
-  <span class="va">x</span>,
-  <span class="va">y</span>,
-  batch_size <span class="op">=</span> <span class="cn">NULL</span>,
-  epochs <span class="op">=</span> <span class="fl">10</span>,
-  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"keras.fit_verbose"</span>, default <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,
-  callbacks <span class="op">=</span> <span class="cn">NULL</span>,
-  view_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"keras.view_metrics"</span>, default <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,
-  validation_split <span class="op">=</span> <span class="fl">0</span>,
-  validation_data <span class="op">=</span> <span class="cn">NULL</span>,
-  shuffle <span class="op">=</span> <span class="cn">TRUE</span>,
-  class_weight <span class="op">=</span> <span class="cn">NULL</span>,
-  sample_weight <span class="op">=</span> <span class="cn">NULL</span>,
-  initial_epoch <span class="op">=</span> <span class="fl">0</span>,
-  steps_per_epoch <span class="op">=</span> <span class="cn">NULL</span>,
-  validation_steps <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for reservr_keras_model</span></span>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  batch_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  epochs <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"keras.fit_verbose"</span>, default <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  callbacks <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  view_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"keras.view_metrics"</span>, default <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,</span>
+<span>  validation_split <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  validation_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  shuffle <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  class_weight <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sample_weight <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  initial_epoch <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  steps_per_epoch <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  validation_steps <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -214,34 +214,34 @@ used in machine learning, leading to divergence for small batch sizes.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100L</span></span>
-<span class="r-in"><span class="va">rand_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">dist</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="va">N</span>, with_params <span class="op">=</span> <span class="va">params</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">tf_in</span> <span class="op">&lt;-</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span></span>
-<span class="r-in">  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="tf_compile_model.html">tf_compile_model</a></span><span class="op">(</span></span>
-<span class="r-in">    inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">tf_in</span><span class="op">)</span>,</span>
-<span class="r-in">    intermediate_output <span class="op">=</span> <span class="va">tf_in</span>,</span>
-<span class="r-in">    dist <span class="op">=</span> <span class="va">dist</span>,</span>
-<span class="r-in">    optimizer <span class="op">=</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">    censoring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">    truncation <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="va">tf_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
-<span class="r-in">    object <span class="op">=</span> <span class="va">mod</span>,</span>
-<span class="r-in">    x <span class="op">=</span> <span class="fu"><a href="k_matrix.html">k_matrix</a></span><span class="op">(</span><span class="va">rand_input</span><span class="op">)</span>,</span>
-<span class="r-in">    y <span class="op">=</span> <span class="va">x</span>,</span>
-<span class="r-in">    epochs <span class="op">=</span> <span class="fl">10L</span>,</span>
-<span class="r-in">    callbacks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu"><a href="callback_debug_dist_gradients.html">callback_debug_dist_gradients</a></span><span class="op">(</span><span class="va">mod</span>, <span class="fu"><a href="k_matrix.html">k_matrix</a></span><span class="op">(</span><span class="va">rand_input</span><span class="op">)</span>, <span class="va">x</span>, keep_grads <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in">    <span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100L</span></span></span>
+<span class="r-in"><span><span class="va">rand_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">dist</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="va">N</span>, with_params <span class="op">=</span> <span class="va">params</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">tf_in</span> <span class="op">&lt;-</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="tf_compile_model.html">tf_compile_model</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">tf_in</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    intermediate_output <span class="op">=</span> <span class="va">tf_in</span>,</span></span>
+<span class="r-in"><span>    dist <span class="op">=</span> <span class="va">dist</span>,</span></span>
+<span class="r-in"><span>    optimizer <span class="op">=</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    censoring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>    truncation <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">tf_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    object <span class="op">=</span> <span class="va">mod</span>,</span></span>
+<span class="r-in"><span>    x <span class="op">=</span> <span class="fu"><a href="k_matrix.html">k_matrix</a></span><span class="op">(</span><span class="va">rand_input</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    y <span class="op">=</span> <span class="va">x</span>,</span></span>
+<span class="r-in"><span>    epochs <span class="op">=</span> <span class="fl">10L</span>,</span></span>
+<span class="r-in"><span>    callbacks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="callback_debug_dist_gradients.html">callback_debug_dist_gradients</a></span><span class="op">(</span><span class="va">mod</span>, <span class="fu"><a href="k_matrix.html">k_matrix</a></span><span class="op">(</span><span class="va">rand_input</span><span class="op">)</span>, <span class="va">x</span>, keep_grads <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -256,7 +256,7 @@ used in machine learning, leading to divergence for small batch sizes.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

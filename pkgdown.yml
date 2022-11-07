@@ -1,10 +1,10 @@
-pandoc: 2.14.2
-pkgdown: 2.0.4
+pandoc: 2.19.2
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   distributions: distributions.html
   tensorflow: tensorflow.html
-last_built: 2022-06-14T18:10Z
+last_built: 2022-11-07T15:28Z
 urls:
   reference: https://ashesitr.github.io/reservr/reference
   article: https://ashesitr.github.io/reservr/articles

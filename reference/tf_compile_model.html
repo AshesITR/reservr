@@ -63,18 +63,18 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">tf_compile_model</span><span class="op">(</span>
-  <span class="va">inputs</span>,
-  <span class="va">intermediate_output</span>,
-  <span class="va">dist</span>,
-  <span class="va">optimizer</span>,
-  censoring <span class="op">=</span> <span class="cn">TRUE</span>,
-  truncation <span class="op">=</span> <span class="cn">TRUE</span>,
-  metrics <span class="op">=</span> <span class="cn">NULL</span>,
-  sample_weight_mode <span class="op">=</span> <span class="cn">NULL</span>,
-  weighted_metrics <span class="op">=</span> <span class="cn">NULL</span>,
-  target_tensors <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tf_compile_model</span><span class="op">(</span></span>
+<span>  <span class="va">inputs</span>,</span>
+<span>  <span class="va">intermediate_output</span>,</span>
+<span>  <span class="va">dist</span>,</span>
+<span>  <span class="va">optimizer</span>,</span>
+<span>  censoring <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  truncation <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sample_weight_mode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  weighted_metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  target_tensors <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -159,24 +159,24 @@ and censored observations from <code>dist</code> based on input data from <code>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100L</span></span>
-<span class="r-in"><span class="va">rand_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">dist</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="va">N</span>, with_params <span class="op">=</span> <span class="va">params</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">tf_in</span> <span class="op">&lt;-</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span></span>
-<span class="r-in">  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">tf_compile_model</span><span class="op">(</span></span>
-<span class="r-in">    inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">tf_in</span><span class="op">)</span>,</span>
-<span class="r-in">    intermediate_output <span class="op">=</span> <span class="va">tf_in</span>,</span>
-<span class="r-in">    dist <span class="op">=</span> <span class="va">dist</span>,</span>
-<span class="r-in">    optimizer <span class="op">=</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">    censoring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">    truncation <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100L</span></span></span>
+<span class="r-in"><span><span class="va">rand_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">dist</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="va">N</span>, with_params <span class="op">=</span> <span class="va">params</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">tf_in</span> <span class="op">&lt;-</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">tf_compile_model</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">tf_in</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    intermediate_output <span class="op">=</span> <span class="va">tf_in</span>,</span></span>
+<span class="r-in"><span>    dist <span class="op">=</span> <span class="va">dist</span>,</span></span>
+<span class="r-in"><span>    optimizer <span class="op">=</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    censoring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>    truncation <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -191,7 +191,7 @@ and censored observations from <code>dist</code> based on input data from <code>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

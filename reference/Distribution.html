@@ -78,7 +78,6 @@
 <code><a href="dist_gamma.html">dist_gamma</a>()</code>,
 <code><a href="dist_genpareto.html">dist_genpareto</a>()</code>,
 <code><a href="dist_lognormal.html">dist_lognormal</a>()</code>,
-<code><a href="dist_mde.html">dist_mde</a>()</code>,
 <code><a href="dist_mixture.html">dist_mixture</a>()</code>,
 <code><a href="dist_negbinomial.html">dist_negbinomial</a>()</code>,
 <code><a href="dist_normal.html">dist_normal</a>()</code>,
@@ -142,7 +141,7 @@ Distribution</p></dd>
 
 <div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va"><a href="../reference/Distribution.html">Distribution</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">type</span>, <span class="va">caps</span>, <span class="va">params</span>, <span class="va">name</span>, <span class="va">default_params</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/Distribution.html">Distribution</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">type</span>, <span class="va">caps</span>, <span class="va">params</span>, <span class="va">name</span>, <span class="va">default_params</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -189,7 +188,7 @@ with <code>"Distribution"</code>.</p></dd>
 
 <div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="va">n</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="va">n</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -218,7 +217,7 @@ Distribution with the specified parameters.</p>
 </div>
 <div class="section">
 <h4 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -227,7 +226,7 @@ Distribution with the specified parameters.</p>
 
 <div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">density</span><span class="op">(</span><span class="va">x</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">density</span><span class="op">(</span><span class="va">x</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -259,7 +258,7 @@ In that case, the <code>i</code>-th density point will use the <code>i</code>-th
 </div>
 <div class="section">
 <h4 id="examples-1">Examples<a class="anchor" aria-label="anchor" href="#examples-1"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">density</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">density</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -268,7 +267,7 @@ In that case, the <code>i</code>-th density point will use the <code>i</code>-th
 
 <div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">tf_logdensity</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">tf_logdensity</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -287,12 +286,12 @@ log-density of the Distribution evaluated at <code>x</code> with parameters <cod
 
 <div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">probability</span><span class="op">(</span>
-  <span class="va">q</span>,
-  lower.tail <span class="op">=</span> <span class="cn">TRUE</span>,
-  log.p <span class="op">=</span> <span class="cn">FALSE</span>,
-  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">probability</span><span class="op">(</span></span>
+<span>  <span class="va">q</span>,</span>
+<span>  lower.tail <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  log.p <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -329,10 +328,10 @@ parameters.</p></dd>
 </div>
 <div class="section">
 <h4 id="examples-2">Examples<a class="anchor" aria-label="anchor" href="#examples-2"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">probability</span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,
-  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">probability</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,</span>
+<span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -341,7 +340,7 @@ parameters.</p></dd>
 
 <div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">tf_logprobability</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">tf_logprobability</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -361,12 +360,12 @@ closed interval [<code>qmin</code>, <code>qmax</code>] with parameters <code>arg
 
 <div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">quantile</span><span class="op">(</span>
-  <span class="va">p</span>,
-  lower.tail <span class="op">=</span> <span class="cn">TRUE</span>,
-  log.p <span class="op">=</span> <span class="cn">FALSE</span>,
-  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">quantile</span><span class="op">(</span></span>
+<span>  <span class="va">p</span>,</span>
+<span>  lower.tail <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  log.p <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -402,7 +401,7 @@ In that case, the <code>i</code>-th quantile will use the <code>i</code>-th para
 </div>
 <div class="section">
 <h4 id="examples-3">Examples<a class="anchor" aria-label="anchor" href="#examples-3"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">quantile</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span><span class="op">)</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">quantile</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span><span class="op">)</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -411,7 +410,7 @@ In that case, the <code>i</code>-th quantile will use the <code>i</code>-th para
 
 <div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">hazard</span><span class="op">(</span><span class="va">x</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">hazard</span><span class="op">(</span><span class="va">x</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -443,7 +442,7 @@ In that case, the <code>i</code>-th hazard point will use the <code>i</code>-th 
 </div>
 <div class="section">
 <h4 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">$</span><span class="fu">hazard</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">$</span><span class="fu">hazard</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -452,7 +451,7 @@ In that case, the <code>i</code>-th hazard point will use the <code>i</code>-th 
 
 <div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">diff_density</span><span class="op">(</span><span class="va">x</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">diff_density</span><span class="op">(</span><span class="va">x</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -486,10 +485,10 @@ free parameters of the Distribution evaluated at <code>x</code>.</p>
 </div>
 <div class="section">
 <h4 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">diff_density</span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,
-  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">diff_density</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,</span>
+<span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -498,12 +497,12 @@ free parameters of the Distribution evaluated at <code>x</code>.</p>
 
 <div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">diff_probability</span><span class="op">(</span>
-  <span class="va">q</span>,
-  lower.tail <span class="op">=</span> <span class="cn">TRUE</span>,
-  log.p <span class="op">=</span> <span class="cn">FALSE</span>,
-  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">diff_probability</span><span class="op">(</span></span>
+<span>  <span class="va">q</span>,</span>
+<span>  lower.tail <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  log.p <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -541,10 +540,10 @@ gradients of all free parameters of the Distribution evaluated at <code>q</code>
 </div>
 <div class="section">
 <h4 id="examples-6">Examples<a class="anchor" aria-label="anchor" href="#examples-6"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">diff_probability</span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,
-  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">diff_probability</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,</span>
+<span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -553,7 +552,7 @@ gradients of all free parameters of the Distribution evaluated at <code>q</code>
 
 <div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">is_in_support</span><span class="op">(</span><span class="va">x</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">is_in_support</span><span class="op">(</span><span class="va">x</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -582,7 +581,7 @@ In that case, the <code>i</code>-th point will use the <code>i</code>-th paramet
 </div>
 <div class="section">
 <h4 id="examples-7">Examples<a class="anchor" aria-label="anchor" href="#examples-7"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span><span class="op">$</span><span class="fu">is_in_support</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span><span class="op">$</span><span class="fu">is_in_support</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -591,7 +590,7 @@ In that case, the <code>i</code>-th point will use the <code>i</code>-th paramet
 
 <div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">is_discrete_at</span><span class="op">(</span><span class="va">x</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">is_discrete_at</span><span class="op">(</span><span class="va">x</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -621,7 +620,7 @@ parameters.</p>
 </div>
 <div class="section">
 <h4 id="examples-8">Examples<a class="anchor" aria-label="anchor" href="#examples-8"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span>point <span class="op">=</span> <span class="fl">0.0</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete_at</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span>point <span class="op">=</span> <span class="fl">0.0</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete_at</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -630,7 +629,7 @@ parameters.</p>
 
 <div class="section">
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">tf_is_discrete_at</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">tf_is_discrete_at</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -649,7 +648,7 @@ the Distribution has a point mass at <code>x</code> given parameters <code>args<
 
 <div class="section">
 <h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">has_capability</span><span class="op">(</span><span class="va">caps</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">has_capability</span><span class="op">(</span><span class="va">caps</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -671,7 +670,7 @@ the Distribution has a point mass at <code>x</code> given parameters <code>args<
 </div>
 <div class="section">
 <h4 id="examples-9">Examples<a class="anchor" aria-label="anchor" href="#examples-9"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">has_capability</span><span class="op">(</span><span class="st">"density"</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">has_capability</span><span class="op">(</span><span class="st">"density"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -680,7 +679,7 @@ the Distribution has a point mass at <code>x</code> given parameters <code>args<
 
 <div class="section">
 <h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -695,11 +694,11 @@ the Distribution has a point mass at <code>x</code> given parameters <code>args<
 </div>
 <div class="section">
 <h4 id="examples-10">Examples<a class="anchor" aria-label="anchor" href="#examples-10"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_binomial.html">dist_binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_binomial.html">dist_binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -708,7 +707,7 @@ the Distribution has a point mass at <code>x</code> given parameters <code>args<
 
 <div class="section">
 <h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -722,9 +721,9 @@ the Distribution has a point mass at <code>x</code> given parameters <code>args<
 </div>
 <div class="section">
 <h4 id="examples-11">Examples<a class="anchor" aria-label="anchor" href="#examples-11"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_trunc.html">dist_trunc</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_gamma.html">dist_gamma</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_trunc.html">dist_trunc</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_gamma.html">dist_gamma</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -733,7 +732,7 @@ the Distribution has a point mass at <code>x</code> given parameters <code>args<
 
 <div class="section">
 <h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">is_discrete</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">is_discrete</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -749,8 +748,8 @@ Note that mixed distributions are not discrete but can have point masses.</p>
 </div>
 <div class="section">
 <h4 id="examples-12">Examples<a class="anchor" aria-label="anchor" href="#examples-12"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete</span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -759,7 +758,7 @@ Note that mixed distributions are not discrete but can have point masses.</p>
 
 <div class="section">
 <h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">is_continuous</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">is_continuous</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -775,8 +774,8 @@ Note that mixed distributions are not continuous.</p>
 </div>
 <div class="section">
 <h4 id="examples-13">Examples<a class="anchor" aria-label="anchor" href="#examples-13"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_continuous</span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_continuous</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_continuous</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_continuous</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -785,10 +784,10 @@ Note that mixed distributions are not continuous.</p>
 
 <div class="section">
 <h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">require_capability</span><span class="op">(</span>
-  <span class="va">caps</span>,
-  fun_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">sys.call</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="st">"()"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">require_capability</span><span class="op">(</span></span>
+<span>  <span class="va">caps</span>,</span>
+<span>  fun_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">sys.call</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="st">"()"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -816,7 +815,7 @@ Will throw an error if any capability is missing.</p>
 </div>
 <div class="section">
 <h4 id="examples-14">Examples<a class="anchor" aria-label="anchor" href="#examples-14"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">require_capability</span><span class="op">(</span><span class="st">"diff_density"</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">require_capability</span><span class="op">(</span><span class="st">"diff_density"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -825,7 +824,7 @@ Will throw an error if any capability is missing.</p>
 
 <div class="section">
 <h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_dof</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_dof</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -841,8 +840,8 @@ AIC calculations.</p>
 </div>
 <div class="section">
 <h4 id="examples-15">Examples<a class="anchor" aria-label="anchor" href="#examples-15"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_dof</span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span><span class="op">$</span><span class="fu">get_dof</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_dof</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span><span class="op">$</span><span class="fu">get_dof</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -851,7 +850,7 @@ AIC calculations.</p>
 
 <div class="section">
 <h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_placeholders</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_placeholders</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -870,8 +869,8 @@ lists and <code>NULL</code>s.</p>
 </div>
 <div class="section">
 <h4 id="examples-16">Examples<a class="anchor" aria-label="anchor" href="#examples-16"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_placeholders</span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_placeholders</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_placeholders</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_placeholders</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -880,7 +879,7 @@ lists and <code>NULL</code>s.</p>
 
 <div class="section">
 <h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_params</span><span class="op">(</span>with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_params</span><span class="op">(</span>with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -907,9 +906,9 @@ parameters that are missing both in the Distributions parameters and in
 </div>
 <div class="section">
 <h4 id="examples-17">Examples<a class="anchor" aria-label="anchor" href="#examples-17"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_params</span><span class="op">(</span>
-  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_params</span><span class="op">(</span></span>
+<span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -918,7 +917,7 @@ parameters that are missing both in the Distributions parameters and in
 
 <div class="section">
 <h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">tf_make_constants</span><span class="op">(</span>with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">tf_make_constants</span><span class="op">(</span>with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -948,7 +947,7 @@ TensorFlow Tensor of dtype <code>floatx</code>.</p>
 
 <div class="section">
 <h4 id="usage-23">Usage<a class="anchor" aria-label="anchor" href="#usage-23"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">tf_compile_params</span><span class="op">(</span><span class="va">input</span>, name_prefix <span class="op">=</span> <span class="st">""</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">tf_compile_params</span><span class="op">(</span><span class="va">input</span>, name_prefix <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -982,7 +981,7 @@ loss function returned by
 
 <div class="section">
 <h4 id="usage-24">Usage<a class="anchor" aria-label="anchor" href="#usage-24"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -998,17 +997,17 @@ bounds of the respective free parameters.</p>
 </div>
 <div class="section">
 <h4 id="examples-18">Examples<a class="anchor" aria-label="anchor" href="#examples-18"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
-  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>
-<span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/dist_genpareto.html">dist_genpareto</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../reference/dist_genpareto.html">dist_genpareto1</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/dist_genpareto.html">dist_genpareto</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dist_genpareto.html">dist_genpareto1</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -1017,7 +1016,7 @@ bounds of the respective free parameters.</p>
 
 <div class="section">
 <h4 id="usage-25">Usage<a class="anchor" aria-label="anchor" href="#usage-25"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_param_constraints</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">get_param_constraints</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -1038,9 +1037,9 @@ parameters</p></li>
 </ul></div>
 <div class="section">
 <h4 id="examples-19">Examples<a class="anchor" aria-label="anchor" href="#examples-19"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span><span class="op">$</span><span class="fu">get_param_constraints</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="fu"><a href="../reference/dist_mixture.html">dist_mixture</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_constraints</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -1049,11 +1048,11 @@ parameters</p></li>
 
 <div class="section">
 <h4 id="usage-26">Usage<a class="anchor" aria-label="anchor" href="#usage-26"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">export_functions</span><span class="op">(</span>
-  <span class="va">name</span>,
-  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,
-  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">export_functions</span><span class="op">(</span></span>
+<span>  <span class="va">name</span>,</span>
+<span>  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -1091,16 +1090,16 @@ separate arguments.</p>
 </div>
 <div class="section">
 <h4 id="examples-20">Examples<a class="anchor" aria-label="anchor" href="#examples-20"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span class="va">tmp_env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">export_functions</span><span class="op">(</span>
-  name <span class="op">=</span> <span class="st">"exp"</span>,
-  envir <span class="op">=</span> <span class="va">tmp_env</span>,
-  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">evalq</a></span><span class="op">(</span>
-  <span class="fu">fitdistrplus</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html" class="external-link">fitdist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, <span class="st">"exp"</span><span class="op">)</span>,
-  envir <span class="op">=</span> <span class="va">tmp_env</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">tmp_env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">export_functions</span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"exp"</span>,</span>
+<span>  envir <span class="op">=</span> <span class="va">tmp_env</span>,</span>
+<span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">evalq</a></span><span class="op">(</span></span>
+<span>  <span class="fu">fitdistrplus</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html" class="external-link">fitdist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, <span class="st">"exp"</span><span class="op">)</span>,</span>
+<span>  envir <span class="op">=</span> <span class="va">tmp_env</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -1108,7 +1107,7 @@ separate arguments.</p>
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-27">Usage<a class="anchor" aria-label="anchor" href="#usage-27"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Distribution</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Distribution</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -1126,179 +1125,179 @@ separate arguments.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Example for param_bounds:</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create an Exponential Distribution with rate constrained to (0, 2)</span></span>
-<span class="r-in"><span class="co"># instead of (0, Inf)</span></span>
-<span class="r-in"><span class="va">my_exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">my_exp</span><span class="op">$</span><span class="va">param_bounds</span><span class="op">$</span><span class="va">rate</span> <span class="op">&lt;-</span> <span class="fu"><a href="interval.html">interval</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">my_exp</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example for param_bounds:</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create an Exponential Distribution with rate constrained to (0, 2)</span></span></span>
+<span class="r-in"><span><span class="co"># instead of (0, Inf)</span></span></span>
+<span class="r-in"><span><span class="va">my_exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">my_exp</span><span class="op">$</span><span class="va">param_bounds</span><span class="op">$</span><span class="va">rate</span> <span class="op">&lt;-</span> <span class="fu"><a href="interval.html">interval</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">my_exp</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (0, 2)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="fit_dist.html">fit_dist</a></span><span class="op">(</span><span class="va">my_exp</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">100</span>, rate <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">params</span><span class="op">$</span><span class="va">rate</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="fit_dist.html">fit_dist</a></span><span class="op">(</span><span class="va">my_exp</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">100</span>, rate <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">params</span><span class="op">$</span><span class="va">rate</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$sample`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.65869730 0.24803237 0.02558935 0.12804553 0.42070856 0.19766986</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 0.56637416 0.46668166 0.69106166 1.03297659</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$density`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">density</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$sample`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.6485221698 0.8363016258 0.3175734123 0.2714656675 0.5134430082</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] 1.1212735093 0.4535824050 0.3911825796 0.2620337068 0.0006547175</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$density`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">density</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.27067057 0.03663128</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$probability`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">probability</span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,</span>
-<span class="r-in">  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$probability`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">probability</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8646647 0.9816844</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$quantile`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">quantile</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span><span class="op">)</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$quantile`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">quantile</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span><span class="op">)</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05268026 0.34657359</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$hazard`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">$</span><span class="fu">hazard</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$hazard`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">$</span><span class="fu">hazard</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2 2</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$diff_density`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">diff_density</span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,</span>
-<span class="r-in">  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$diff_density`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">diff_density</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.13533528 -0.05494692</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$diff_probability`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">diff_probability</span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,</span>
-<span class="r-in">  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$diff_probability`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">diff_probability</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.13533528 0.03663128</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$is_in_support`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span><span class="op">$</span><span class="fu">is_in_support</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$is_in_support`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span><span class="op">$</span><span class="fu">is_in_support</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE FALSE  TRUE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$is_discrete_at`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span>point <span class="op">=</span> <span class="fl">0.0</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete_at</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$is_discrete_at`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span>point <span class="op">=</span> <span class="fl">0.0</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete_at</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  TRUE FALSE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$has_capability`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">has_capability</span><span class="op">(</span><span class="st">"density"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$has_capability`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">has_capability</span><span class="op">(</span><span class="st">"density"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$get_type`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$get_type`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "continuous"</span>
-<span class="r-in"><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "discrete"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mixed"</span>
-<span class="r-in"><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_binomial.html">dist_binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_binomial.html">dist_binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "discrete"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$get_components`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_trunc.html">dist_trunc</a></span><span class="op">(</span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$get_components`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_trunc.html">dist_trunc</a></span><span class="op">(</span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An ExponentialDistribution with 1 dof</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
-<span class="r-in"><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_gamma.html">dist_gamma</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_gamma.html">dist_gamma</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_components</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An ExponentialDistribution with 1 dof</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A GammaDistribution with 2 dof</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$is_discrete`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$is_discrete`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-in"><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_discrete</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$is_continuous`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_continuous</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$is_continuous`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_continuous</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_continuous</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">is_continuous</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$require_capability`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">require_capability</span><span class="op">(</span><span class="st">"diff_density"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$get_dof`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_dof</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$require_capability`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">require_capability</span><span class="op">(</span><span class="st">"diff_density"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$get_dof`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_dof</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span><span class="op">$</span><span class="fu">get_dof</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span><span class="op">$</span><span class="fu">get_dof</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$get_placeholders`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_placeholders</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$get_placeholders`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_placeholders</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_placeholders</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_placeholders</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists[[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists[[1]]$point</span>
@@ -1319,14 +1318,14 @@ separate arguments.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$get_params`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_params</span><span class="op">(</span></span>
-<span class="r-in">  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$get_params`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="fu">get_params</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists[[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists[[1]]$point</span>
@@ -1347,15 +1346,15 @@ separate arguments.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$get_param_bounds`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$get_param_bounds`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists[[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists[[1]]$point</span>
@@ -1371,10 +1370,10 @@ separate arguments.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $probs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists[[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dists[[1]]$point</span>
@@ -1395,8 +1394,8 @@ separate arguments.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [0, 1]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_genpareto.html">dist_genpareto</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_genpareto.html">dist_genpareto</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $u</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (-Inf, Inf)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -1406,7 +1405,7 @@ separate arguments.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $xi</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (-Inf, Inf)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu"><a href="dist_genpareto.html">dist_genpareto1</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_genpareto.html">dist_genpareto1</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_bounds</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $u</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (-Inf, Inf)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -1416,14 +1415,14 @@ separate arguments.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $xi</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [0, 1]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$get_param_constraints`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span><span class="op">$</span><span class="fu">get_param_constraints</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$get_param_constraints`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_mixture.html">dist_mixture</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="dist_dirac.html">dist_dirac</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">$</span><span class="fu">get_param_constraints</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (params) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     prob_mat &lt;- do.call(cbind, params$probs)</span>
@@ -1432,30 +1431,30 @@ separate arguments.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     jac_full[, grepl("^probs", nms)] &lt;- 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     list(constraints = rowSums(prob_mat) - 1, jacobian = jac_full)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55fa3f869168&gt;</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## Method `Distribution$export_functions`</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">tmp_env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">export_functions</span><span class="op">(</span></span>
-<span class="r-in">  name <span class="op">=</span> <span class="st">"exp"</span>,</span>
-<span class="r-in">  envir <span class="op">=</span> <span class="va">tmp_env</span>,</span>
-<span class="r-in">  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55bb128f0848&gt;</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Distribution$export_functions`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">tmp_env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">export_functions</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"exp"</span>,</span></span>
+<span class="r-in"><span>  envir <span class="op">=</span> <span class="va">tmp_env</span>,</span></span>
+<span class="r-in"><span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Exported `dexp()`.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Exported `rexp()`.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Exported `pexp()`.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Exported `qexp()`.</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">evalq</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu">fitdistrplus</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html" class="external-link">fitdist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, <span class="st">"exp"</span><span class="op">)</span>,</span>
-<span class="r-in">  envir <span class="op">=</span> <span class="va">tmp_env</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">evalq</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">fitdistrplus</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html" class="external-link">fitdist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, <span class="st">"exp"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  envir <span class="op">=</span> <span class="va">tmp_env</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fitting of the distribution ' exp ' by maximum likelihood </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      estimate Std. Error</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> rate 1.785088  0.1785087</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rate 2.331915  0.2331914</span>
 </code></pre></div>
     </div>
   </div>
@@ -1470,7 +1469,7 @@ separate arguments.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

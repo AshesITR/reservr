@@ -63,7 +63,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">dist_gamma</span><span class="op">(</span>shape <span class="op">=</span> <span class="cn">NULL</span>, rate <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dist_gamma</span><span class="op">(</span>shape <span class="op">=</span> <span class="cn">NULL</span>, rate <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -102,7 +102,6 @@
 <code><a href="dist_exponential.html">dist_exponential</a>()</code>,
 <code><a href="dist_genpareto.html">dist_genpareto</a>()</code>,
 <code><a href="dist_lognormal.html">dist_lognormal</a>()</code>,
-<code><a href="dist_mde.html">dist_mde</a>()</code>,
 <code><a href="dist_mixture.html">dist_mixture</a>()</code>,
 <code><a href="dist_negbinomial.html">dist_negbinomial</a>()</code>,
 <code><a href="dist_normal.html">dist_normal</a>()</code>,
@@ -116,26 +115,26 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
-<span class="r-in"><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">d_gamma</span> <span class="op">&lt;-</span> <span class="fu">dist_gamma</span><span class="op">(</span>shape <span class="op">=</span> <span class="va">alpha</span>, rate <span class="op">=</span> <span class="va">beta</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">d_gamma</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">d_emp</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_empirical.html">dist_empirical</a></span><span class="op">(</span><span class="va">x</span>, positive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="plot_distributions.html">plot_distributions</a></span><span class="op">(</span></span>
-<span class="r-in">  empirical <span class="op">=</span> <span class="va">d_emp</span>,</span>
-<span class="r-in">  theoretical <span class="op">=</span> <span class="va">d_gamma</span>,</span>
-<span class="r-in">  estimated <span class="op">=</span> <span class="va">d_gamma</span>,</span>
-<span class="r-in">  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">    estimated <span class="op">=</span> <span class="fu"><a href="flatten_params.html">inflate_params</a></span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu">fitdistrplus</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html" class="external-link">fitdist</a></span><span class="op">(</span><span class="va">x</span>, distr <span class="op">=</span> <span class="st">"gamma"</span><span class="op">)</span><span class="op">$</span><span class="va">estimate</span></span>
-<span class="r-in">    <span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  .x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1e-3</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">d_gamma</span> <span class="op">&lt;-</span> <span class="fu">dist_gamma</span><span class="op">(</span>shape <span class="op">=</span> <span class="va">alpha</span>, rate <span class="op">=</span> <span class="va">beta</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">d_gamma</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">d_emp</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_empirical.html">dist_empirical</a></span><span class="op">(</span><span class="va">x</span>, positive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot_distributions.html">plot_distributions</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  empirical <span class="op">=</span> <span class="va">d_emp</span>,</span></span>
+<span class="r-in"><span>  theoretical <span class="op">=</span> <span class="va">d_gamma</span>,</span></span>
+<span class="r-in"><span>  estimated <span class="op">=</span> <span class="va">d_gamma</span>,</span></span>
+<span class="r-in"><span>  with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    estimated <span class="op">=</span> <span class="fu"><a href="flatten_params.html">inflate_params</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="fu">fitdistrplus</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html" class="external-link">fitdist</a></span><span class="op">(</span><span class="va">x</span>, distr <span class="op">=</span> <span class="st">"gamma"</span><span class="op">)</span><span class="op">$</span><span class="va">estimate</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  .x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1e-3</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="dist_gamma-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -150,7 +149,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -67,14 +67,14 @@ Useful for debugging TensorFlow implementations of Distributions.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">callback_debug_dist_gradients</span><span class="op">(</span>
-  <span class="va">object</span>,
-  <span class="va">data</span>,
-  <span class="va">obs</span>,
-  keep_grads <span class="op">=</span> <span class="cn">FALSE</span>,
-  stop_on_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">callback_debug_dist_gradients</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">obs</span>,</span>
+<span>  keep_grads <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  stop_on_na <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -109,48 +109,48 @@ NaN in their gradients.</p></dd>
     <h2>Value</h2>
     
 
-<p>A <code>KerasCallback</code> suitable for passing to <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">keras::fit()</a></code>.</p>
+<p>A <code>KerasCallback</code> suitable for passing to <code><a href="https://rdrr.io/pkg/keras/man/reexports.html" class="external-link">keras::fit()</a></code>.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">dist</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">100</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="va">group</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">global_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">dist</span>, <span class="va">x</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://keras.rstudio.com" class="external-link">keras</a></span><span class="op">)</span></span>
-<span class="r-in">  <span class="va">l_in</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
-<span class="r-in">  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="tf_compile_model.html">tf_compile_model</a></span><span class="op">(</span></span>
-<span class="r-in">    inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">l_in</span><span class="op">)</span>,</span>
-<span class="r-in">    intermediate_output <span class="op">=</span> <span class="va">l_in</span>,</span>
-<span class="r-in">    dist <span class="op">=</span> <span class="va">dist</span>,</span>
-<span class="r-in">    optimizer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">    censoring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">    truncation <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in">  <span class="fu"><a href="tf_initialise_model.html">tf_initialise_model</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">global_fit</span><span class="op">$</span><span class="va">params</span><span class="op">)</span></span>
-<span class="r-in">  <span class="co"># TODO update when rstudio/keras#1230 is fixed</span></span>
-<span class="r-in">  <span class="va">gradient_tracker</span> <span class="op">&lt;-</span> <span class="fu">callback_debug_dist_gradients</span><span class="op">(</span><span class="va">mod</span>, <span class="fu"><a href="https://rdrr.io/pkg/keras/man/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>, <span class="va">x</span>, keep_grads <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in">  <span class="va">fit_history</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">mod</span>,</span>
-<span class="r-in">    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>,</span>
-<span class="r-in">    y <span class="op">=</span> <span class="va">x</span>,</span>
-<span class="r-in">    epochs <span class="op">=</span> <span class="fl">20L</span>,</span>
-<span class="r-in">    callbacks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu"><a href="callback_adaptive_lr.html">callback_adaptive_lr</a></span><span class="op">(</span><span class="st">"loss"</span>, factor <span class="op">=</span> <span class="fl">0.5</span>, patience <span class="op">=</span> <span class="fl">2L</span>, verbose <span class="op">=</span> <span class="fl">1L</span>, min_lr <span class="op">=</span> <span class="fl">1.0e-4</span><span class="op">)</span>,</span>
-<span class="r-in">      <span class="va">gradient_tracker</span>,</span>
-<span class="r-in">      <span class="fu"><a href="https://rdrr.io/pkg/keras/man/callback_reduce_lr_on_plateau.html" class="external-link">callback_reduce_lr_on_plateau</a></span><span class="op">(</span><span class="st">"loss"</span>, min_lr <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span> <span class="co"># to track lr</span></span>
-<span class="r-in">    <span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in">  <span class="va">gradient_tracker</span><span class="op">$</span><span class="va">gradient_logs</span><span class="op">[[</span><span class="fl">20</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">dens</span></span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_history</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="va">predicted_means</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mod</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">dist</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">100</span>, with_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="va">group</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">global_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">dist</span>, <span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/is_keras_available.html" class="external-link">is_keras_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://keras.rstudio.com" class="external-link">keras</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">l_in</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="tf_compile_model.html">tf_compile_model</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">l_in</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    intermediate_output <span class="op">=</span> <span class="va">l_in</span>,</span></span>
+<span class="r-in"><span>    dist <span class="op">=</span> <span class="va">dist</span>,</span></span>
+<span class="r-in"><span>    optimizer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    censoring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>    truncation <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tf_initialise_model.html">tf_initialise_model</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">global_fit</span><span class="op">$</span><span class="va">params</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># TODO update when rstudio/keras#1230 is fixed</span></span></span>
+<span class="r-in"><span>  <span class="va">gradient_tracker</span> <span class="op">&lt;-</span> <span class="fu">callback_debug_dist_gradients</span><span class="op">(</span><span class="va">mod</span>, <span class="fu"><a href="https://rdrr.io/pkg/keras/man/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>, <span class="va">x</span>, keep_grads <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">fit_history</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">mod</span>,</span></span>
+<span class="r-in"><span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    y <span class="op">=</span> <span class="va">x</span>,</span></span>
+<span class="r-in"><span>    epochs <span class="op">=</span> <span class="fl">20L</span>,</span></span>
+<span class="r-in"><span>    callbacks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="callback_adaptive_lr.html">callback_adaptive_lr</a></span><span class="op">(</span><span class="st">"loss"</span>, factor <span class="op">=</span> <span class="fl">0.5</span>, patience <span class="op">=</span> <span class="fl">2L</span>, verbose <span class="op">=</span> <span class="fl">1L</span>, min_lr <span class="op">=</span> <span class="fl">1.0e-4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      <span class="va">gradient_tracker</span>,</span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/pkg/keras/man/callback_reduce_lr_on_plateau.html" class="external-link">callback_reduce_lr_on_plateau</a></span><span class="op">(</span><span class="st">"loss"</span>, min_lr <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span> <span class="co"># to track lr</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">gradient_tracker</span><span class="op">$</span><span class="va">gradient_logs</span><span class="op">[[</span><span class="fl">20</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">dens</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_history</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">predicted_means</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mod</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -165,7 +165,7 @@ NaN in their gradients.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
