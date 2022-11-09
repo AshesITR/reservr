@@ -3,7 +3,7 @@ test_that("remove tensorflow detritus in tempdir", {
   if (dir.exists(file.path(tmp, "__pycache__"))) {
     unlink(file.path(tmp, "__pycache__"), recursive = TRUE, force = TRUE)
   }
-  tmp_py_files <- list.files(tmp, pattern = "^tmp.*\\.py$", full.names = TRUE)
+  tmp_py_files <- list.files(tmp, pattern = "^(tmp|__autograph_generated_file).*\\.py$", full.names = TRUE)
   file.remove(tmp_py_files)
 })
 
