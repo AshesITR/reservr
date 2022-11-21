@@ -2,7 +2,7 @@
 # reservr
 
 <!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/AshesITR/reservr/branch/master/graph/badge.svg)](https://codecov.io/gh/AshesITR/reservr?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/AshesITR/reservr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/AshesITR/reservr?branch=master)
 [![R-CMD-check](https://github.com/AshesITR/reservr/workflows/R-CMD-check/badge.svg)](https://github.com/AshesITR/reservr/actions)
 <!-- badges: end -->
 
