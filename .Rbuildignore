@@ -16,3 +16,4 @@
 ^reservr-coverage\.html$
 ^\.github$
 ^codecov\.yml$
+^CRAN-SUBMISSION$
