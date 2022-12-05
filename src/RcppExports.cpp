@@ -946,12 +946,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // do_integrate_gk_lst
-Rcpp::List do_integrate_gk_lst(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper, const Rcpp::List& params, const double tolerance, const int max_iter, bool debug);
+Rcpp::List do_integrate_gk_lst(const Rcpp::Function fun, const arma::vec& lower, const arma::vec& upper, const Rcpp::List& params, const double tolerance, const int max_iter, bool debug);
 RcppExport SEXP _reservr_do_integrate_gk_lst(SEXP funSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP paramsSEXP, SEXP toleranceSEXP, SEXP max_iterSEXP, SEXP debugSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::Function& >::type fun(funSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::Function >::type fun(funSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type lower(lowerSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type upper(upperSEXP);
     Rcpp::traits::input_parameter< const Rcpp::List& >::type params(paramsSEXP);
@@ -963,12 +963,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // do_integrate_gk_mat
-Rcpp::List do_integrate_gk_mat(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper, const arma::mat& params, const double tolerance, const int max_iter, bool debug);
+Rcpp::List do_integrate_gk_mat(const Rcpp::Function fun, const arma::vec& lower, const arma::vec& upper, const arma::mat& params, const double tolerance, const int max_iter, bool debug);
 RcppExport SEXP _reservr_do_integrate_gk_mat(SEXP funSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP paramsSEXP, SEXP toleranceSEXP, SEXP max_iterSEXP, SEXP debugSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::Function& >::type fun(funSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::Function >::type fun(funSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type lower(lowerSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type upper(upperSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type params(paramsSEXP);

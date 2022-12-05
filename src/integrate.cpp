@@ -37,7 +37,7 @@ static const arma::rowvec::fixed<15> gk_nodes{
 };
 
 template <typename T>
-void integrate_gk_step(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper,
+void integrate_gk_step(const Rcpp::Function fun, const arma::vec& lower, const arma::vec& upper,
   const T params, const std::vector<unsigned int>& indices, std::vector<boost::heap::priority_queue<Bounds>>& pq) {
 
   arma::vec midpoint = 0.5 * (lower + upper);
@@ -75,7 +75,7 @@ arma::mat params_at(const arma::mat& params, const std::vector<unsigned int> ind
 }
 
 template <typename T>
-arma::vec integrate_impl(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper,
+arma::vec integrate_impl(const Rcpp::Function fun, const arma::vec& lower, const arma::vec& upper,
   const T params, double tolerance, int max_iter, arma::vec& res, arma::cube& info) {
 
   std::vector<boost::heap::priority_queue<Bounds>> bounds_pq(lower.n_elem);
@@ -161,7 +161,7 @@ arma::vec integrate_impl(const Rcpp::Function& fun, const arma::vec& lower, cons
 }
 
 template <typename T>
-Rcpp::List do_integrate_gk(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper,
+Rcpp::List do_integrate_gk(const Rcpp::Function fun, const arma::vec& lower, const arma::vec& upper,
   const T& params, const double tolerance, const int max_iter, bool debug) {
   arma::cube* info;
   if (debug) {
@@ -190,13 +190,13 @@ Rcpp::List do_integrate_gk(const Rcpp::Function& fun, const arma::vec& lower, co
 }
 
 // [[Rcpp::export]]
-Rcpp::List do_integrate_gk_lst(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper,
+Rcpp::List do_integrate_gk_lst(const Rcpp::Function fun, const arma::vec& lower, const arma::vec& upper,
   const Rcpp::List& params, const double tolerance, const int max_iter, bool debug) {
   return do_integrate_gk(fun, lower, upper, params, tolerance, max_iter, debug);
 }
 
 // [[Rcpp::export]]
-Rcpp::List do_integrate_gk_mat(const Rcpp::Function& fun, const arma::vec& lower, const arma::vec& upper,
+Rcpp::List do_integrate_gk_mat(const Rcpp::Function fun, const arma::vec& lower, const arma::vec& upper,
   const arma::mat& params, const double tolerance, const int max_iter, bool debug) {
   return do_integrate_gk(fun, lower, upper, params, tolerance, max_iter, debug);
 }
