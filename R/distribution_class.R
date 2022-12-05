@@ -499,7 +499,7 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
     #' * `outputs` a flat list of keras output layers, one for each parameter.
     #' * `output_inflater` a function taking keras output layers and
     #'   transforming them into a list structure suitable for passing to the
-    #'   loss function returned by [tf_compile_model](tf_compile_model(dist))
+    #'   loss function returned by [tf_compile_model()]
     tf_compile_params = function(input, name_prefix = "") {
       bounds <- self$get_param_bounds()
       out <- self$get_placeholders()
