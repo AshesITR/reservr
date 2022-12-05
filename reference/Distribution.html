@@ -972,7 +972,7 @@ TensorFlow Tensor of dtype <code>floatx</code>.</p>
 <p>A list with two elements</p><ul><li><p><code>outputs</code> a flat list of keras output layers, one for each parameter.</p></li>
 <li><p><code>output_inflater</code> a function taking keras output layers and
 transforming them into a list structure suitable for passing to the
-loss function returned by <a href="tf_compile_model(dist)">tf_compile_model</a></p></li>
+loss function returned by <code><a href="tf_compile_model.html">tf_compile_model()</a></code></p></li>
 </ul></div>
 
 </div><p></p><hr><a id="method-Distribution-get_param_bounds"></a><div class="section">
@@ -1144,8 +1144,8 @@ separate arguments.</p>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="dist_exponential.html">dist_exponential</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">2.0</span><span class="op">)</span><span class="op">$</span><span class="fu">sample</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.06884491 0.09927471 0.30918708 0.34241481 1.55382253 1.00859680</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 0.02257431 0.39110193 0.40224736 1.01309651</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.5414109896 0.5699689891 0.0599065772 0.4773915885 0.1926221456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] 0.0140792294 0.2924105979 0.0103632007 0.0004721257 0.0211088865</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co">## Method `Distribution$density`</span></span></span>
@@ -1430,7 +1430,7 @@ separate arguments.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     jac_full[, grepl("^probs", nms)] &lt;- 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     list(constraints = rowSums(prob_mat) - 1, jacobian = jac_full)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x563850697d90&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55cce5a19e80&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co">## Method `Distribution$export_functions`</span></span></span>
@@ -1453,7 +1453,7 @@ separate arguments.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fitting of the distribution ' exp ' by maximum likelihood </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      estimate Std. Error</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> rate 1.779117  0.1779116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rate 2.369408  0.2369408</span>
 </code></pre></div>
     </div>
   </div>
