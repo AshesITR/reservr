@@ -22,7 +22,6 @@ test_that("test dist_blended", {
 
   dist$default_params$breaks <- params$breaks
   dist$default_params$bandwidths <- params$bandwidths
-  expect_silent(fit(dist, x))
   expect_identical(dist$get_type(), "continuous")
   expect_length(dist$get_components(), 2L)
 
@@ -113,6 +112,9 @@ test_that("test dist_blended", {
   expect_iprobability(dist, free_params, x, x + 1.0)
   expect_iprobability(dist, free_params, 0, x)
   expect_iprobability(dist, free_params, x, Inf)
+
+  skip_on_cran()
+  expect_silent(fit(dist, x))
 })
 
 test_that("blending works for discrete distributions", {

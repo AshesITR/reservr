@@ -62,21 +62,23 @@ dist <- dist_blended(
    )
  )
 
- params <- list(
-   probs = list(0.9, 0.1),
-   dists = list(
-     list(rate = 2.0),
-     list(u = 1.5, xi = 0.2, sigmau = 1.0)
-   ),
-   breaks = list(1.5),
-   bandwidths = list(0.3)
- )
+params <- list(
+  probs = list(0.9, 0.1),
+  dists = list(
+    list(rate = 2.0),
+    list(u = 1.5, xi = 0.2, sigmau = 1.0)
+  ),
+  breaks = list(1.5),
+  bandwidths = list(0.3)
+)
 
- x <- dist$sample(100L, with_params = params)
+x <- dist$sample(100L, with_params = params)
 
- dist$default_params$breaks <- params$breaks
- dist$default_params$bandwidths <- params$bandwidths
- fit_blended(dist, x)
+dist$default_params$breaks <- params$breaks
+dist$default_params$bandwidths <- params$bandwidths
+if (interactive()) {
+  fit_blended(dist, x)
+}
 
 }
 \seealso{

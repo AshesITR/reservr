@@ -1039,8 +1039,7 @@ A list with two elements
 \item \code{outputs} a flat list of keras output layers, one for each parameter.
 \item \code{output_inflater} a function taking keras output layers and
 transforming them into a list structure suitable for passing to the
-loss function returned by
-\href{tf_compile_trunc_loss(dist)}{tf_compile_trunc_loss}
+loss function returned by \href{tf_compile_model(dist)}{tf_compile_model}
 }
 }
 }

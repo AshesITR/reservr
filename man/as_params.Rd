@@ -16,7 +16,7 @@ A nested list of vectors suitable as distribution parameters
 Convert TensorFlow tensors to distribution parameters recursively
 }
 \examples{
-if (keras::is_keras_available()) {
+if (interactive() && keras::is_keras_available()) {
   tf_params <- list(
     probs = k_matrix(t(c(0.5, 0.3, 0.2))),
     shapes = k_matrix(t(c(1L, 2L, 3L)), dtype = "int32"),

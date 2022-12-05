@@ -15,7 +15,7 @@ Description: Tools for defining distribution families and fitting them to
     f(x) and log-probability log P(x0 <= X <= x1) for use in TensorFlow
     neural networks via the 'tensorflow' package. Allows training
     parametric neural networks on interval-censored and interval-truncated
-    data with flexible parametrization. Applications include Claims
+    data with flexible parametrisation. Applications include Claims
     Development in Non-Life Insurance, e.g. modelling reporting delay
     distributions from incomplete data.
 License: GPL
@@ -70,7 +70,7 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 SystemRequirements: GNU make
 Collate: 
     'RcppExports.R'
