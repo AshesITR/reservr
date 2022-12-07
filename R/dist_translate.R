@@ -444,7 +444,7 @@ TranslatedDistribution <- distribution_class(
     as_compiled_distribution_function(
       eval(bquote(function(p, param_matrix, lower.tail = TRUE, log.p = FALSE) {
         dist_quantile(p, .(dist_param_expr), lower.tail = lower.tail, log.p = log.p) * .(multiplier_expr) +
-           .(offset_expr)
+          .(offset_expr)
       })),
       n_params
     )

@@ -67,7 +67,8 @@ callback_debug_dist_gradients <- function(object, data, obs,
               msg = "`stop_on_na` must be a bool.")
   DebugDistGradientsCallback$new(
     object = object, data = data, obs = obs,
-    keep_grads = keep_grads, stop_on_na = stop_on_na, verbose = verbose)
+    keep_grads = keep_grads, stop_on_na = stop_on_na, verbose = verbose
+  )
 }
 
 DebugDistGradientsCallback <- R6Class(
@@ -96,8 +97,7 @@ DebugDistGradientsCallback <- R6Class(
           ifelse(is.na(obs$x), obs$xmax, Inf)
         )
       }
-      if (object$loss_trunc &&
-        any(is.finite(obs$tmin) | is.finite(obs$tmax))) {
+      if (object$loss_trunc && any(is.finite(obs$tmin) | is.finite(obs$tmax))) {
         private$.xt_lower <- keras::k_constant(obs$tmin)
         private$.xt_upper <- keras::k_constant(obs$tmax)
       }

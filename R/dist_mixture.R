@@ -461,9 +461,13 @@ MixtureDistribution <- distribution_class(
     n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
 
     dens_code <- if (ph_probs) {
-      bquote(drop(dist_mixture_density_free(x, param_matrix, log, .(comp_param_counts), comp_density, .(comp_discrete))))
+      bquote(drop(dist_mixture_density_free(
+        x, param_matrix, log, .(comp_param_counts), comp_density, .(comp_discrete)
+      )))
     } else {
-      bquote(drop(dist_mixture_density_fixed(x, param_matrix, log, .(comp_param_counts), comp_density, .(comp_discrete), .(as.numeric(self$default_params$probs)))))
+      bquote(drop(dist_mixture_density_fixed(
+        x, param_matrix, log, .(comp_param_counts), comp_density, .(comp_discrete), .(as.numeric(self$default_params$probs))
+      )))
     }
 
     as_compiled_distribution_function(
@@ -484,9 +488,13 @@ MixtureDistribution <- distribution_class(
     n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
 
     prob_code <- if (ph_probs) {
-      bquote(drop(dist_mixture_probability_free(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_probability)))
+      bquote(drop(dist_mixture_probability_free(
+        q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_probability
+      )))
     } else {
-      bquote(drop(dist_mixture_probability_fixed(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_probability, .(as.numeric(self$default_params$probs)))))
+      bquote(drop(dist_mixture_probability_fixed(
+        q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_probability, .(as.numeric(self$default_params$probs))
+      )))
     }
 
     as_compiled_distribution_function(
@@ -507,9 +515,13 @@ MixtureDistribution <- distribution_class(
     n_params <- sum(comp_param_counts) + if (ph_probs) k else 0L
 
     iprob_code <- if (ph_probs) {
-      bquote(drop(dist_mixture_iprobability_free(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_probability_interval)))
+      bquote(drop(dist_mixture_iprobability_free(
+        qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_probability_interval
+      )))
     } else {
-      bquote(drop(dist_mixture_iprobability_fixed(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_probability_interval, .(as.numeric(self$default_params$probs)))))
+      bquote(drop(dist_mixture_iprobability_fixed(
+        qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_probability_interval, .(as.numeric(self$default_params$probs))
+      )))
     }
 
     as_compiled_distribution_function(

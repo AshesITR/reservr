@@ -184,7 +184,7 @@ GeneralizedParetoDistribution <- distribution_class_simple(
 
     res
   },
-  tf_logdensity = function() function(x, args) {
+  tf_logdensity = function() function(x, args) { # nolint: brace.
     u <- tf$squeeze(args[["u"]])
     sigmau <- tf$squeeze(args[["sigmau"]])
     xi <- tf$squeeze(args[["xi"]])
@@ -210,7 +210,7 @@ GeneralizedParetoDistribution <- distribution_class_simple(
       K$neg_inf
     )
   },
-  tf_logprobability = function() function(qmin, qmax, args) {
+  tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
     tf <- tensorflow::tf
     u <- tf$squeeze(args[["u"]])
     sigmau <- tf$squeeze(args[["sigmau"]])
@@ -320,7 +320,7 @@ fit_dist.GeneralizedParetoDistribution <- function(dist, obs, start, ...) {
   start <- .check_fit_dist_start(dist, obs, start)
 
   if ("u" %in% names(start) &&
-    identical(dist$get_param_bounds()[["u"]], I_REALS)) {
+      identical(dist$get_param_bounds()[["u"]], I_REALS)) {
     # MLE of u is unstable for gradient-based ML because the right derivative at
     # the optimum (= min(obs$x[obs$w > 0.0])) doesn't exist. To fix this, we add
     # artifical box constraints on u. If the initial value was manually

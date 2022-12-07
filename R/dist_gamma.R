@@ -101,7 +101,7 @@ GammaDistribution <- distribution_class_simple(
 
     res
   },
-  tf_logdensity = function() function(x, args) {
+  tf_logdensity = function() function(x, args) { # nolint: brace.
     shape <- tf$broadcast_to(args[["shape"]], x$shape)
     rate <- tf$broadcast_to(args[["rate"]], x$shape)
 
@@ -114,26 +114,26 @@ GammaDistribution <- distribution_class_simple(
       K$neg_inf
     )
   },
-  tf_logprobability = function() function(qmin, qmax, args) {
+  tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
     shape <- tf$broadcast_to(args[["shape"]], qmin$shape)
     rate <- tf$broadcast_to(args[["rate"]], qmax$shape)
 
     qmin0 <- qmin <= 0.0
     qmax0 <- qmax <= 0.0
-    qmaxInf <- !tf$math$is_finite(qmax) & qmax > 0.0
+    qmax_inf <- !tf$math$is_finite(qmax) & qmax > 0.0
     qmin_safe <- tf$maximum(K$zero, qmin)
-    qmax_safe <- tf$maximum(K$zero, tf$where(qmaxInf, K$zero, qmax))
+    qmax_safe <- tf$maximum(K$zero, tf$where(qmax_inf, K$zero, qmax))
     qmax_nok <- tf$where(qmax0, K$neg_inf, K$zero)
 
     tf$where(
       qmin0,
       tf$where(
-        qmax0 | qmaxInf,
+        qmax0 | qmax_inf,
         qmax_nok,
         log(tf$math$igamma(shape, qmax_safe * rate))
       ),
       tf$where(
-        qmaxInf,
+        qmax_inf,
         log(1.0 - tf$math$igamma(shape, qmin_safe * rate)),
         log(tf$math$igamma(shape, qmax_safe * rate) - tf$math$igamma(shape, qmin_safe * rate))
       )

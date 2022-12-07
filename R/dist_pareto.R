@@ -58,8 +58,10 @@ ParetoDistribution <- distribution_class_simple(
       res$scale <- if (log) {
         params$shape / params$scale - (params$shape + 1.0) / (x + params$scale)
       } else {
-        (params$shape / params$scale -
-          (params$shape + 1.0) / (x + params$scale)) *
+        (
+          params$shape / params$scale -
+            (params$shape + 1.0) / (x + params$scale)
+        ) *
           dpareto(x, shape = params$shape, scale = params$scale)
       }
     }
@@ -77,7 +79,7 @@ ParetoDistribution <- distribution_class_simple(
         if (lower.tail) {
           (log(params$scale) - log(q + params$scale)) *
             ppareto(q, shape = params$shape, scale = params$scale,
-                            lower.tail = FALSE) /
+                    lower.tail = FALSE) /
             ppareto(q, shape = params$shape, scale = params$scale)
         } else {
           log(params$scale) - log(q + params$scale)
@@ -119,7 +121,7 @@ ParetoDistribution <- distribution_class_simple(
 
     res
   },
-  tf_logdensity = function() function(x, args) {
+  tf_logdensity = function() function(x, args) { # nolint: brace.
     shape <- tf$broadcast_to(args[["shape"]], x$shape)
     scale <- tf$broadcast_to(args[["scale"]], x$shape)
 
@@ -132,7 +134,7 @@ ParetoDistribution <- distribution_class_simple(
       K$neg_inf
     )
   },
-  tf_logprobability = function() function(qmin, qmax, args) {
+  tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
     shape <- tf$broadcast_to(args[["shape"]], qmin$shape)
     scale <- tf$broadcast_to(args[["scale"]], qmin$shape)
 
@@ -169,7 +171,7 @@ fit_dist_start.ParetoDistribution <- function(dist, obs, ...) {
   res <- dist$get_placeholders()
   ph <- names(res)
   mom <- weighted_moments(x, obs$w, n = 2L, center = FALSE)
-  if ("scale" %in% ph & "shape" %in% ph) {
+  if ("scale" %in% ph && "shape" %in% ph) {
     sc <- (mom[1L] * mom[2L]) / (mom[2L] - 2.0 * mom[1L]^2.0)
 
     if (sc < 0.0) { # illegal estimates produced by moment matching

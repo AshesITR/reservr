@@ -174,10 +174,11 @@ ErlangMixtureDistribution <- distribution_class(
         seq_len(k),
         function(k) {
           out <- params$probs[[k]] *
-            dgammas[[k]] *
-            (log(x) -
-              log(params$scale) -
-              digamma(params$shapes[[k]]))
+            dgammas[[k]] * (
+              log(x) -
+                log(params$scale) -
+                digamma(params$shapes[[k]])
+            )
 
           if (log) out / dens else out
         }
@@ -419,21 +420,37 @@ ErlangMixtureDistribution <- distribution_class(
     }
 
     dens_code <- if (!ph_probs && !ph_scale && !ph_shapes) {
-      bquote(drop(dist_erlangmix_density_fixed_probs_scale_shape(x, log, .(prob_expr), .(scale_expr), .(shapes_expr))))
+      bquote(drop(dist_erlangmix_density_fixed_probs_scale_shape(
+        x, log, .(prob_expr), .(scale_expr), .(shapes_expr)
+      )))
     } else if (!ph_probs && !ph_scale) {
-      bquote(drop(dist_erlangmix_density_fixed_probs_scale(x, param_matrix, log, .(prob_expr), .(scale_expr))))
+      bquote(drop(dist_erlangmix_density_fixed_probs_scale(
+        x, param_matrix, log, .(prob_expr), .(scale_expr)
+      )))
     } else if (!ph_probs && !ph_shapes) {
-      bquote(drop(dist_erlangmix_density_fixed_probs_shape(x, param_matrix, log, .(prob_expr), .(shapes_expr))))
+      bquote(drop(dist_erlangmix_density_fixed_probs_shape(
+        x, param_matrix, log, .(prob_expr), .(shapes_expr)
+      )))
     } else if (!ph_scale && !ph_shapes) {
-      bquote(drop(dist_erlangmix_density_fixed_scale_shape(x, param_matrix, log, .(scale_expr), .(shapes_expr))))
+      bquote(drop(dist_erlangmix_density_fixed_scale_shape(
+        x, param_matrix, log, .(scale_expr), .(shapes_expr)
+      )))
     } else if (!ph_probs) {
-      bquote(drop(dist_erlangmix_density_fixed_probs(x, param_matrix, log, .(prob_expr))))
+      bquote(drop(dist_erlangmix_density_fixed_probs(
+        x, param_matrix, log, .(prob_expr)
+      )))
     } else if (!ph_scale) {
-      bquote(drop(dist_erlangmix_density_fixed_scale(x, param_matrix, log, .(scale_expr))))
+      bquote(drop(dist_erlangmix_density_fixed_scale(
+        x, param_matrix, log, .(scale_expr)
+      )))
     } else if (!ph_shapes) {
-      bquote(drop(dist_erlangmix_density_fixed_shape(x, param_matrix, log, .(shapes_expr))))
+      bquote(drop(dist_erlangmix_density_fixed_shape(
+        x, param_matrix, log, .(shapes_expr)
+      )))
     } else {
-      bquote(drop(dist_erlangmix_density_free(x, param_matrix, log)))
+      bquote(drop(dist_erlangmix_density_free(
+        x, param_matrix, log
+      )))
     }
 
     as_compiled_distribution_function(
@@ -466,21 +483,37 @@ ErlangMixtureDistribution <- distribution_class(
     }
 
     prob_code <- if (!ph_probs && !ph_scale && !ph_shapes) {
-      bquote(drop(dist_erlangmix_probability_fixed_probs_scale_shape(q, lower.tail, log.p, .(prob_expr), .(scale_expr), .(shapes_expr))))
+      bquote(drop(dist_erlangmix_probability_fixed_probs_scale_shape(
+        q, lower.tail, log.p, .(prob_expr), .(scale_expr), .(shapes_expr)
+      )))
     } else if (!ph_probs && !ph_scale) {
-      bquote(drop(dist_erlangmix_probability_fixed_probs_scale(q, param_matrix, lower.tail, log.p, .(prob_expr), .(scale_expr))))
+      bquote(drop(dist_erlangmix_probability_fixed_probs_scale(
+        q, param_matrix, lower.tail, log.p, .(prob_expr), .(scale_expr)
+      )))
     } else if (!ph_probs && !ph_shapes) {
-      bquote(drop(dist_erlangmix_probability_fixed_probs_shape(q, param_matrix, lower.tail, log.p, .(prob_expr), .(shapes_expr))))
+      bquote(drop(dist_erlangmix_probability_fixed_probs_shape(
+        q, param_matrix, lower.tail, log.p, .(prob_expr), .(shapes_expr)
+      )))
     } else if (!ph_scale && !ph_shapes) {
-      bquote(drop(dist_erlangmix_probability_fixed_scale_shape(q, param_matrix, lower.tail, log.p, .(scale_expr), .(shapes_expr))))
+      bquote(drop(dist_erlangmix_probability_fixed_scale_shape(
+        q, param_matrix, lower.tail, log.p, .(scale_expr), .(shapes_expr)
+      )))
     } else if (!ph_probs) {
-      bquote(drop(dist_erlangmix_probability_fixed_probs(q, param_matrix, lower.tail, log.p, .(prob_expr))))
+      bquote(drop(dist_erlangmix_probability_fixed_probs(
+        q, param_matrix, lower.tail, log.p, .(prob_expr)
+      )))
     } else if (!ph_scale) {
-      bquote(drop(dist_erlangmix_probability_fixed_scale(q, param_matrix, lower.tail, log.p, .(scale_expr))))
+      bquote(drop(dist_erlangmix_probability_fixed_scale(
+        q, param_matrix, lower.tail, log.p, .(scale_expr)
+      )))
     } else if (!ph_shapes) {
-      bquote(drop(dist_erlangmix_probability_fixed_shape(q, param_matrix, lower.tail, log.p, .(shapes_expr))))
+      bquote(drop(dist_erlangmix_probability_fixed_shape(
+        q, param_matrix, lower.tail, log.p, .(shapes_expr)
+      )))
     } else {
-      bquote(drop(dist_erlangmix_probability_free(q, param_matrix, lower.tail, log.p)))
+      bquote(drop(dist_erlangmix_probability_free(
+        q, param_matrix, lower.tail, log.p
+      )))
     }
 
     as_compiled_distribution_function(
@@ -513,21 +546,37 @@ ErlangMixtureDistribution <- distribution_class(
     }
 
     prob_code <- if (!ph_probs && !ph_scale && !ph_shapes) {
-      bquote(drop(dist_erlangmix_iprobability_fixed_probs_scale_shape(qmin, qmax, log.p, .(prob_expr), .(scale_expr), .(shapes_expr))))
+      bquote(drop(dist_erlangmix_iprobability_fixed_probs_scale_shape(
+        qmin, qmax, log.p, .(prob_expr), .(scale_expr), .(shapes_expr)
+      )))
     } else if (!ph_probs && !ph_scale) {
-      bquote(drop(dist_erlangmix_iprobability_fixed_probs_scale(qmin, qmax, param_matrix, log.p, .(prob_expr), .(scale_expr))))
+      bquote(drop(dist_erlangmix_iprobability_fixed_probs_scale(
+        qmin, qmax, param_matrix, log.p, .(prob_expr), .(scale_expr)
+      )))
     } else if (!ph_probs && !ph_shapes) {
-      bquote(drop(dist_erlangmix_iprobability_fixed_probs_shape(qmin, qmax, param_matrix, log.p, .(prob_expr), .(shapes_expr))))
+      bquote(drop(dist_erlangmix_iprobability_fixed_probs_shape(
+        qmin, qmax, param_matrix, log.p, .(prob_expr), .(shapes_expr)
+      )))
     } else if (!ph_scale && !ph_shapes) {
-      bquote(drop(dist_erlangmix_iprobability_fixed_scale_shape(qmin, qmax, param_matrix, log.p, .(scale_expr), .(shapes_expr))))
+      bquote(drop(dist_erlangmix_iprobability_fixed_scale_shape(
+        qmin, qmax, param_matrix, log.p, .(scale_expr), .(shapes_expr)
+      )))
     } else if (!ph_probs) {
-      bquote(drop(dist_erlangmix_iprobability_fixed_probs(qmin, qmax, param_matrix, log.p, .(prob_expr))))
+      bquote(drop(dist_erlangmix_iprobability_fixed_probs(
+        qmin, qmax, param_matrix, log.p, .(prob_expr)
+      )))
     } else if (!ph_scale) {
-      bquote(drop(dist_erlangmix_iprobability_fixed_scale(qmin, qmax, param_matrix, log.p, .(scale_expr))))
+      bquote(drop(dist_erlangmix_iprobability_fixed_scale(
+        qmin, qmax, param_matrix, log.p, .(scale_expr)
+      )))
     } else if (!ph_shapes) {
-      bquote(drop(dist_erlangmix_iprobability_fixed_shape(qmin, qmax, param_matrix, log.p, .(shapes_expr))))
+      bquote(drop(dist_erlangmix_iprobability_fixed_shape(
+        qmin, qmax, param_matrix, log.p, .(shapes_expr)
+      )))
     } else {
-      bquote(drop(dist_erlangmix_iprobability_free(qmin, qmax, param_matrix, log.p)))
+      bquote(drop(dist_erlangmix_iprobability_free(
+        qmin, qmax, param_matrix, log.p
+      )))
     }
 
     as_compiled_distribution_function(

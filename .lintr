@@ -1,8 +1,13 @@
-linters: with_defaults(
+linters: linters_with_defaults(
     line_length_linter(120L),
-    object_length_linter = NULL, # long method names caused by S3 methods
-    object_name_linter = NULL, # lower.tail, log.p are not avoidable names
+    brace_linter(allow_single_line = TRUE),
+    object_name_linter(
+      c("snake_case", "SNAKE_CASE", "CamelCase", "symbols"), 
+      c(
+        "distribution_args" = "log\\.p|lower\\.tail",
+        "S3_methods" = "fit_dist(?:_start)?\\.[A-Za-z]+"
+      )
+    ),
     cyclocomp_linter = NULL, # Complex R6 classes
-    closed_curly_linter = closed_curly_linter(allow_single_line = TRUE),
-    open_curly_linter = open_curly_linter(allow_single_line = TRUE)
+    object_length_linter = NULL # Many false positives for S3 method implementations
   )

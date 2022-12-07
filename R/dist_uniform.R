@@ -106,7 +106,7 @@ UniformDistribution <- distribution_class_simple(
 
     res
   },
-  tf_logdensity = function() function(x, args) {
+  tf_logdensity = function() function(x, args) { # nolint: brace.
     bmin <- args[["min"]]
     bmax <- args[["max"]]
 
@@ -117,7 +117,7 @@ UniformDistribution <- distribution_class_simple(
       K$neg_inf
     )
   },
-  tf_logprobability = function() function(qmin, qmax, args) {
+  tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
     amin <- args[["min"]]
     amax <- args[["max"]]
 

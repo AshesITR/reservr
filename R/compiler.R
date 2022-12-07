@@ -16,7 +16,8 @@ compile_simple_function <- function(simple_fun, dist) {
       fcall[[para]] <- dist$default_params[[para]]
     }
   }
-  for (extra_arg in setdiff(names(fmls), c("x", "n", "p", "q", "lower.tail", "log", "log.p", names(dist$get_params())))) {
+  for (extra_arg in setdiff(names(fmls),
+                            c("x", "n", "p", "q", "lower.tail", "log", "log.p", names(dist$get_params())))) {
     fcall[[extra_arg]] <- NULL
   }
   fmls_outer <- c(
@@ -30,7 +31,7 @@ compile_simple_function <- function(simple_fun, dist) {
   )
 }
 
-compile_simple_prob_interval_continuous <- function(fun, dist) {
+compile_simple_prob_continuous <- function(fun, dist) {
   fmls <- formals(fun)
   fcall <- call("fun")
   fcall[1 + seq_along(fmls)] <- fmls
@@ -62,7 +63,7 @@ compile_simple_prob_interval_continuous <- function(fun, dist) {
   )
 }
 
-compile_simple_prob_interval_discrete <- function(pfun, dfun, dist) {
+compile_simple_prob_discrete <- function(pfun, dfun, dist) {
   fmls <- formals(pfun)
   fcall <- call("pfun")
   fcall[1 + seq_along(fmls)] <- fmls
@@ -81,7 +82,6 @@ compile_simple_prob_interval_discrete <- function(pfun, dfun, dist) {
   fcall[["lower.tail"]] <- TRUE
   fcall[["log.p"]] <- FALSE
 
-  fmls_outer <- alist(qmin =, qmax =, param_matrix = )
   fcall_upper <- fcall
   fcall_upper[["q"]] <- as.name("qmax")
   fcall_lower <- fcall
@@ -103,7 +103,7 @@ compile_simple_prob_interval_discrete <- function(pfun, dfun, dist) {
   )
 }
 
-as_compiled_distribution_function <- function(fun, n_params) {
+as_compiled_distribution_function <- function(fun, n_params) { # nolint: object_length.
   fun <- as.function(fun)
   fun <- compiler::cmpfun(fun, options = list(optimize = 3L))
   n_params <- as.integer(n_params)

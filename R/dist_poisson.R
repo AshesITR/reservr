@@ -70,7 +70,7 @@ PoissonDistribution <- distribution_class_simple(
 
     res
   },
-  tf_logdensity = function() function(x, args) {
+  tf_logdensity = function() function(x, args) { # nolint: brace.
     lambda <- tf$broadcast_to(args[["lambda"]], x$shape)
 
     ok <- tf_is_integerish(x) & x >= K$zero
@@ -82,7 +82,7 @@ PoissonDistribution <- distribution_class_simple(
       K$neg_inf
     )
   },
-  tf_logprobability = function() function(qmin, qmax, args) {
+  tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
     lambda <- tf$broadcast_to(args[["lambda"]], qmin$shape)
 
     lambda_safe <- tf$where(lambda == K$zero, K$one, lambda)
@@ -116,7 +116,7 @@ PoissonDistribution <- distribution_class_simple(
       )
     )
   },
-  tf_is_discrete_at = function() function(x, args) {
+  tf_is_discrete_at = function() function(x, args) { # nolint: brace.
     lambda <- tf$broadcast_to(args[["lambda"]], x$shape)
     tf$where(
       lambda == K$zero,

@@ -14,7 +14,7 @@
 #' fit_dist(my_exp, rexp(100, rate = 3), start = list(rate = 1))$params$rate
 #'
 #' @family Distributions
-Distribution <- R6Class( # nolint: cyclocomp_linter.
+Distribution <- R6Class(
   classname = "Distribution",
   public = list(
     #' @details Construct a Distribution instance
@@ -242,7 +242,7 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
       if (self$is_continuous()) {
         private$.tf_retrieve_or_call(
           "c_false",
-          function() function(x, args) {
+          function() function(x, args) { # nolint: brace.
             tensorflow::tf$broadcast_to(FALSE, shape = tensorflow::tf$shape(x))
           }
         )
@@ -250,7 +250,7 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
         # discrete and mixed case needs to check support as well
         # nocov start
         stop("tf_is_discrete_at() is not implemented for ",
-              class(self)[1L], ".")
+             class(self)[1L], ".")
         # nocov end
       }
     },
@@ -436,9 +436,9 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
 
       get_distr_params <- function(elem) {
         if (is.list(elem) &&
-          length(elem) == 2L &&
-          hasName(elem, "dist") &&
-          hasName(elem, "params") &&
+            length(elem) == 2L &&
+            hasName(elem, "dist") &&
+            hasName(elem, "params") &&
           is.Distribution(elem$dist)) {
           elem$dist$get_params(elem$params)
         } else if (is.list(elem)) {
@@ -466,10 +466,10 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
 
       get_tf_consts <- function(elem) {
         if (is.list(elem) &&
-          length(elem) == 2L &&
-          hasName(elem, "dist") &&
-          hasName(elem, "params") &&
-          is.Distribution(elem$dist)) {
+            length(elem) == 2L &&
+            hasName(elem, "dist") &&
+            hasName(elem, "params") &&
+            is.Distribution(elem$dist)) {
           elem$dist$tf_make_constants(elem$params)
         } else if (is.list(elem)) {
           are_null <- vapply(elem, is.null, logical(1L))
@@ -551,10 +551,10 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
         if (is.null(elem)) {
           ranges
         } else if (is.list(elem) &&
-          length(elem) == 2L &&
-          hasName(elem, "dist") &&
-          hasName(elem, "params") &&
-          is.Distribution(elem$dist)) {
+            length(elem) == 2L &&
+            hasName(elem, "dist") &&
+            hasName(elem, "params") &&
+            is.Distribution(elem$dist)) {
           elem$dist$get_param_bounds()
         } else if (is.list(elem) && rlang::is_named(elem)) {
           mapply(get_bounds, elem,
@@ -767,25 +767,25 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
       float64 = list()
     ),
     .tf_retrieve_or_call = function(name, impl) {
-        check_installed(c("keras", "tensorflow"))
+      check_installed(c("keras", "tensorflow"))
 
-        cache_key <- keras::k_floatx()
+      cache_key <- keras::k_floatx()
 
-        res <- private$.tf_functions[[cache_key]][[name]]
-        use_cache <- getOption("reservr.cache_tf_function", default = TRUE)
+      res <- private$.tf_functions[[cache_key]][[name]]
+      use_cache <- getOption("reservr.cache_tf_function", default = TRUE)
 
-        if (is.null(res) ||
-          (cache_key != "nograph" && reticulate::py_is_null_xptr(res)) ||
-          !use_cache) {
-          fn <- impl()
-          assign("tf", tensorflow::tf, environment(fn))
-          res <- maybe_tf_function(fn)
+      if (is.null(res) ||
+        (cache_key != "nograph" && reticulate::py_is_null_xptr(res)) ||
+        !use_cache) {
+        fn <- impl()
+        assign("tf", tensorflow::tf, environment(fn))
+        res <- maybe_tf_function(fn)
 
-          private$.tf_functions[[cache_key]][[name]] <- res
-        }
-
-        res
+        private$.tf_functions[[cache_key]][[name]] <- res
       }
+
+      res
+    }
   ),
   active = list(
     #' @field default_params Get or set (non-recursive) default parameters of a
@@ -816,16 +816,15 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
               )
             )
           } else if (is.list(curr_bounds) &&
-            length(curr_bounds) &&
-            is.Interval(curr_bounds[[1L]])) {
+              length(curr_bounds) &&
+              is.Interval(curr_bounds[[1L]])) {
             assert_that(
               is.list(value[[param]]),
               all(vapply(
                 value[[param]],
-                function(val) is.null(val) || (is.numeric(val) &&
-                  all(curr_bounds[[1L]]$contains(val))),
-                logical(1L))
-              ),
+                function(val) is.null(val) || (is.numeric(val) && all(curr_bounds[[1L]]$contains(val))),
+                logical(1L)
+              )),
               msg = sprintf(
                 paste(
                   "`default_params$%s` must be a list of",
@@ -859,17 +858,17 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
         bounds <- private$.params
 
         check_types <- function(old, new, path = "") {
-          expected <- if (is.list(old) &&
-            length(old) == 1L &&
-            is.null(names(old)) &&
-            is.Interval(old[[1L]])) {
-            "a list containing an Interval"
+          if (is.list(old) &&
+              length(old) == 1L &&
+              is.null(names(old)) &&
+              is.Interval(old[[1L]])) {
+            expected <- "a list containing an Interval"
           } else if (is.list(old) && !length(old)) {
-            "an empty list"
+            expected <- "an empty list"
           } else if (is.list(old)) {
-            paste0("a list with ", length(old), "elements")
+            expected <- paste0("a list with ", length(old), "elements")
           } else if (is.Interval(old)) {
-            "an Interval"
+            expected <- "an Interval"
           }
 
           ok <- if (is.list(old)) {
@@ -1167,9 +1166,9 @@ distribution_class_simple <- function(name,
       },
       compile_probability_interval = function() {
         if (self$is_continuous()) {
-          compile_simple_prob_interval_continuous(probability_fun, self)
+          compile_simple_prob_continuous(probability_fun, self)
         } else { # => self$is_discrete()
-          compile_simple_prob_interval_discrete(probability_fun, density_fun, self)
+          compile_simple_prob_discrete(probability_fun, density_fun, self)
         }
       },
       ...

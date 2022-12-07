@@ -95,7 +95,7 @@ NormalDistribution <- distribution_class_simple(
 
     res
   },
-  tf_logdensity = function() function(x, args) {
+  tf_logdensity = function() function(x, args) { # nolint: brace.
     mu <- tf$broadcast_to(tf$squeeze(args[["mean"]]), x$shape)
     sigma <- tf$broadcast_to(tf$squeeze(args[["sd"]]), x$shape)
 
@@ -103,7 +103,7 @@ NormalDistribution <- distribution_class_simple(
 
     -log(sigma) - K$log_sqrt_2pi - K$one_half * z * z
   },
-  tf_logprobability = function() function(qmin, qmax, args) {
+  tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
     mu <- tf$broadcast_to(tf$squeeze(args[["mean"]]), qmin$shape)
     sigma <- tf$broadcast_to(tf$squeeze(args[["sd"]]), qmin$shape)
 

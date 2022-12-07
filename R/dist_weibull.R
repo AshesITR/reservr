@@ -111,7 +111,7 @@ WeibullDistribution <- distribution_class_simple(
 
     res
   },
-  tf_logdensity = function() function(x, args) {
+  tf_logdensity = function() function(x, args) { # nolint: brace.
     shape <- tf$broadcast_to(args[["shape"]], x$shape)
     scale <- tf$broadcast_to(args[["scale"]], x$shape)
 
@@ -124,7 +124,7 @@ WeibullDistribution <- distribution_class_simple(
       K$neg_inf
     )
   },
-  tf_logprobability = function() function(qmin, qmax, args) {
+  tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
     shape <- tf$broadcast_to(args[["shape"]], qmin$shape)
     scale <- tf$broadcast_to(args[["scale"]], qmin$shape)
 

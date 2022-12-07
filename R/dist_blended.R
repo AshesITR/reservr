@@ -546,9 +546,9 @@ BlendedDistribution <- distribution_class(
       dright_safe <- tf$where(dright_ok, compdens_right, K$zero) - tf$where(dright_ok, compprob_right, K$zero)
 
       logdens_comps <- tf$stack(list(
-          tf$where(dleft_ok, log_probs[, 1L] + logdiff_left + dleft_safe, K$neg_inf),
-          tf$where(dright_ok, log_probs[, 2L] + logdiff_right + dright_safe, K$neg_inf)
-        ), axis = 1L)
+        tf$where(dleft_ok, log_probs[, 1L] + logdiff_left + dleft_safe, K$neg_inf),
+        tf$where(dright_ok, log_probs[, 2L] + logdiff_right + dright_safe, K$neg_inf)
+      ), axis = 1L)
 
       tf$where(
         left_tail,
@@ -787,21 +787,39 @@ BlendedDistribution <- distribution_class(
     }
 
     dens_code <- if (!ph_probs && !ph_u && !ph_eps) {
-      bquote(drop(dist_blended_density_fixed_probs_breaks_eps(x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(prob_expr), .(u_expr), .(eps_expr))))
+      bquote(drop(dist_blended_density_fixed_probs_breaks_eps(
+        x, param_matrix, log, .(comp_param_counts),
+        comp_dens, comp_prob_int, .(comp_discrete), .(prob_expr), .(u_expr), .(eps_expr)
+      )))
     } else if (!ph_probs && !ph_u) {
-      bquote(drop(dist_blended_density_fixed_probs_breaks(x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(prob_expr), .(u_expr))))
+      bquote(drop(dist_blended_density_fixed_probs_breaks(
+        x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(prob_expr), .(u_expr)
+      )))
     } else if (!ph_probs && !ph_eps) {
-      bquote(drop(dist_blended_density_fixed_probs_eps(x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(prob_expr), .(eps_expr))))
+      bquote(drop(dist_blended_density_fixed_probs_eps(
+        x, param_matrix, log,
+        .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(prob_expr), .(eps_expr)
+      )))
     } else if (!ph_u && !ph_eps) {
-      bquote(drop(dist_blended_density_fixed_breaks_eps(x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(u_expr), .(eps_expr))))
+      bquote(drop(dist_blended_density_fixed_breaks_eps(
+        x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(u_expr), .(eps_expr)
+      )))
     } else if (!ph_probs) {
-      bquote(drop(dist_blended_density_fixed_probs(x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(prob_expr))))
+      bquote(drop(dist_blended_density_fixed_probs(
+        x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(prob_expr)
+      )))
     } else if (!ph_u) {
-      bquote(drop(dist_blended_density_fixed_breaks(x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(u_expr))))
+      bquote(drop(dist_blended_density_fixed_breaks(
+        x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(u_expr)
+      )))
     } else if (!ph_eps) {
-      bquote(drop(dist_blended_density_fixed_eps(x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(eps_expr))))
+      bquote(drop(dist_blended_density_fixed_eps(
+        x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete), .(eps_expr)
+      )))
     } else {
-      bquote(drop(dist_blended_density_free(x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete))))
+      bquote(drop(dist_blended_density_free(
+        x, param_matrix, log, .(comp_param_counts), comp_dens, comp_prob_int, .(comp_discrete)
+      )))
     }
 
     as_compiled_distribution_function(
@@ -838,21 +856,37 @@ BlendedDistribution <- distribution_class(
     }
 
     prob_code <- if (!ph_probs && !ph_u && !ph_eps) {
-      bquote(drop(dist_blended_probability_fixed_probs_breaks_eps(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(u_expr), .(eps_expr))))
+      bquote(drop(dist_blended_probability_fixed_probs_breaks_eps(
+        q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(u_expr), .(eps_expr)
+      )))
     } else if (!ph_probs && !ph_u) {
-      bquote(drop(dist_blended_probability_fixed_probs_breaks(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(u_expr))))
+      bquote(drop(dist_blended_probability_fixed_probs_breaks(
+        q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(u_expr)
+      )))
     } else if (!ph_probs && !ph_eps) {
-      bquote(drop(dist_blended_probability_fixed_probs_eps(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(eps_expr))))
+      bquote(drop(dist_blended_probability_fixed_probs_eps(
+        q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(eps_expr)
+      )))
     } else if (!ph_u && !ph_eps) {
-      bquote(drop(dist_blended_probability_fixed_breaks_eps(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(u_expr), .(eps_expr))))
+      bquote(drop(dist_blended_probability_fixed_breaks_eps(
+        q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(u_expr), .(eps_expr)
+      )))
     } else if (!ph_probs) {
-      bquote(drop(dist_blended_probability_fixed_probs(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr))))
+      bquote(drop(dist_blended_probability_fixed_probs(
+        q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr)
+      )))
     } else if (!ph_u) {
-      bquote(drop(dist_blended_probability_fixed_breaks(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(u_expr))))
+      bquote(drop(dist_blended_probability_fixed_breaks(
+        q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(u_expr)
+      )))
     } else if (!ph_eps) {
-      bquote(drop(dist_blended_probability_fixed_eps(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(eps_expr))))
+      bquote(drop(dist_blended_probability_fixed_eps(
+        q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int, .(eps_expr)
+      )))
     } else {
-      bquote(drop(dist_blended_probability_free(q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int)))
+      bquote(drop(dist_blended_probability_free(
+        q, param_matrix, lower.tail, log.p, .(comp_param_counts), comp_prob_int
+      )))
     }
 
     as_compiled_distribution_function(
@@ -889,21 +923,37 @@ BlendedDistribution <- distribution_class(
     }
 
     prob_code <- if (!ph_probs && !ph_u && !ph_eps) {
-      bquote(drop(dist_blended_iprobability_fixed_probs_breaks_eps(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(u_expr), .(eps_expr))))
+      bquote(drop(dist_blended_iprobability_fixed_probs_breaks_eps(
+        qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(u_expr), .(eps_expr)
+      )))
     } else if (!ph_probs && !ph_u) {
-      bquote(drop(dist_blended_iprobability_fixed_probs_breaks(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(u_expr))))
+      bquote(drop(dist_blended_iprobability_fixed_probs_breaks(
+        qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(u_expr)
+      )))
     } else if (!ph_probs && !ph_eps) {
-      bquote(drop(dist_blended_iprobability_fixed_probs_eps(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(eps_expr))))
+      bquote(drop(dist_blended_iprobability_fixed_probs_eps(
+        qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr), .(eps_expr)
+      )))
     } else if (!ph_u && !ph_eps) {
-      bquote(drop(dist_blended_iprobability_fixed_breaks_eps(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(u_expr), .(eps_expr))))
+      bquote(drop(dist_blended_iprobability_fixed_breaks_eps(
+        qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(u_expr), .(eps_expr)
+      )))
     } else if (!ph_probs) {
-      bquote(drop(dist_blended_iprobability_fixed_probs(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr))))
+      bquote(drop(dist_blended_iprobability_fixed_probs(
+        qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(prob_expr)
+      )))
     } else if (!ph_u) {
-      bquote(drop(dist_blended_iprobability_fixed_breaks(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(u_expr))))
+      bquote(drop(dist_blended_iprobability_fixed_breaks(
+        qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(u_expr)
+      )))
     } else if (!ph_eps) {
-      bquote(drop(dist_blended_iprobability_fixed_eps(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(eps_expr))))
+      bquote(drop(dist_blended_iprobability_fixed_eps(
+        qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int, .(eps_expr)
+      )))
     } else {
-      bquote(drop(dist_blended_iprobability_free(qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int)))
+      bquote(drop(dist_blended_iprobability_free(
+        qmin, qmax, param_matrix, log.p, .(comp_param_counts), comp_prob_int
+      )))
     }
 
     as_compiled_distribution_function(
@@ -968,7 +1018,7 @@ fit_dist_start.BlendedDistribution <- function(dist, obs, dists_start = NULL,
         obs$xmax >= blend$breaks[[k - 1L]] - blend$bandwidths[[k - 1L]]
       } else {
         obs$xmax >= blend$breaks[[i - 1L]] - blend$bandwidths[[i - 1L]] &
-        obs$xmin <= blend$breaks[[i]] + blend$bandwidths[[i]]
+          obs$xmin <= blend$breaks[[i]] + blend$bandwidths[[i]]
       }
     },
     n

@@ -43,7 +43,7 @@ BetaDistribution <- distribution_class_simple(
     ncp = I_POSITIVE_REALS
   ),
   support = I_UNIT_INTERVAL, # TODO diff_*?
-  tf_logdensity = function() function(x, args) {
+  tf_logdensity = function() function(x, args) { # nolint: brace.
     tf <- tensorflow::tf
     shape1 <- tf$broadcast_to(args[["shape1"]], x$shape)
     shape2 <- tf$broadcast_to(args[["shape2"]], x$shape)
@@ -65,7 +65,7 @@ BetaDistribution <- distribution_class_simple(
         tf$where(x1, rterm, (shape2 - 1.0) * log(xs_safe))
     )
   },
-  tf_logprobability = function() function(qmin, qmax, args) {
+  tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
     tf <- tensorflow::tf
     shape1 <- tf$broadcast_to(args[["shape1"]], qmin$shape)
     shape2 <- tf$broadcast_to(args[["shape2"]], qmin$shape)

@@ -50,15 +50,15 @@ DiracDistribution <- distribution_class(
   support = function(x, params) {
     x %in% params$point
   },
-  tf_is_discrete_at = function() function(x, args) {
+  tf_is_discrete_at = function() function(x, args) { # nolint: brace.
     point <- tensorflow::tf$squeeze(args[["point"]])
     tensorflow::tf$equal(x, point)
   },
-  tf_logdensity = function() function(x, args) {
+  tf_logdensity = function() function(x, args) { # nolint: brace.
     point <- tensorflow::tf$squeeze(args[["point"]])
     tensorflow::tf$where(x == point, K$zero, K$neg_inf)
   },
-  tf_logprobability = function() function(qmin, qmax, args) {
+  tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
     point <- tensorflow::tf$squeeze(args[["point"]])
     tensorflow::tf$where(qmin > point | qmax < point, K$neg_inf, K$zero)
   },
