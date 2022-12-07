@@ -769,11 +769,7 @@ Distribution <- R6Class( # nolint: cyclocomp_linter.
     .tf_retrieve_or_call = function(name, impl) {
         check_installed(c("keras", "tensorflow"))
 
-        cache_key <- if (tf_is_graph_disabled()) {
-          "nograph"
-        } else {
-          keras::k_floatx()
-        }
+        cache_key <- keras::k_floatx()
 
         res <- private$.tf_functions[[cache_key]][[name]]
         use_cache <- getOption("reservr.cache_tf_function", default = TRUE)

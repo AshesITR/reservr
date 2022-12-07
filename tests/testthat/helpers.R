@@ -355,7 +355,7 @@ expect_diff_probability <- function(dist, q, args, vars = NULL, lvars = NULL,
 expect_tf_logdensity <- function(dist, args, x, tolerance = 1.0e-7) {
   skip_if_no_tensorflow()
 
-  tf_logdens <- tf_with_disable_graph(dist$tf_logdensity())
+  tf_logdens <- dist$tf_logdensity()
   x_tf <- keras::k_constant(x)
   args_tf <- dist$tf_make_constants(args)
   tf_logdens_result <- tf_logdens(x_tf, args_tf)
@@ -375,7 +375,7 @@ expect_tf_logprobability <- function(dist, args, xmin, xmax,
   xmin <- rep_len(xmin, n)
   xmax <- rep_len(xmax, n)
 
-  tf_logprob <- tf_with_disable_graph(dist$tf_logprobability())
+  tf_logprob <- dist$tf_logprobability()
   interval_prob <- dist$probability(xmax, with_params = args) -
     dist$probability(xmin, with_params = args)
 

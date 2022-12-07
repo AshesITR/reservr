@@ -118,12 +118,12 @@ GammaDistribution <- distribution_class_simple(
     shape <- tf$broadcast_to(args[["shape"]], qmin$shape)
     rate <- tf$broadcast_to(args[["rate"]], qmax$shape)
 
-    qmin0 <- qmin <= 0
+    qmin0 <- qmin <= 0.0
     qmax0 <- qmax <= 0.0
     qmaxInf <- !tf$math$is_finite(qmax) & qmax > 0.0
-    qmin_safe <- tf$maximum(0.0, qmin)
-    qmax_safe <- tf$maximum(0.0, tf$where(qmaxInf, 0.0, qmax))
-    qmax_nok <- tf$where(qmax0, K$neg_inf, 0.0)
+    qmin_safe <- tf$maximum(K$zero, qmin)
+    qmax_safe <- tf$maximum(K$zero, tf$where(qmaxInf, K$zero, qmax))
+    qmax_nok <- tf$where(qmax0, K$neg_inf, K$zero)
 
     tf$where(
       qmin0,

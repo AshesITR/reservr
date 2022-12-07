@@ -80,13 +80,11 @@ DebugDistGradientsCallback <- R6Class(
       private$.keep_grads <- keep_grads
       private$.stop_on_na <- stop_on_na
       private$.verbose <- verbose
-      tf_with_disable_graph({
-        private$.logd <- object$dist$tf_logdensity()
-        if (object$loss_cens || object$loss_trunc) {
-          private$.logp <- object$dist$tf_logprobability()
-        }
-        private$.const <- object$dist$tf_make_constants()
-      })
+      private$.logd <- object$dist$tf_logdensity()
+      if (object$loss_cens || object$loss_trunc) {
+        private$.logp <- object$dist$tf_logprobability()
+      }
+      private$.const <- object$dist$tf_make_constants()
       if (!all(is.na(obs$x))) {
         private$.xd <- keras::k_constant(ifelse(is.na(obs$x), Inf, obs$x))
       }

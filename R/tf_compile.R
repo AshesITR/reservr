@@ -142,53 +142,6 @@ tf_merge_constants <- function(inputs, constants) {
   out
 }
 
-#' Temporarily disable TensorFlow graph function compilation
-#'
-#' This can be very useful for debugging tensorflow functions.
-#' Errors raised during TensorFlow functions code evaluation do not yield usable
-#' line numbers for the R implementation. With graph compilation disabled, the
-#' resulting functions will be run as regular R functions instead.
-#'
-#' @details
-#' `tf_with_disable_graph` accomplishes its function by temporarily overwriting [tensorflow::tf_function()] in the
-#' package tensorflow. After evaluation, [tensorflow::tf_function()] is automatically restored.
-#'
-#' @param expr expression to evaluate with disabled graph compilation
-#'
-#' @return `tf_with_disable_graph` evaluates `expr` with all calls to [tensorflow::tf_function()] transparently ignored.
-#'
-#' @examples
-#' dist <- dist_dirac()
-#' # TensorFlow functions are functions of class
-#' # c("tensorflow.python.eager.def_function.Function", "python.builtin.object")
-#' if (keras::is_keras_available()) {
-#'   stopifnot(class(dist$tf_logdensity()) != "function")
-#'   stopifnot(class(tf_with_disable_graph(dist$tf_logdensity())) == "function")
-#' }
-#'
-#' @export
-#'
-#' @importFrom utils assignInNamespace
-tf_with_disable_graph <- function(expr) {
-  old_tf_function <- tensorflow::tf_function
-  assignInNamespace("tf_function", function(f, ...) f, ns = "tensorflow")
-  on.exit(assignInNamespace("tf_function", old_tf_function, ns = "tensorflow"))
-  eval.parent(expr)
-}
-
-#' @rdname tf_with_disable_graph
-#'
-#' @return `tf_is_graph_disabled` checks if graph compilation is currenty disabled
-#'
-#' @examples
-#' stopifnot(!tf_is_graph_disabled())
-#' stopifnot(tf_with_disable_graph(tf_is_graph_disabled()))
-#'
-#' @export
-tf_is_graph_disabled <- function() {
-  length(formals(tensorflow::tf_function)) != 4L
-}
-
 maybe_tf_function <- function(f) {
   if (inherits(f, "tensorflow.python.eager.def_function.Function")) {
     f

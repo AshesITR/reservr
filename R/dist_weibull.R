@@ -129,7 +129,7 @@ WeibullDistribution <- distribution_class_simple(
     scale <- tf$broadcast_to(args[["scale"]], qmin$shape)
 
     qmin0 <- qmin <= 0.0
-    qmin_safe <- tf$where(qmin0, 1.0, qmin / scale)
+    qmin_safe <- tf$where(qmin0, K$one, qmin / scale)
     qmax0 <- qmax > 0.0
     qmax_ok <- tf$math$is_finite(qmax) & qmax > 0.0
     qmax_safe <- tf$where(qmax_ok, qmax / scale, qmin_safe + 1.0)

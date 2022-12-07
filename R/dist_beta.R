@@ -51,10 +51,10 @@ BetaDistribution <- distribution_class_simple(
 
     xbad <- x < 0.0 | x > 1.0 | ncp != 0.0
     x0 <- x == 0.0
-    x_safe <- tf$where(x0 | xbad, 1.0, x)
+    x_safe <- tf$where(x0 | xbad, K$one, x)
     lterm <- tf$where(shape1 < 1.0, K$inf, tf$where(shape1 > 1.0, K$neg_inf, 0.0))
     x1 <- x == 1.0
-    xs_safe <- tf$where(x1 | xbad, 1.0, 1.0 - x)
+    xs_safe <- tf$where(x1 | xbad, K$one, 1.0 - x)
     rterm <- tf$where(shape2 < 1.0, K$inf, tf$where(shape2 > 1.0, K$neg_inf, 0.0))
 
     tf$where(
@@ -71,12 +71,12 @@ BetaDistribution <- distribution_class_simple(
     shape2 <- tf$broadcast_to(args[["shape2"]], qmin$shape)
     ncp <- tf$broadcast_to(args[["ncp"]], qmin$shape)
 
-    qmin_safe <- tf$where(qmin < 0.0, 0.0, tf$where(qmin > 1.0, 1.0, qmin))
-    qmax_safe <- tf$where(qmax < 0.0, 0.0, tf$where(qmax > 1.0, 1.0, qmax))
+    qmin_safe <- tf$where(qmin < 0.0, K$zero, tf$where(qmin > 1.0, K$one, qmin))
+    qmax_safe <- tf$where(qmax < 0.0, K$zero, tf$where(qmax > 1.0, K$one, qmax))
 
     nomass <- qmax <= 0.0 | qmin >= 1.0 | ncp != 0.0
     prob <- tf$math$betainc(shape1, shape2, qmax_safe) - tf$math$betainc(shape1, shape2, qmin_safe)
-    prob_safe <- tf$where(nomass, 1.0, prob)
+    prob_safe <- tf$where(nomass, K$one, prob)
 
     tf$where(nomass, K$neg_inf, log(prob_safe))
   }
