@@ -7,17 +7,18 @@ Authors@R:
            family = "Rosenstock",
            role = c("aut", "cre", "cph"),
            email = "alexander.rosenstock@web.de")
-Description: Tools for defining distribution families and fitting them to
+Description: Define distribution families and fit them to
     interval-censored and interval-truncated data, where the truncation
-    bounds may depend on the individual observation.  The defined
+    bounds may depend on the individual observation. The defined
     distributions feature density, probability, sampling and fitting
     methods as well as efficient implementations of the log-density log
-    f(x) and log-probability log P(x0 <= X <= x1) for use in TensorFlow
+    f(x) and log-probability log P(x0 <= X <= x1) for use in 'TensorFlow'
     neural networks via the 'tensorflow' package. Allows training
     parametric neural networks on interval-censored and interval-truncated
-    data with flexible parametrisation. Applications include Claims
+    data with flexible parameterization. Applications include Claims
     Development in Non-Life Insurance, e.g. modelling reporting delay
-    distributions from incomplete data.
+    distributions from incomplete data, see Bücher, Rosenstock (2022)
+    <doi:10.1007/s13385-022-00314-4>.
 License: GPL
 BugReports: https://github.com/AshesITR/reservr/issues
 Depends: 

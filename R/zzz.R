@@ -2,7 +2,7 @@
 #' @importFrom rlang is_string is_null is_integerish eval_tidy enquo
 #' is_installed is_scalar_double is_function is_bool is_scalar_integerish
 #' is_double check_installed %||%
-#' @importFrom utils head tail modifyList hasName
+#' @importFrom utils head tail modifyList hasName assignInMyNamespace
 #' @importFrom R6 R6Class
 #' @importFrom RcppParallel RcppParallelLibs
 #' @import stats
@@ -116,7 +116,7 @@ muffle_warning <- function(expr, text, .envir = parent.frame()) {
 # nocov start
 # covr can't get coverage information for .onLoad
 .onLoad <- function(libname, pkgname) {
-  K <<- Constants$new()
+  assignInMyNamespace("K", Constants$new())
 }
 # nocov end
 
