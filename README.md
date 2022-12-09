@@ -25,11 +25,10 @@ You can install the latest development version of reservr via
 devtools::install_github("AshesITR/reservr")
 ```
 
-<!-- You can install the released version of reservr from [CRAN](https://CRAN.R-project.org) with:
+You can install the released version of reservr from [CRAN](https://CRAN.R-project.org) with:
 ``` r
 install.packages("reservr")
 ```
---->
 
 If you want to use all of reservrs features, make sure to also install
 [tensorflow](https://tensorflow.rstudio.com/installation/).
