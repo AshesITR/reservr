@@ -14,17 +14,18 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Fit Distributions and Neural Networks to Censored and Truncated
     Data">
-<meta property="og:description" content="Tools for defining distribution families and fitting them to
+<meta property="og:description" content="Define distribution families and fit them to
     interval-censored and interval-truncated data, where the truncation
-    bounds may depend on the individual observation.  The defined
+    bounds may depend on the individual observation. The defined
     distributions feature density, probability, sampling and fitting
     methods as well as efficient implementations of the log-density log
     f(x) and log-probability log P(x0 &lt;= X &lt;= x1) for use in TensorFlow
     neural networks via the tensorflow package. Allows training
     parametric neural networks on interval-censored and interval-truncated
-    data with flexible parametrisation. Applications include Claims
+    data with flexible parameterization. Applications include Claims
     Development in Non-Life Insurance, e.g. modelling reporting delay
-    distributions from incomplete data.">
+    distributions from incomplete data, see Bücher, Rosenstock (2022)
+    &lt;doi:10.1007/s13385-022-00314-4&gt;.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -176,6 +177,7 @@ install.packages("reservr")
     <div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=reservr" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/AshesITR/reservr/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/AshesITR/reservr/issues" class="external-link">Report a bug</a></li>
 </ul>
