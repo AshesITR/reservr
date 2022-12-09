@@ -4,6 +4,7 @@
 <!-- badges: start -->
 [![Codecov test coverage](https://codecov.io/gh/AshesITR/reservr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/AshesITR/reservr?branch=master)
 [![R-CMD-check](https://github.com/AshesITR/reservr/workflows/R-CMD-check/badge.svg)](https://github.com/AshesITR/reservr/actions)
+[![CRAN status](https://www.r-pkg.org/badges/version/reservr)](https://CRAN.R-project.org/package=reservr)
 <!-- badges: end -->
 
 The goal of reservr is to provide a flexible interface for specifying distributions and fitting them to (randomly) 
