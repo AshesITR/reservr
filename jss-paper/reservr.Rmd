@@ -33,6 +33,7 @@ keywords:
   plain:     [distribution fitting, truncation, random truncation, censoring, R packages]
 preamble: >
   \usepackage{amsmath}
+  \usepackage{amssymb}
 output: rticles::jss_article
 ---
 
@@ -41,6 +42,110 @@ options(prompt = 'R> ', continue = '+ ')
 ```
 
 # Introduction
+
+This package is mainly concerned with estimating distribution parameters $\theta\in\Theta$ for a pre-specified distribution family $\mathcal{F}$ given a randomly truncated and possibly interval censored sample of observations.
+
+The random truncation problem can be formulated as follows: let $(X, L, U)$ denote a random vector, where $X$ is the variable of interest that is supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measure $\mu$.
+The pair $(L, U)$ is assumed to be independent of $X$ and shall satisfy $L \le U$, with $L$ possibly equal to $-\infty$ and $U$ possibly equal to $+\infty$.
+Further, $(L, U)$ shall have density $f_{(L, U)}$ with respect to some dominating sigma-finite measure $\nu$.
+A sample of _randomly truncated observations_ from $(X, L, U)$ consists of independent observations $(x_i, l_i, u_i)$ that we only happen to see if $l_i \le x_i \le u_i$.
+As a consequence, any observed value can be regarded as being drawn from the $(\mu \otimes \nu)$-density
+
+\begin{align}
+  f_{(X, L, U) | L \le X \le U}(x, l, u) = \frac{f_{(L, U)}(l, u) f_\theta(x)}{\mathrm{Pr}(L \le X \le U)} \mathbf{1}(l \le x \le u) \label{eq:trunc-dens}
+\end{align}
+
+Subsequently, we write $(X^{(t)}, L^{(t)}, U^{(t)})$ for a random vector following the above density, i.e.,
+
+\[
+  f_{(X^{(t)}, L^{(t)}, U^{(t)})}(x, l, u) = f_{(X, L, U) | L \le X \le U}(x, l, u)
+\]
+
+Estimating $\theta$ based on maximum likelihood requires specifying a distribution for $(L, U)$ (which can be regarded as a nuisance parameter) and calculating the denominator in \eqref{eq:trunc-dens}.
+This (major) nuisance can be avoided by instead considering conditional maximum likelihood, which is known to produce consistent estimators as well.
+In our case, we rely on considering the density of $X^{(t)}$ conditional on the value of $(L^{(t)}, U^{(t)}) = (l, u)$, which is given by
+
+\begin{align*}
+  f_{X^{(t)} | L^{(t)} = l, U^{(t)} = u}(x) & = \frac{f_{(X^{(t)}, L^{(t)}, U^{(t)})}(x, l, u)}{f_{(L^{(t)}, U^{(t)})}(l, u)} \\
+    & = \frac{f_{(X, L, U) | L \le X \le U}(x, l, u)}{\int_{[l, u]} f_{(X, L, U) | L \le X \le U}(z, l, u) \,\mathrm{d}z} = \frac{f_\theta(x)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z}
+\end{align*}
+
+Similarly, we can define a randomly truncated interval censored sample as follows: let $(X, M, V, L, U)$ denote a random vector, where $X$ is again supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measure $\mu$.
+The pairs $(M, V)$ and $(L, U)$ are assumed to be independent of $X$ and shall satisfy $M \le V$ and $L \le U$ with $M$ and $L$ possibly equal to $-\infty$, and with $V$ and $U$ possibly equal to $+\infty$.
+Further, $(M, V, L, U)$ shall have density $f_{(M, V, L, U)}$ with respect to some dominating sigma-finite measures $\nu$.
+A sample of _randomly truncated interval censored observations_ from $(X, M, V, L, U)$ consists of independent observations $(m_i, v_i, l_i, u_i)$ that we only happen to see if $l_i \le m_i \le x_i \le v_i \le u_i$.
+Note that $x_i$ is not part of the observation.
+First, looking at the extended observation $(X, M, V, L, U)$, we obtain a $(\mu \otimes \nu)$-density
+
+\begin{align}
+  f_{(X, M, V, L, U) | L \le M \le X \le V \le U}(x, m, v, l, u) & = \frac{f_\theta(x) f_{(M, V, L, U)}(m, v, l, u)}{\mathrm{Pr}(L \le M \le X \le V \le U)} \mathbf{1}(l \le m \le x \le v \le u) \label{eq:trunc-cens-dens}
+\end{align}
+
+We can again label this observation $(X^{(t)}, M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)})$ and conditon the likelihood on $L^{(t)} = l, U^{(t)} = u$ to obtain
+
+\begin{align*}
+  f_{(X^{(t)}, M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | L^{(t)} = l, U^{(t)} = u}(x, m, v, l, u) & = \frac{f_\theta(x)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z} \\
+  f_{(M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | L^{(t)} = l, U^{(t)} = u}(m, v, l, u) & = \int_{[m, v]} f_{(X^{(t)}, M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | L^{(t)} = l, U^{(t)} = u}(x, m, v, l, u) \,\mathrm{d}s \\
+  & = \frac{\int_{[m, v]} f_\theta(s) \,\mathrm{d}s}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z}
+\end{align*}
+
+We are not aware of any implementation supporting estimation of $\theta$ from randomly truncated interval censored data.
+
+A practical example of this arises in the presence of inaccurate accident date specifications when reporting claims in general insurance.
+The truncation bounds $(L, U)$ in this case will be equal to $(0, \tau - t_0)$ where $t_0$ is the actual accident time and $\tau$ is the calendar time.
+Censoring bounds could, for example, be $(M, V) = (t_1 - \lceil t_0 \rceil, t_1 - \lfloor t_0 \rfloor)$ representing an inaccurate observation of $t_0$ at reporting time $t_1$.
+Technically, $U$ is not (fully) observable in this situation, but can be approximated by $\tau - \lfloor t_0 \rfloor$.
+
+For later purposes, it is helpful to attach a weight $w_i$ to each observation $(m_i, v_i, l_i, u_i)$ (one might think of $w_i = 1$ for the moment).
+Denote the resulting sample by $\mathfrak{I} = \{(m_i, v_i, l_i, u_i, w_i) | l_i \le m_i \le v_i \le u_i\}$ where $m_i = v_i$ denotes a non-censored observation.
+We aim at maximizing
+
+\begin{align}
+  \ell(\theta | \mathfrak{I}) & = \sum_{(m, v, l, u) \in \mathfrak{I}} w \cdot \begin{cases}
+    \log f_\theta(m) - \log F_\theta ([l, u]) & m = v \\
+    \log F_\theta([m, v]) - \log F_\theta([l, u]) & m < v
+  \end{cases} \label{eq:cml-likelihood}
+\end{align}
+
+Such a sample $\mathfrak{I}$ is represented by the \proglang{R} code \code{reservr::trunc_obs()} where $(M, V)$ corresponds to \code{xmin}, \code{xmax} and $(L, U)$ corresponds to \code{tmin}, \code{tmax}.
+For practical purposes, the data structure also includes \code{x}, which is equal to \code{NA_real_} for interval censored observations ($M < V$) and equal to $M = V$ otherwise.
+
+# Methods of estimating $\theta$ {short-title="Methods of estimating theta" #methods-of-estimating-theta}
+
+Sometimes, the conditional likelihood in \eqref{eq:cml-likelihood} can be directly maximized, yielding an estimate for $\theta$.
+This is the default behavior in \pkg{reservr} if no specialized estimation routine for the provided family $\mathcal{F}_\theta$ is found.
+Depending on whether there are box constraints, nonlinear constraints or no constraints on the parameter space $\Theta$, different implementations of nonlinear optimization algorithms from \pkg{nloptr} are employed.
+
+In addition to the naive direct optimization approach, some families lend themselves to specialized estimation algorithms which usually show faster convergence due to making use of special structures in the parameter space $\Theta$.
+
+At the time of writing there are specialized algorithms for three types of families:
+
+1. Erlang mixtures
+2. Blended distributions
+3. General mixture distributions
+
+An erlang mixture family is defined by its number of components, $k$, by
+
+\[
+  \Theta = \mathbb{R}_+ \times \mathbb{N}^k \times [0, 1]_k,
+\]
+
+where $[0, 1]_k := \{ (p_i)_{i = 1}^{k} \in [0, 1]^k | \sum_{i = 1}^{k} p_i = 1 \}$ is a $k$-dimensional mixture parameter.
+And the density
+
+\[
+  f_\theta(x; \lambda, a_1, \ldots, a_k, p_1, \ldots, p_k) = \sum_{i = 1}^k p_i \mathrm{d}\Gamma(a_i, \lambda),
+\]
+where $\mathrm{d}\Gamma(a, \lambda)$ denotes the density of a Gamma distribution with shape $a$ and scale $\lambda$.
+
+Blended distributions were defined in (CITE Rosenstock 2022).
+They are, essentially, a smooth version of piecewise mixtures.
+
+General mixture distributions are defined by its number of components, $k$, the component families $\mathcal{F}_1, \ldots, \mathcal{F}_k$, and their parameter spaces $\Theta_1, \ldots, \Theta_k$ by
+\begin{align*}
+  \Theta = \bigotimes_{i = 1}^k \Theta_i \times [0, 1]_k \\
+  f_\theta(x; \theta_1, \ldots, \theta_k, p_1, \ldots, p_k) = \sum_{i = 1}^k p_i f_i(x; \theta_i)
+\end{align*}
 
 Paper Structure:
 
