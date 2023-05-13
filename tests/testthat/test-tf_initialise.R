@@ -10,6 +10,7 @@ test_that("test tf_initialize", {
   group <- sample(c(0, 1), size = N, replace = TRUE)
   x <- dist$sample(N, with_params = list(rate = group + 1))
   global_fit <- fit(dist, x)
+  expect_equal(global_fit$params$rate, 1.36503094795327, tolerance = 1.0e-7)
 
   l_in <- keras::layer_input(shape = 1L)
   mod <- tf_compile_model(
