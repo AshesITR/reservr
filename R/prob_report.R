@@ -66,9 +66,10 @@ prob_report <- function(dist, intervals, expo = NULL, with_params = list(),
     prob_int <- dist
     wp_matrix <- if (is.matrix(with_params)) with_params else flatten_params_matrix(with_params)
   } else if (.try_compile) {
+    col_order <- colnames(flatten_params_matrix(dist$get_placeholders()))
     prob_int <- tryCatch(dist$compile_probability_interval(), error = function(e) NULL)
     if (!is.null(prob_int)) {
-      wp_matrix <- flatten_params_matrix(with_params)
+      wp_matrix <- flatten_params_matrix(with_params)[, col_order]
     }
   } else {
     prob_int <- NULL
