@@ -35,9 +35,11 @@ preamble: >
   \usepackage{amsmath}
   \usepackage{amssymb}
 output: rticles::jss_article
+bibliography: bibliography.bib
 ---
 
 ```{r, setup, include=FALSE}
+library(reservr)
 options(prompt = 'R> ', continue = '+ ')
 ```
 
@@ -70,7 +72,7 @@ In our case, we rely on considering the density of $X^{(t)}$ conditional on the 
     & = \frac{f_{(X, L, U) | L \le X \le U}(x, l, u)}{\int_{[l, u]} f_{(X, L, U) | L \le X \le U}(z, l, u) \,\mathrm{d}z} = \frac{f_\theta(x)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z}
 \end{align*}
 
-Similarly, we can define a randomly truncated interval censored sample as follows: let $(X, M, V, L, U)$ denote a random vector, where $X$ is again supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measure $\mu$.
+Similarly, we can define a randomly truncated interval censored sample: let $(X, M, V, L, U)$ denote a random vector, where $X$ is again supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measure $\mu$.
 The pairs $(M, V)$ and $(L, U)$ are assumed to be independent of $X$ and shall satisfy $M \le V$ and $L \le U$ with $M$ and $L$ possibly equal to $-\infty$, and with $V$ and $U$ possibly equal to $+\infty$.
 Further, $(M, V, L, U)$ shall have density $f_{(M, V, L, U)}$ with respect to some dominating sigma-finite measures $\nu$.
 A sample of _randomly truncated interval censored observations_ from $(X, M, V, L, U)$ consists of independent observations $(m_i, v_i, l_i, u_i)$ that we only happen to see if $l_i \le m_i \le x_i \le v_i \le u_i$.
@@ -84,9 +86,9 @@ First, looking at the extended observation $(X, M, V, L, U)$, we obtain a $(\mu 
 We can again label this observation $(X^{(t)}, M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)})$ and conditon the likelihood on $L^{(t)} = l, U^{(t)} = u$ to obtain
 
 \begin{align*}
-  f_{(X^{(t)}, M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | L^{(t)} = l, U^{(t)} = u}(x, m, v, l, u) & = \frac{f_\theta(x)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z} \\
-  f_{(M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | L^{(t)} = l, U^{(t)} = u}(m, v, l, u) & = \int_{[m, v]} f_{(X^{(t)}, M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | L^{(t)} = l, U^{(t)} = u}(x, m, v, l, u) \,\mathrm{d}s \\
-  & = \frac{\int_{[m, v]} f_\theta(s) \,\mathrm{d}s}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z}
+  f_{(X^{(t)}, M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | L^{(t)} = l, U^{(t)} = u}(x, m, v, l, u) & = \frac{f_\theta(x)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z} \mathbf{1}(l \le m \le x \le v \le u)\\
+  f_{(M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | L^{(t)} = l, U^{(t)} = u}(m, v, l, u) & = \int_{[m, v]} f_{(X^{(t)}, M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | l, u}(s, m, v, l, u) \,\mathrm{d}s \\
+  & = \frac{\int_{[m, v]} f_\theta(s) \,\mathrm{d}s}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z} \mathbf{1}(l \le m \le v \le u)
 \end{align*}
 
 We are not aware of any implementation supporting estimation of $\theta$ from randomly truncated interval censored data.
@@ -97,7 +99,7 @@ Censoring bounds could, for example, be $(M, V) = (t_1 - \lceil t_0 \rceil, t_1 
 Technically, $U$ is not (fully) observable in this situation, but can be approximated by $\tau - \lfloor t_0 \rfloor$.
 
 For later purposes, it is helpful to attach a weight $w_i$ to each observation $(m_i, v_i, l_i, u_i)$ (one might think of $w_i = 1$ for the moment).
-Denote the resulting sample by $\mathfrak{I} = \{(m_i, v_i, l_i, u_i, w_i) | l_i \le m_i \le v_i \le u_i\}$ where $m_i = v_i$ denotes a non-censored observation.
+Denote the resulting sample by $\mathfrak{I} = \{(m_i, v_i, l_i, u_i, w_i)\}$ where the case $m_i = v_i$ denotes a non-censored observation and we have $l_i \le m_i \le v_i \le u_i$ for all observations.
 We aim at maximizing
 
 \begin{align}
@@ -107,8 +109,8 @@ We aim at maximizing
   \end{cases} \label{eq:cml-likelihood}
 \end{align}
 
-Such a sample $\mathfrak{I}$ is represented by the \proglang{R} code \code{reservr::trunc_obs()} where $(M, V)$ corresponds to \code{xmin}, \code{xmax} and $(L, U)$ corresponds to \code{tmin}, \code{tmax}.
-For practical purposes, the data structure also includes \code{x}, which is equal to \code{NA_real_} for interval censored observations ($M < V$) and equal to $M = V$ otherwise.
+Such a sample $\mathfrak{I}$ is constructed in \proglang{R} using the function `trunc_obs()` where $(M, V)$ corresponds to `xmin`, `xmax` and $(L, U)$ corresponds to `tmin`, `tmax`.
+For practical purposes, the data structure also includes `x`, which is equal to `NA_real_` for interval censored observations ($M < V$) and equal to $M = V$ otherwise.
 
 # Methods of estimating $\theta$ {short-title="Methods of estimating theta" #methods-of-estimating-theta}
 
@@ -120,9 +122,9 @@ In addition to the naive direct optimization approach, some families lend themse
 
 At the time of writing there are specialized algorithms for three types of families:
 
-1. Erlang mixtures
-2. Blended distributions
-3. General mixture distributions
+1. Erlang mixtures (GEM-CMM algorithm from \citet{Gui2018}, with a fixed number of components $M$)
+2. Blended distributions (Algorithm 2 in \citet{Rosenstock2022})
+3. General mixture distributions (Algorithm 1 in \citet{Rosenstock2022})
 
 An erlang mixture family is defined by its number of components, $k$, by
 
@@ -138,7 +140,7 @@ And the density
 \]
 where $\mathrm{d}\Gamma(a, \lambda)$ denotes the density of a Gamma distribution with shape $a$ and scale $\lambda$.
 
-Blended distributions were defined in (CITE Rosenstock 2022).
+Blended distributions were defined in \citet{Rosenstock2022}.
 They are, essentially, a smooth version of piecewise mixtures.
 
 General mixture distributions are defined by its number of components, $k$, the component families $\mathcal{F}_1, \ldots, \mathcal{F}_k$, and their parameter spaces $\Theta_1, \ldots, \Theta_k$ by
@@ -147,13 +149,376 @@ General mixture distributions are defined by its number of components, $k$, the 
   f_\theta(x; \theta_1, \ldots, \theta_k, p_1, \ldots, p_k) = \sum_{i = 1}^k p_i f_i(x; \theta_i)
 \end{align*}
 
-Paper Structure:
+# Related packages
 
-1. Basic background (+ example code, citations)
-2. Installing reservr
-3. Define random truncation
-4. `dist_*` architecture
-5. Overview of fitting procedures implemented
-6. Content from Distributions Vignette
-7. Content from TensorFlow Vignette
+For the less general cases of censoring without truncation and truncation without censoring, as well as for estimation of distribution parameters in the absence of any censoring or truncation mechanism, there are a number of \proglang{R} packages that can fit distributions, some of them also supporting weights.
+Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}, \pkg{evmix} \citep{evmix}, \pkg{ExtDist} \citep{ExtDist}, \pkg{flexsurv} \citep{flexsurv}.
+An R6-based interface with less functionality and fewer distributions is provided by \pkg{ROOPSD} \citep{ROOPSD}.
 
+# Usage
+
+This is a basic example which shows how to fit a normal distribution to randomly truncated and censored data.
+\pkg{reservr} features the `trunc_obs()` function to wrap a set of randomly truncated and censored data in a tibble (from package \pkg{tibble}).
+A tibble `trunc_obs()` consists of five columns:
+
+ * `x`: If observed, the exact value of the random variable. Otherwise `NA`.
+ * `xmin`: Lower interval censoring bound for the observation. If the observation is not censored, `xmin` is equal to `x`.
+ * `xmax`: Upper interval censoring bound for the observation. If the observation is not censored, `xmax` is equal to `x`.
+ * `tmin`: Lower truncation bound. Only observations with $x \ge t_{\text{min}}$ are observed. Can be $-\infty$ to indicate no lower truncation.
+ * `tmax`: Upper truncation bound. Only observations with $x \le t_{\text{max}}$ are obserbed. Can be $\infty$ to indicate no upper truncation.
+
+```{r}
+# Simulate a randomly truncated and censored dataset
+set.seed(123)
+mu <- 0
+sigma <- 1
+N <- 1000
+p_cens <- 0.8
+
+x <- rnorm(N, mean = mu, sd = sigma)
+is_censored <- rbinom(N, size = 1L, prob = p_cens) == 1L
+x_lower <- x
+x_lower[is_censored] <- x[is_censored] -
+  runif(sum(is_censored), min = 0, max = 0.5)
+x_upper <- x
+x_upper[is_censored] <- x[is_censored] +
+  runif(sum(is_censored), min = 0, max = 0.5)
+
+t_lower <- runif(N, min = -2, max = 0)
+t_upper <- runif(N, min = 0, max = 2)
+
+is_observed <- t_lower <= x & x <= t_upper
+
+obs <- trunc_obs(
+  xmin = pmax(x_lower, t_lower)[is_observed],
+  xmax = pmin(x_upper, t_upper)[is_observed],
+  tmin = t_lower[is_observed],
+  tmax = t_upper[is_observed]
+)
+
+# Summary of the simulation
+cat(sprintf(
+  "simulated samples: %d\nobserved samples: %d\ncensored samples: %d\n",
+  N, nrow(obs), sum(is.na(obs$x))
+))
+```
+
+\pkg{reservr} can be used to fit a normal distribution to the observations described in `obs` as follows.
+First, the distribution family to be fitted is constructed.
+It is possible to provide a-priori fixed values for some parameters as well, but we will not do this in this example.
+
+```{r}
+dist <- dist_normal()
+```
+
+Next, we can instruct \pkg{reservr} to estimate the parameters of `dist` from truncated observations `obs` using the `fit()` generic method.
+This generic automatically selects an estimation algorithm depending on the distribution family that is provided.
+In the case of a normal distribution, a generic \pkg{nloptr} based approach will be used.
+
+```{r}
+the_fit <- fit(dist, obs)
+str(the_fit)
+```
+
+The fit results contain the estimated parameters, the result object of the call to \pkg{nloptr}, and the value of the conditional log-likelihood attained at the estimated parameters.
+Using the function `plot_distributions()` we can also assess the quality of the fit.
+
+```{r}
+plot_distributions(
+  true = dist,
+  fitted = dist,
+  empirical = dist_empirical(0.5 * (obs$xmin + obs$xmax)),
+  .x = seq(-5, 5, length.out = 201),
+  plots = "density",
+  with_params = list(
+    true = list(mean = mu, sd = sigma),
+    fitted = the_fit$params
+  )
+)
+```
+
+## Working with Distributions
+
+Distributions are a set of classes available in \pkg{reservr} to specify distribution families of random variables.
+A Distribution inherits from the R6 Class `Distribution` and provides all functionality necessary for working with a
+specific family.
+
+A Distribution can be defined by calling one of the constructor functions, prefixed by `dist_` in the package.
+All constructors accept parameters of the family as arguments.
+If these arguments are specified, the corresponding parameter is considered _fixed_ in the sense that it need not be
+specified when computing something for the distribution and it will be assumed fixed when calling `fit()` on the
+distribution instance.
+
+### Sample
+
+For example, an unspecified normal distribution can be created by calling `dist_normal()` without arguments.
+This means the parameters `mean` and `sd` are considered _placeholders_.
+If we want to, e.g., sample from `norm`, we must specify these placeholders in the `with_params` argument:
+
+```{r}
+set.seed(1L)
+# Instantiate an unspecified normal distribution
+norm <- dist_normal()
+x <- norm$sample(n = 10L, with_params = list(mean = 3, sd = 1))
+
+set.seed(1L)
+norm2 <- dist_normal(sd = 1)
+x2 <- norm2$sample(n = 10L, with_params = list(mean = 3))
+
+# The same RVs are drawn because the distribution parameters
+# and the seed are the same.
+stopifnot(identical(x, x2))
+```
+
+### Density
+
+The `density()` function computes the density of the distribution with respect to its natural measure.
+Use `is_discrete_at()` to check if a point has discrete mass or lebesgue density.
+
+```{r}
+norm$density(x, with_params = list(mean = 3, sd = 1))
+dnorm(x, mean = 3, sd = 1)
+# Compute the log-density:
+norm$density(x, log = TRUE, with_params = list(mean = 3, sd = 1))
+norm$is_discrete_at(x, with_params = list(mean = 3, sd = 1))
+
+# A discrete distribution with mass only at point = x[1].
+dd <- dist_dirac(point = x[1])
+dd$density(x)
+dd$is_discrete_at(x)
+```
+
+`diff_density()` computes the gradient of the density with respect to each free parameter.
+Setting `log = TRUE` computes the gradient of the log-density, i.e., the gradient of $\log f(x, params)$ instead.
+
+```{r}
+norm$diff_density(x, with_params = list(mean = 3, sd = 1))
+```
+
+### Probability
+
+With `probability()`, the c.d.f., survival function, and their logarithms can be computed.
+For discrete distributions, `dist$probability(x, lower.tail = TRUE)` returns $P(X \le x)$ and
+`dist$probability(x, lower.tail = FALSE)` returns $P(X > x)$.
+
+```{r}
+norm$probability(x, with_params = list(mean = 3, sd = 1))
+pnorm(x, mean = 3, sd = 1)
+
+dd$probability(x)
+dd$probability(x, lower.tail = FALSE, log.p = TRUE)
+```
+
+Gradients of the (log-)c.d.f. or survival function with respect to parameters can be computed using
+`diff_probability()`.
+
+```{r}
+norm$diff_probability(x, with_params = list(mean = 3, sd = 1))
+```
+
+### Hazard
+
+The hazard rate is defined by $h(x, \theta) = f(x, \theta) / S(x, \theta)$, i.e., the ratio of the density to the
+survival function.
+
+```{r}
+norm$hazard(x, with_params = list(mean = 3, sd = 1))
+norm$hazard(x, log = TRUE, with_params = list(mean = 3, sd = 1))
+```
+
+### Fitting
+
+The `fit()` generic is defined for Distributions and will perform maximum likelihood estimation.
+It accepts a weighted, censored and truncated sample of class `trunc_obs`, but can automatically convert uncensored,
+untruncated observations without weight into the proper `trunc_obs` object.
+```{r}
+# Fit with mean, sd free
+fit1 <- fit(norm, x)
+# Fit with mean free
+fit2 <- fit(norm2, x)
+# Fit with sd free
+fit3 <- fit(dist_normal(mean = 3), x)
+
+# Fitted parameters
+fit1$params
+fit2$params
+fit3$params
+
+# log-Likelihoods can be computed on
+AIC(fit1$logLik)
+AIC(fit2$logLik)
+AIC(fit3$logLik)
+
+# Convergence checks
+fit1$opt$message
+fit2$opt$message
+fit3$opt$message
+```
+
+### Fitting censored data
+
+You can also fit interval-censored data.
+```{r}
+params <- list(mean = 30, sd = 10)
+x <- norm$sample(100L, with_params = params)
+xl <- floor(x)
+xr <- ceiling(x)
+
+cens_fit <- fit(norm, trunc_obs(xmin = xl, xmax = xr))
+print(cens_fit)
+```
+
+### Fitting truncated data
+
+It is possible to fit randomly truncated samples, i.e., samples where the truncation bound itself is also random and
+differs for each observed observation.
+```{r}
+params <- list(mean = 30, sd = 10)
+x <- norm$sample(100L, with_params = params)
+tl <- runif(length(x), min = 0, max = 20)
+tr <- runif(length(x), min = 0, max = 60) + tl
+
+# truncate_obs() also truncates observations.
+# if data is already truncated, use
+#   trunc_obs(x = ..., tmin = ..., tmax = ...)
+# instead.
+trunc_fit <- fit(norm, truncate_obs(x, tl, tr))
+print(trunc_fit)
+
+attr(trunc_fit$logLik, "nobs")
+```
+
+### Plotting
+
+Visualising different distributions, or parametrizations, e.g., fits, can be done with the function `plot_distributions()`.
+
+```{r}
+# Plot fitted densities
+plot_distributions(
+  true = norm,
+  fit1 = norm,
+  fit2 = norm2,
+  fit3 = dist_normal(3),
+  .x = seq(-2, 7, 0.01),
+  with_params = list(
+    true = list(mean = 3, sd = 1),
+    fit1 = fit1$params,
+    fit2 = fit2$params,
+    fit3 = fit3$params
+  ),
+  plots = "density"
+)
+
+# Plot fitted densities, c.d.f.s and hazard rates
+plot_distributions(
+  true = norm,
+  cens_fit = norm,
+  trunc_fit = norm,
+  .x = seq(0, 60, length.out = 101L),
+  with_params = list(
+    true = list(mean = 30, sd = 10),
+    cens_fit = cens_fit$params,
+    trunc_fit = trunc_fit$params
+  )
+)
+
+# More complex distributions
+plot_distributions(
+  bdegp = dist_bdegp(2, 3, 10, 3),
+  .x = c(seq(0, 12, length.out = 121), 1.5 - 1e-6),
+  with_params = list(
+    bdegp = list(
+      dists = list(
+        list(), list(), list(
+          dists = list(
+            list(
+              dist = list(
+                shapes = as.list(1:3),
+                scale = 2.0,
+                probs = list(0.2, 0.5, 0.3)
+              )
+            ),
+            list(
+              sigmau = 0.4,
+              xi = 0.2
+            )
+          ),
+          probs = list(0.7, 0.3)
+        )
+      ),
+      probs = list(0.15, 0.1, 0.75)
+    )
+  )
+)
+```
+
+## Working with \pkg{tensorflow} {short-title="Working with tensorflow" #working-with-tensorflow}
+
+\pkg{reservr} also provides integration with \pkg{tensorflow} \citep{tensorflow} to allow training arbitrary neural networks using the negative conditional likelihood as a loss.
+Resulting fits can be used to predict distribution parameters of the specified distribution given arbitrary input predictors.
+The core of this integration is `tf_compile_model()`, which returns a specialized `reservr_keras_model` object with `fit()` and `predict()` methods.
+
+```{r tensorflow-example}
+library(ggplot2)
+set.seed(1431L)
+tensorflow::set_random_seed(1432L)
+
+dataset <- tibble::tibble(
+  x = runif(100, min = 10, max = 20),
+  y = 2 * x + rnorm(100)
+)
+
+ggplot(dataset, aes(x = x, y = y)) +
+  geom_point()
+
+# Specify distributional assumption of OLS:
+dist <- dist_normal(sd = 1.0) # OLS assumption: homoskedasticity
+
+# Optional: Compute a global fit
+global_fit <- fit(dist, dataset$y)
+
+# Define a neural network
+nnet_input <- keras::layer_input(shape = 1L, name = "x_input")
+# in practice, this would be deeper
+nnet_output <- nnet_input
+
+optimizer <- keras::optimizer_adam(learning_rate = 0.1)
+
+nnet <- tf_compile_model(
+  inputs = list(nnet_input),
+  intermediate_output = nnet_output,
+  dist = dist,
+  optimizer = optimizer,
+  censoring = FALSE, # Turn off unnecessary features for this problem
+  truncation = FALSE
+)
+
+nnet_fit <- fit(
+  nnet,
+  x = dataset$x,
+  y = dataset$y,
+  epochs = 100L,
+  batch_size = 100L,
+  shuffle = FALSE
+)
+
+plot(nnet_fit)
+
+pred_params <- predict(nnet, data = list(keras::k_constant(dataset$x)))
+
+lm_fit <- lm(y ~ x, data = dataset)
+
+dataset$y_pred <- pred_params$mean
+dataset$y_lm <- predict(lm_fit, newdata = dataset, type = "response")
+
+ggplot(dataset, aes(x = x, y = y)) +
+  geom_point() +
+  geom_line(aes(y = y_pred), color = "blue") +
+  geom_line(aes(y = y_lm), linetype = 2L, color = "green")
+
+coef_nnet <- rev(as.numeric(nnet$model$get_weights()))
+coef_lm <- coef(lm_fit)
+
+print(coef_nnet)
+print(coef_lm)
+```
