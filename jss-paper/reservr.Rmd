@@ -460,7 +460,7 @@ plot_distributions(
 Resulting fits can be used to predict distribution parameters of the specified distribution given arbitrary input predictors.
 The core of this integration is `tf_compile_model()`, which returns a specialized `reservr_keras_model` object with `fit()` and `predict()` methods.
 
-```{r tensorflow-example}
+```{r tensorflow-example, eval = FALSE}
 library(ggplot2)
 set.seed(1431L)
 tensorflow::set_random_seed(1432L)
@@ -469,9 +469,6 @@ dataset <- tibble::tibble(
   x = runif(100, min = 10, max = 20),
   y = 2 * x + rnorm(100)
 )
-
-ggplot(dataset, aes(x = x, y = y)) +
-  geom_point()
 
 # Specify distributional assumption of OLS:
 dist <- dist_normal(sd = 1.0) # OLS assumption: homoskedasticity
@@ -523,4 +520,40 @@ coef_lm <- coef(lm_fit)
 
 print(coef_nnet)
 print(coef_lm)
+```
+
+## An actuarial application
+
+The package also contains the function `prob_report()`, designed to compute the expected proportion of claims that are reported to an insurer at some calendar time interval $[\tau_0, \tau_1]$ given they occurred during calendar time $[t_0, t_1]$.
+Some additional assumptions are necessary:
+
+1. Claims during $[t_0, t_1]$ occur according to a Poisson Point Process $\xi$ with intensity $\lambda(t)$.
+2. All occurred claims are independently marked with their reporting delay $D$, which is also independent of the occurrence time $T \in [t_0, t_1]$.
+
+Then
+\begin{align*}
+  \mathbb E(\xi(\{(t, d) : t \in [t_0, t_1], t + d \in [\tau_0, \tau_1]\})) & = \int_{t_0}^{t_1} \lambda(t) P(\tau_0 \le t + D \le \tau_1) \,\mathrm{d}t \\
+  & = \int_{t_0}^{t_1} \lambda(t) P_D([\tau_0 - t, \tau_1 - t]) \mathrm{d}t \\
+  \mathbb E(\xi(\{(t, d) : t \in [t_0, t_1]\})) & = \int_{t_0}^{t_1} \lambda(t) \mathrm{d}t \\
+  \mathtt{prob\_report}(t_0, t_1, \tau_0, \tau_1; \lambda) & = \frac{\int_{t_0}^{t_1} \lambda(t) P_D([\tau_0 - t, \tau_1 - t]) \mathrm{d}t}{\int_{t_0}^{t_1} \lambda(t) \mathrm{d}t},
+\end{align*}
+
+and for $\lambda \equiv \text{const}$, this further simplifies to
+$$
+  \mathtt{prob\_report}(t_0, t_1, \tau_0, \tau_1; \lambda) = \frac{1}{t_1 - t_0} \int_{t_0}^{t_1} P_D([\tau_0 - t, \tau_1 - t]) \mathrm{d}t.
+$$
+
+The \proglang{R} function `prob_report()` takes $(t_0, t_1, \tau_0, \tau_1)$ as a `trunc_obs` tibble with `xmin` and `xmax` taking the role of $t_0$ and $t_1$, and with `tmin` and `tmax` representing $\tau_0$ and $\tau_1$. $\lambda$ is passed as the argument `expo` which, if equal to `NULL`, assumes a homogeneous Poisson Point Process, i.e., $\lambda \equiv \text{const}$. For example, if $D \sim \mathrm{Exp}(r)$ and $\lambda(t) \equiv \text{const}$ is constant, the reporting probabilities for the first 5 development periods with $r = 1.0$ and $r = 0.5$ can be computed using the following \proglang{R} code.
+
+```{r}
+dist <- dist_exponential()
+ints <- data.frame(
+  xmin = 0,
+  xmax = 1,
+  tmin = rep(seq_len(5) - 1.0, times = 2L),
+  tmax = rep(seq_len(5), times = 2L)
+)
+params <- list(rate = rep(c(1, 0.5), each = 5))
+
+prob_report(dist, ints, with_params = params)
 ```
