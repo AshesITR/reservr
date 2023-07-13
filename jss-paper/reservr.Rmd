@@ -126,7 +126,7 @@ At the time of writing there are specialized algorithms for three types of famil
 2. Blended distributions (Algorithm 2 in \citet{Rosenstock2022})
 3. General mixture distributions (Algorithm 1 in \citet{Rosenstock2022})
 
-An erlang mixture family is defined by its number of components, $k$, by
+An erlang mixture family is defined by their number of components, $k$, by
 
 \[
   \Theta = \mathbb{R}_+ \times \mathbb{N}^k \times [0, 1]_k,
@@ -159,7 +159,7 @@ An R6-based interface with less functionality and fewer distributions is provide
 
 This is a basic example which shows how to fit a normal distribution to randomly truncated and censored data.
 \pkg{reservr} features the `trunc_obs()` function to wrap a set of randomly truncated and censored data in a tibble (from package \pkg{tibble}).
-A tibble `trunc_obs()` consists of five columns:
+A tibble created by `trunc_obs()` consists of five columns:
 
  * `x`: If observed, the exact value of the random variable. Otherwise `NA`.
  * `xmin`: Lower interval censoring bound for the observation. If the observation is not censored, `xmin` is equal to `x`.
@@ -328,9 +328,9 @@ norm$hazard(x, log = TRUE, with_params = list(mean = 3, sd = 1))
 
 ### Fitting
 
-The `fit()` generic is defined for Distributions and will perform maximum likelihood estimation.
-It accepts a weighted, censored and truncated sample of class `trunc_obs`, but can automatically convert uncensored,
-untruncated observations without weight into the proper `trunc_obs` object.
+The `fit()` generic is defined for Distributions and will perform conditional maximum likelihood estimation, or a ECME-type algorithm depending on the Distribution family.
+It accepts a weighted, censored and truncated sample of class `trunc_obs`, but can also accept uncensored,
+untruncated observations without weight in the for of a numeric vector.
 ```{r}
 # Fit with mean, sd free
 fit1 <- fit(norm, x)
@@ -357,7 +357,8 @@ fit3$opt$message
 
 ### Fitting censored data
 
-You can also fit interval-censored data.
+Estimation from censored data is done by constructing an appropriate `trunc_obs` object.
+
 ```{r}
 params <- list(mean = 30, sd = 10)
 x <- norm$sample(100L, with_params = params)
@@ -370,20 +371,21 @@ print(cens_fit)
 
 ### Fitting truncated data
 
-It is possible to fit randomly truncated samples, i.e., samples where the truncation bound itself is also random and
-differs for each observed observation.
+Similarly, randomly truncated data can be supplied.
+There is a helper function `truncate_obs()` to artificially truncate observations.
+
 ```{r}
 params <- list(mean = 30, sd = 10)
 x <- norm$sample(100L, with_params = params)
 tl <- runif(length(x), min = 0, max = 20)
 tr <- runif(length(x), min = 0, max = 60) + tl
 
-# truncate_obs() also truncates observations.
-# if data is already truncated, use
-#   trunc_obs(x = ..., tmin = ..., tmax = ...)
-# instead.
 trunc_fit <- fit(norm, truncate_obs(x, tl, tr))
 print(trunc_fit)
+
+x_keep <- tl <= x & x <= tr
+trunc_fit2 <- fit(norm, trunc_obs(x = x[x_keep], tmin = tl[x_keep], tmax = tr[x_keep]))
+stopifnot(identical(trunc_fit, trunc_fit2))
 
 attr(trunc_fit$logLik, "nobs")
 ```
