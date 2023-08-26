@@ -557,3 +557,59 @@ params <- list(rate = rep(c(1, 0.5), each = 5))
 
 prob_report(dist, ints, with_params = params)
 ```
+
+# Package architecture
+
+This section describes the software architecture of the package.
+Note that the most up-to-date documentation for \pkg{reservr} can be found at https://ashesitr.github.io/reservr/index.html.
+
+## Distribution
+
+Every distribution supported by reservr is represented by an R6 class, inheriting the S3 class `Distribution`.
+It provides member functions for relevant distribution functions such as densities and cumulative probabilities via the interface described in [Usage].
+Additionally, there are three S3 generics relevant to estimation of parameters for `Distribution`s:
+
+ * `fit_dist_start()` to obtain suitable starting values for distribution fits, based on a `trunc_obs` observation object.
+ * `fit_dist()` to perform estimation of _free_ parameters of the distribution.
+ * `fit()`, delegating to `fit_dist()`.
+
+A Distribution instance, created by the corresponding `dist_*()` function represents a family $\mathcal{F}$ of distributions.
+Parameters of the underlying distribution can be held fixed (removing a degree of freedom from the family), or kept as a _placeholder_.
+
+For example, `dist_normal()` represents the family of normal distributions with parameters $(\mu, \sigma) \in \mathbb{R} \times (0, \infty)$.
+`dist_normal(mean = 0.0)` represents the family of centered normal distributions with mean $0$ and parameter $\sigma \in (0, \infty)$.
+
+Distribution parameters are stored as named lists, with the sentinel value `NULL` representing a free parameter.
+The instance method `get_params()` returns a list of all parameters, both fixed and free, and `get_placeholders()` returns a list structure containing only the free parameters.
+
+```{r}
+dist <- dist_normal(mean = 0.0)
+str(dist$get_params())
+str(dist$get_placeholders())
+```
+
+The free parameters have associated domains, which can be queried using `get_param_bounds()`, which returns a list with the same structure as `get_placeholders()`, but with leaves not equal to `NULL` but instead the real or integer `Interval` bounds for the parameter.
+If there are additional constraints, such as for mixture distributions, where the probability weights parameters must add up to $1$, these constraints are available via `get_param_constraints()`.
+This function returns a constraint function which returns the value and the Jacobian of the constraints with respect to the parameters, and whose value must be zero for admissible parameters.
+
+```{r}
+str(dist$get_param_bounds())
+str(dist$get_param_constraints())
+
+# Mixture of two components
+mixd <- dist_mixture(
+  dists = list(
+    dist_normal(),
+    dist_normal()
+  )
+)
+str(mixd$get_placeholders())
+str(mixd$get_param_constraints())
+```
+
+The degrees of freedom of a family, defined as the dimension of the space of admissible parameters is used for returning information criteria of distribution fits and is returned by the instance method `get_dof()`.
+```{r}
+dist_normal()$get_dof()
+dist$get_dof()
+mixd$get_dof()
+```
