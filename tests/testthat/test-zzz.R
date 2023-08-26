@@ -1,11 +1,9 @@
-test_that("remove tensorflow detritus in tempdir", {
-  tmp <- tempdir()
-  if (dir.exists(file.path(tmp, "__pycache__"))) {
-    unlink(file.path(tmp, "__pycache__"), recursive = TRUE, force = TRUE)
-  }
-  tmp_py_files <- list.files(tmp, pattern = "^(tmp|__autograph_generated_file).*\\.py$", full.names = TRUE)
-  file.remove(tmp_py_files)
-})
+tmp <- tempdir()
+if (dir.exists(file.path(tmp, "__pycache__"))) {
+  unlink(file.path(tmp, "__pycache__"), recursive = TRUE, force = TRUE)
+}
+tmp_py_files <- list.files(tmp, pattern = "^(tmp|__autograph_generated_file).*\\.py$", full.names = TRUE)
+file.remove(tmp_py_files)
 
 test_that("test helpers", {
   expect_equal(NULL %||% 1, 1)

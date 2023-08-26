@@ -64,12 +64,16 @@ prob_report <- function(dist, intervals, expo = NULL, with_params = list(),
 
   if (inherits(dist, "compiled_distribution_function")) {
     prob_int <- dist
+    # FIXME This branch is unsafe
+    # if `flatten_params_matrix()` generates a different column order than what `prob_int()` expects, the parameters
+    # will be mixed up.
+    # A fix would need to attach the expected column order to `compiled_distribution_function` somehow.
     wp_matrix <- if (is.matrix(with_params)) with_params else flatten_params_matrix(with_params)
   } else if (.try_compile) {
     col_order <- colnames(flatten_params_matrix(dist$get_placeholders()))
     prob_int <- tryCatch(dist$compile_probability_interval(), error = function(e) NULL)
     if (!is.null(prob_int)) {
-      wp_matrix <- flatten_params_matrix(with_params)[, col_order]
+      wp_matrix <- flatten_params_matrix(with_params)[, col_order, drop = FALSE]
     }
   } else {
     prob_int <- NULL
