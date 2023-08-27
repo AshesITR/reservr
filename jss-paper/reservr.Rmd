@@ -153,7 +153,7 @@ General mixture distributions are defined by its number of components, $k$, the 
 
 For the less general cases of censoring without truncation and truncation without censoring, as well as for estimation of distribution parameters in the absence of any censoring or truncation mechanism, there are a number of \proglang{R} packages that can fit distributions, some of them also supporting weights.
 Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}, \pkg{evmix} \citep{evmix}, \pkg{ExtDist} \citep{ExtDist}, \pkg{flexsurv} \citep{flexsurv}.
-An R6-based interface with less functionality and fewer distributions is provided by \pkg{ROOPSD} \citep{ROOPSD}.
+Another R6-based interface is provided by \pkg{ROOPSD} \citep{ROOPSD}.
 
 # Usage
 
@@ -330,7 +330,7 @@ norm$hazard(x, log = TRUE, with_params = list(mean = 3, sd = 1))
 
 The `fit()` generic is defined for Distributions and will perform conditional maximum likelihood estimation, or a ECME-type algorithm depending on the Distribution family.
 It accepts a weighted, censored and truncated sample of class `trunc_obs`, but can also accept uncensored,
-untruncated observations without weight in the for of a numeric vector.
+untruncated observations without weight in the form of a numeric vector.
 ```{r}
 # Fit with mean, sd free
 fit1 <- fit(norm, x)
@@ -340,9 +340,9 @@ fit2 <- fit(norm2, x)
 fit3 <- fit(dist_normal(mean = 3), x)
 
 # Fitted parameters
-fit1$params
-fit2$params
-fit3$params
+str(fit1$params)
+str(fit2$params)
+str(fit3$params)
 
 # log-Likelihoods can be computed on
 AIC(fit1$logLik)
@@ -366,7 +366,7 @@ xl <- floor(x)
 xr <- ceiling(x)
 
 cens_fit <- fit(norm, trunc_obs(xmin = xl, xmax = xr))
-print(cens_fit)
+str(cens_fit)
 ```
 
 ### Fitting truncated data
@@ -381,7 +381,7 @@ tl <- runif(length(x), min = 0, max = 20)
 tr <- runif(length(x), min = 0, max = 60) + tl
 
 trunc_fit <- fit(norm, truncate_obs(x, tl, tr))
-print(trunc_fit)
+str(trunc_fit)
 
 x_keep <- tl <= x & x <= tr
 trunc_fit2 <- fit(norm, trunc_obs(x = x[x_keep], tmin = tl[x_keep], tmax = tr[x_keep]))
@@ -518,8 +518,8 @@ ggplot(dataset, aes(x = x, y = y)) +
 coef_nnet <- rev(as.numeric(nnet$model$get_weights()))
 coef_lm <- coef(lm_fit)
 
-print(coef_nnet)
-print(coef_lm)
+str(coef_nnet)
+str(coef_lm)
 ```
 
 ## An actuarial application
@@ -561,17 +561,86 @@ prob_report(dist, ints, with_params = params)
 # Package architecture
 
 This section describes the software architecture of the package.
+A more task-focused introduction to the interface is provided in [Usage].
 Note that the most up-to-date documentation for \pkg{reservr} can be found at https://ashesitr.github.io/reservr/index.html.
 
-## Distribution
+## Basic distribution functions
 
-Every distribution supported by reservr is represented by an R6 class, inheriting the S3 class `Distribution`.
-It provides member functions for relevant distribution functions such as densities and cumulative probabilities via the interface described in [Usage].
+The basic distribution functions (density, probability, hazard, quantile, sample) are provided by each distribution with signatures.
+In general, the argument `with_params` can be used to both specify missing parameters (placeholders) and to override fixed distribution parameters.
+If the provided parameters are vectors of length greater than 1, they must conform to the input dimension (e.g. `x` for `density`).
+In this case, the parameters are "vectorized" in the sense that the $i$th output element will be computed using the $i$th entry from the parameter list.
+
+ * `density(x, log = FALSE, with_params = list())` compute (log-)density.
+ * `probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list()` compute (log-)cumulative density or (log-)survival.
+ * `hazard(x, log = FALSE. with_params = list())` compute (log-)hazard.
+ * `quantile(p, lower.tail = TRUE, log.p = FALSE, with_params = list())` compute upper or lower quantiles.
+ * `sample(n, with_params = list())` generate a random sample (`with_params` can contain length `n` vectors in this case).
+
+## Additional functions
+
+In addition to the basic functions, there are several supporting functions useful for faster or more accurate estimation of parameters.
+These functions are not necessarily implemented for all distribution classes, but will be automatically used by, e.g., `fit_dist()` if useful.
+
+ * `export_functions(name, with_params = list())` exports `{d,p,q,r}<name>` functions adhering to the common R convention for distribution functions.
+ * `get_type()` returns one of `"continuous"`, `"discrete"`, or `"mixed"` depending on whether the distribution has a density with respect to the Lebesgue measure, the counting measure, or their sum.
+ * `is_continuous()` and `is_discrete()` testing for the particular type.
+ * `has_capability(caps)` gives information on whether a specific implementation provides some or all of the features described.
+   Possible capabilities are `"sample"`, `"density"`, `"probability"`, `"quantile"`, `"diff_density"`, `"diff_probability"`, `"tf_logdensity"`, `"tf_logprobability"`.
+ * `require_capability(caps)` errors if the specified capabilities are not implemented for the distribution at hand.
+ * `is_discrete_at(x, with_params = list())` returns a logical vector indicating whether the distribution has a point mass at `x`.
+ * `is_in_support(x, with_params = list())` returns a logical vector indicating whether the distribution has any mass at `x`.
+
+## Performance enhancements
+
+When working with larger data or many calls to distribution functions, such as when performing a fit, it can be beneficial to just-in-time compile specialized functions that avoid overhead for dealing with the generic structure of distributions and their parametrization.
+Distributions offer a set of "compiler" functions that return simplified, faster, versions of the basic distribution functions, or that avoid having to numerically compute gradients where possible.
+
+ * `compile_density()` compiles a fast function with signature `(x, param_matrix, log = FALSE)` that will compute the density with fixed parameters hard-coded and taking the free parameters as a matrix with defined layout instead of a nested list.
+ * `compile_probability()` compiles a fast replacement for `probability` with signature `(q, param_matrix, lower.tail = TRUE, log.p = FALSE)`.
+ * `compile_probability_interval()` compiles a fast function with signature `(qmin, qmax, param_matrix, log.p = FALSE)` computing $P(X \in [\mathtt{qmin}, \mathtt{qmax}])$ or its logarithm efficiently. This expression is necessary for computing truncation probabilities.
+ * `compile_sample()` compiles a fast replacement for `sample` with signature `(n, param_matrix)`.
+ * `diff_density(x, log = FALSE, with_params = list())` computes the (log-)gradients of the density function with respect to free distribution parameters, useful for maximum likelihood optimization.
+ * `diff_probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list())` computes the (log-)gradients of the cumulative density function with respect to free distribution parameters
+
+## \pkg{tensorflow} integration {short-title="tensorflow integration" #tensorflow-integration}
+
+Use of distributions from within \pkg{tensorflow} networks requires specialized implementations using the \pkg{tensorflow} APIs instead of regular \proglang{R} functions.
+These are tailored to the needs of maximizing (conditional) likelihoods of weighted, censored and randomly truncated data.
+
+ * `tf_compile_params(input, name_prefix = "")` creates \pkg{keras} layers that take an `input` layer and transform it into a valid parametrization of the distribution.
+ * `tf_is_discrete_at()` returns a \pkg{tensorflow}-ready version of `is_discrete_at()`.
+ * `tf_logdensity()` returns a \pkg{tensorflow}-ready version of  `compile_density()` with implied `log = TRUE`.
+ * `tf_logprobability()` returns a \pkg{tensorflow}-ready version pf `compile_probability_interval()` with implied `log.p = TRUE`.
+ * `tf_make_constants()` creates a list of constant tensors for all fixed distribution parameters.
+
+## Fitting
+
+Every distribution supported by reservr is represented by an R6 class, inheriting from the R6 class `Distribution`.
 Additionally, there are three S3 generics relevant to estimation of parameters for `Distribution`s:
 
  * `fit_dist_start()` to obtain suitable starting values for distribution fits, based on a `trunc_obs` observation object.
  * `fit_dist()` to perform estimation of _free_ parameters of the distribution.
  * `fit()`, delegating to `fit_dist()`.
+
+The result of `fit_dist_start(dist, obs)` is a list of starting values compatible with `dist$get_placeholders()`.
+Instead of passing a `trunc_obs` object to derive starting values from, a numeric vector of observations can also be used.
+
+```{r}
+dist <- dist_normal(sd = 1.0)
+x <- dist$sample(100L, with_params = list(mean = 3.0))
+str(fit_dist_start(dist, x))
+```
+
+A `fit_dist(dist, obs)` result is a list with elements
+
+ * `params`: The final estimated parameters, compatible with `dist$get_placeholders()`.
+ * `opt` (optional): The return value from `nloptr` if conditional ML was used to estimate the parameters.
+ * `iter` (optional): The number of EM-Iterations performed if an EM-type algorithm was used to estimate the parameters.
+ * `params_hist` (optional): The history of inner EM parameter estimates (only if fit with `trace = TRUE`).
+ * `logLik`: An object of class 'logLik' containing the final log-likelihood and with `df` equal to `dist$get_dof()`.
+
+## Parameters
 
 A Distribution instance, created by the corresponding `dist_*()` function represents a family $\mathcal{F}$ of distributions.
 Parameters of the underlying distribution can be held fixed (removing a degree of freedom from the family), or kept as a _placeholder_.
@@ -581,16 +650,19 @@ For example, `dist_normal()` represents the family of normal distributions with 
 
 Distribution parameters are stored as named lists, with the sentinel value `NULL` representing a free parameter.
 The instance method `get_params()` returns a list of all parameters, both fixed and free, and `get_placeholders()` returns a list structure containing only the free parameters.
+`default_params` is an active binding with the same structure as `get_params()` but the possibility for overwriting values.
 
 ```{r}
 dist <- dist_normal(mean = 0.0)
 str(dist$get_params())
+str(dist$default_params)
 str(dist$get_placeholders())
 ```
 
 The free parameters have associated domains, which can be queried using `get_param_bounds()`, which returns a list with the same structure as `get_placeholders()`, but with leaves not equal to `NULL` but instead the real or integer `Interval` bounds for the parameter.
 If there are additional constraints, such as for mixture distributions, where the probability weights parameters must add up to $1$, these constraints are available via `get_param_constraints()`.
 This function returns a constraint function which returns the value and the Jacobian of the constraints with respect to the parameters, and whose value must be zero for admissible parameters.
+All distributions also provide a `get_components()` function returning a list of component distributions (or an empty list).
 
 ```{r}
 str(dist$get_param_bounds())
@@ -599,17 +671,20 @@ str(dist$get_param_constraints())
 # Mixture of two components
 mixd <- dist_mixture(
   dists = list(
-    dist_normal(),
-    dist_normal()
+    dist_normal(mean = 0.0),
+    dist_normal(sd = 1.0)
   )
 )
 str(mixd$get_placeholders())
 str(mixd$get_param_constraints())
+str(mixd$get_components())
 ```
 
 The degrees of freedom of a family, defined as the dimension of the space of admissible parameters is used for returning information criteria of distribution fits and is returned by the instance method `get_dof()`.
 ```{r}
-dist_normal()$get_dof()
-dist$get_dof()
-mixd$get_dof()
+c(
+  dist_normal()$get_dof(),
+  dist$get_dof(),
+  mixd$get_dof()
+)
 ```
