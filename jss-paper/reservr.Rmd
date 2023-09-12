@@ -130,11 +130,80 @@ A conclusion is given in Section&nbsp;\ref{conclusion}.
 
 # Usage of \pkg{reservr} {short-title="Usage of reservr" #pkg-overview}
 
-TODO overall package structure
+The package serves two main goals: fitting distributions to randomly truncated interval censored data and performing (deep) distribution regression with randomly truncated interval censored data.
+Four main components are integrated with each other to facilitate the analysis goals
+
+1. Methods for defining a randomly truncated interval censored sample $\mathfrak{I}$.
+2. Methods for specifying distribution families $\mathcal{F}$ to be fitted.
+3. Methods for estimating distribution parameters given a sample $\mathfrak{I}$ and a family $\mathcal{F}_\theta$.
+4. Methods for regression of distribution parameters given a sample $\mathfrak{I}$ with associated covariates $X$, a family $\mathcal{F}_\theta$ and a general \pkg{tensorflow} network $g$ that processes $X$ to estimate $Y | X = F_{g(x)}$.
+
+Each of these components is described one by one in the following sections.
 
 ## Working with samples {#trunc-obs}
 
-TODO describe `trunc_obs()` and friends
+A sample $\mathfrak{I} = \{(m, v, l, u, w)_i\}$ is represented as a tibble (from package \pkg{tibble}).
+The core function to create this tibble is `trunc_obs()`.
+A tibble created by `trunc_obs()` consists of five columns:
+
+ * `x`: If observed, the exact value of the random variable. Otherwise `NA`.
+ * `xmin`: Lower interval censoring bound for the observation. If the observation is not censored, `xmin` is equal to `x`.
+ * `xmax`: Upper interval censoring bound for the observation. If the observation is not censored, `xmax` is equal to `x`.
+ * `tmin`: Lower truncation bound. Only observations with $x \ge t_{\text{min}}$ are observed. Can be $-\infty$ to indicate no lower truncation.
+ * `tmax`: Upper truncation bound. Only observations with $x \le t_{\text{max}}$ are obserbed. Can be $\infty$ to indicate no upper truncation.
+ * `w`: The weight associated with the observation. Defaults to $1$.
+
+The following code defines a sample of size 1 without truncation and censoring, with the realized value of $1.3$.
+
+```{r}
+trunc_obs(1.3)
+```
+
+Simulating randomly truncated and interval censored data from a standard normal distribution with $80\%$ of the observations randomly interval censored and random uniform truncation $L \sim U[-2, 0]$ and $U \sim U[0, 2]$ can be simulated as follows
+
+```{r}
+set.seed(123)
+N <- 1000L
+x <- rnorm(N)
+is_censored <- rbinom(N, size = 1L, prob = 0.8) == 1L
+x_lower <- x
+x_lower[is_censored] <- x[is_censored] -
+  runif(sum(is_censored), min = 0, max = 0.5)
+x_upper <- x
+x_upper[is_censored] <- x[is_censored] +
+  runif(sum(is_censored), min = 0, max = 0.5)
+
+t_lower <- runif(N, min = -2, max = 0)
+t_upper <- runif(N, min = 0, max = 2)
+
+is_observed <- t_lower <= x & x <= t_upper
+
+obs <- trunc_obs(
+  xmin = pmax(x_lower, t_lower)[is_observed],
+  xmax = pmin(x_upper, t_upper)[is_observed],
+  tmin = t_lower[is_observed],
+  tmax = t_upper[is_observed]
+)
+```
+
+Observations look like:
+
+```{r}
+obs[8L:12L, ]
+```
+
+The total number of observations is smaller than the base population of $1000$ due to truncation:
+```{r}
+nrow(obs)
+```
+
+The total number of censored observations is roughly $0.8 \cdot \mathtt{nrow(obs)}$.
+```{r}
+sum(is.na(obs$x))
+```
+
+In addition to the `trunc_obs()` constructor function, there are `as_trunc_obs()` for coercion, `truncate_obs()` for artifically changing truncation bounds, and `repdel_obs()` for computing randomly truncated reporting delay observations from general insurance claims data containing accident date, reporting delay and evaluation date information.
+The latter takes inputs of the form $(T_\text{acc}, D, \tau)$ and returns the sample $(\mathtt{xmin} = \mathtt{xmax} = D, \mathtt{tmin} = 0, \mathtt{tmax} = \tau - T_{\text{acc}}, \mathtt{w} = 1)$ suitable for estimating the reporting delay distribution where a claim is only observed if it has been reported by the evaluation date, i.e., $T_{\text{acc}} + D \le \tau$.
 
 ## Definition of distribution families {#distributions}
 
@@ -190,50 +259,6 @@ TODO describe ECME-Algorithms
 # Usage
 
 This is a basic example which shows how to fit a normal distribution to randomly truncated and censored data.
-\pkg{reservr} features the `trunc_obs()` function to wrap a set of randomly truncated and censored data in a tibble (from package \pkg{tibble}).
-A tibble created by `trunc_obs()` consists of five columns:
-
- * `x`: If observed, the exact value of the random variable. Otherwise `NA`.
- * `xmin`: Lower interval censoring bound for the observation. If the observation is not censored, `xmin` is equal to `x`.
- * `xmax`: Upper interval censoring bound for the observation. If the observation is not censored, `xmax` is equal to `x`.
- * `tmin`: Lower truncation bound. Only observations with $x \ge t_{\text{min}}$ are observed. Can be $-\infty$ to indicate no lower truncation.
- * `tmax`: Upper truncation bound. Only observations with $x \le t_{\text{max}}$ are obserbed. Can be $\infty$ to indicate no upper truncation.
-
-```{r}
-# Simulate a randomly truncated and censored dataset
-set.seed(123)
-mu <- 0
-sigma <- 1
-N <- 1000
-p_cens <- 0.8
-
-x <- rnorm(N, mean = mu, sd = sigma)
-is_censored <- rbinom(N, size = 1L, prob = p_cens) == 1L
-x_lower <- x
-x_lower[is_censored] <- x[is_censored] -
-  runif(sum(is_censored), min = 0, max = 0.5)
-x_upper <- x
-x_upper[is_censored] <- x[is_censored] +
-  runif(sum(is_censored), min = 0, max = 0.5)
-
-t_lower <- runif(N, min = -2, max = 0)
-t_upper <- runif(N, min = 0, max = 2)
-
-is_observed <- t_lower <= x & x <= t_upper
-
-obs <- trunc_obs(
-  xmin = pmax(x_lower, t_lower)[is_observed],
-  xmax = pmin(x_upper, t_upper)[is_observed],
-  tmin = t_lower[is_observed],
-  tmax = t_upper[is_observed]
-)
-
-# Summary of the simulation
-cat(sprintf(
-  "simulated samples: %d\nobserved samples: %d\ncensored samples: %d\n",
-  N, nrow(obs), sum(is.na(obs$x))
-))
-```
 
 \pkg{reservr} can be used to fit a normal distribution to the observations described in `obs` as follows.
 First, the distribution family to be fitted is constructed.
@@ -263,7 +288,7 @@ plot_distributions(
   .x = seq(-5, 5, length.out = 201),
   plots = "density",
   with_params = list(
-    true = list(mean = mu, sd = sigma),
+    true = list(mean = 0.0, sd = 1.0),
     fitted = the_fit$params
   )
 )
