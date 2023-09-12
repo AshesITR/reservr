@@ -45,55 +45,64 @@ options(prompt = 'R> ', continue = '+ ')
 
 # Introduction
 
-This package is mainly concerned with estimating distribution parameters $\theta\in\Theta$ for a pre-specified distribution family $\mathcal{F}$ given a randomly truncated and possibly interval censored sample of observations.
+Most statistical analyses are concerned with modelling and estimation of the distribution of some measured variable of interest, the outcome, possibly conditional on the value of one or several endogenous variables.
+In the absence of endogenous variables, this process is usually called distribution fitting, and in the presence of endogenous variables it is called regression.
+Classical regression, such as via generalized linear models, is usually concerned with the influence of endogenous variables on the mean of the outcome, i.e., $\mathbb{E}(Y|X) = f(X)$ for some random variable $Y$ and vector of associated endogenous variables $X$ paired with a homoskedascity assumption linking the other parameters of the outcome distribution to its mean.
+Some models also allow specification of additional parameters of the distribution of the outcome variable, such as GAMLSS, which also allows for the scale parameter to depend on endogeneous variables.
+More recently, deep distribution regression allows for flexible specification of individual outcome distribution parameters.
+An example implementation of the latter can be found in \citet{deepregression}.
 
-The random truncation problem can be formulated as follows: let $(X, L, U)$ denote a random vector, where $X$ is the variable of interest that is supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measure $\mu$.
-The pair $(L, U)$ is assumed to be independent of $X$ and shall satisfy $L \le U$, with $L$ possibly equal to $-\infty$ and $U$ possibly equal to $+\infty$.
+Usual statistical methods require complete data, that is full information on all observations of interest (X, Y).
+In addition to this usual scenario we study two observation schemes that do not provide all observations.
+Data with _interval censoring_ applied to the outcome $Y$ only consists of lower and upper bounds for $Y$ instead of the actual value.
+Truncated data misses observations for which the outcome $Y$ falls out of a certain lower and upper truncation bound.
+We consider the case of _random truncation_, where these truncation bounds are also random variables that vary for each observation.
+
+[//]: # (TODO continue here)
+
+Interval censored observations can be described as follows: let $(Y, M, V)$ denote a random vector, where $Y$ is the variable of interest that is supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measuer $\mu$.
+The pair $(M, V)$ shall satisfy $M \le Y \le V$, with $M$ possibly equal to $-\infty$ and $V$ possibly equal to $+\infty$.
+Further, assume $Y$ to be conditionally independent of $(M, V)$ given $M \le Y \le V$ and $(M, V)$ to have density $f_{(M, V)}$ with respect to some dominating sigma-finite measure $\nu$.
+A complete sample $(Y, M, V)$ is therefore drawn from the $(\mu \otimes \nu)$-density
+
+\begin{align}
+  f_{(Y, M, V) | M \le Y \le V}(y, m, v) & = f_{Y | M \le Y \le V}(y) f_{(M, V) | M \le Y \le V}(m, v) \nonumber\\
+& = \frac{f_\theta(y)}{\mathrm{Pr}(M \le Y \le V)} f_{(M, V) | M \le Y \le V}(m, v) \mathbf{1}(m \le y \le v)
+\end{align}
+
+
+The random truncation problem can be formulated as follows: let $(Y, L, U)$ denote a random vector, where $Y$ is the variable of interest that is supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measure $\mu$.
+The pair $(L, U)$ is assumed to be independent of $Y$ and shall satisfy $L \le U$, with $L$ possibly equal to $-\infty$ and $U$ possibly equal to $+\infty$.
 Further, $(L, U)$ shall have density $f_{(L, U)}$ with respect to some dominating sigma-finite measure $\nu$.
-A sample of _randomly truncated observations_ from $(X, L, U)$ consists of independent observations $(x_i, l_i, u_i)$ that we only happen to see if $l_i \le x_i \le u_i$.
+A sample of _randomly truncated observations_ from $(Y, L, U)$ consists of independent observations $(y_i, l_i, u_i)$ that we only happen to see if $l_i \le y_i \le u_i$.
 As a consequence, any observed value can be regarded as being drawn from the $(\mu \otimes \nu)$-density
 
 \begin{align}
-  f_{(X, L, U) | L \le X \le U}(x, l, u) = \frac{f_{(L, U)}(l, u) f_\theta(x)}{\mathrm{Pr}(L \le X \le U)} \mathbf{1}(l \le x \le u) \label{eq:trunc-dens}
+  f_{(Y, L, U) | L \le Y \le U}(y, l, u) = \frac{f_{(L, U)}(l, u) f_\theta(y)}{\mathrm{Pr}(L \le Y \le U)} \mathbf{1}(l \le y \le u) \label{eq:trunc-dens}
 \end{align}
 
-Subsequently, we write $(X^{(t)}, L^{(t)}, U^{(t)})$ for a random vector following the above density, i.e.,
+Subsequently, we write $(Y^{(t)}, L^{(t)}, U^{(t)})$ for a random vector following the above density, i.e.,
 
 \[
-  f_{(X^{(t)}, L^{(t)}, U^{(t)})}(x, l, u) = f_{(X, L, U) | L \le X \le U}(x, l, u)
+  f_{(Y^{(t)}, L^{(t)}, U^{(t)})}(y, l, u) = f_{(Y, L, U) | L \le Y \le U}(y, l, u)
 \]
 
 Estimating $\theta$ based on maximum likelihood requires specifying a distribution for $(L, U)$ (which can be regarded as a nuisance parameter) and calculating the denominator in \eqref{eq:trunc-dens}.
 This (major) nuisance can be avoided by instead considering conditional maximum likelihood, which is known to produce consistent estimators as well.
-In our case, we rely on considering the density of $X^{(t)}$ conditional on the value of $(L^{(t)}, U^{(t)}) = (l, u)$, which is given by
+In our case, we rely on considering the density of $Y^{(t)}$ conditional on the value of $(L^{(t)}, U^{(t)}) = (l, u)$, which is given by
 
 \begin{align*}
-  f_{X^{(t)} | L^{(t)} = l, U^{(t)} = u}(x) & = \frac{f_{(X^{(t)}, L^{(t)}, U^{(t)})}(x, l, u)}{f_{(L^{(t)}, U^{(t)})}(l, u)} \\
-    & = \frac{f_{(X, L, U) | L \le X \le U}(x, l, u)}{\int_{[l, u]} f_{(X, L, U) | L \le X \le U}(z, l, u) \,\mathrm{d}z} = \frac{f_\theta(x)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z}
+  f_{Y^{(t)} | L^{(t)} = l, U^{(t)} = u}(y) & = \frac{f_{(Y^{(t)}, L^{(t)}, U^{(t)})}(y, l, u)}{f_{(L^{(t)}, U^{(t)})}(l, u)} \\
+    & = \frac{f_{(Y, L, U) | L \le Y \le U}(y, l, u)}{\int_{[l, u]} f_{(Y, L, U) | L \le Y \le U}(z, l, u) \,\mathrm{d}z} = \frac{f_\theta(y)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z}
 \end{align*}
 
-Similarly, we can define a randomly truncated interval censored sample: let $(X, M, V, L, U)$ denote a random vector, where $X$ is again supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measure $\mu$.
-The pairs $(M, V)$ and $(L, U)$ are assumed to be independent of $X$ and shall satisfy $M \le V$ and $L \le U$ with $M$ and $L$ possibly equal to $-\infty$, and with $V$ and $U$ possibly equal to $+\infty$.
-Further, $(M, V, L, U)$ shall have density $f_{(M, V, L, U)}$ with respect to some dominating sigma-finite measures $\nu$.
-A sample of _randomly truncated interval censored observations_ from $(X, M, V, L, U)$ consists of independent observations $(m_i, v_i, l_i, u_i)$ that we only happen to see if $l_i \le m_i \le x_i \le v_i \le u_i$.
-Note that $x_i$ is not part of the observation.
-First, looking at the extended observation $(X, M, V, L, U)$, we obtain a $(\mu \otimes \nu)$-density
+Combining interval censoring and random truncation yields the conditional likelihood
 
 \begin{align}
-  f_{(X, M, V, L, U) | L \le M \le X \le V \le U}(x, m, v, l, u) & = \frac{f_\theta(x) f_{(M, V, L, U)}(m, v, l, u)}{\mathrm{Pr}(L \le M \le X \le V \le U)} \mathbf{1}(l \le m \le x \le v \le u) \label{eq:trunc-cens-dens}
+  \ell(\theta; M^{(t)} = m, V^{(t)} = v, L^{(t)} = l, U^{(t)} = u) & = \log F_\theta([m, v]) - \log F_\theta([l, u])
 \end{align}
 
-We can again label this observation $(X^{(t)}, M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)})$ and conditon the likelihood on $L^{(t)} = l, U^{(t)} = u$ to obtain
-
-\begin{align*}
-  f_{(X^{(t)}, M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | L^{(t)} = l, U^{(t)} = u}(x, m, v, l, u) & = \frac{f_\theta(x)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z} \mathbf{1}(l \le m \le x \le v \le u)\\
-  f_{(M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | L^{(t)} = l, U^{(t)} = u}(m, v, l, u) & = \int_{[m, v]} f_{(X^{(t)}, M^{(t)}, V^{(t)}, L^{(t)}, U^{(t)}) | l, u}(s, m, v, l, u) \,\mathrm{d}s \\
-  & = \frac{\int_{[m, v]} f_\theta(s) \,\mathrm{d}s}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z} \mathbf{1}(l \le m \le v \le u)
-\end{align*}
-
-We are not aware of any implementation supporting estimation of $\theta$ from randomly truncated interval censored data.
-
-A practical example of this arises in the presence of inaccurate accident date specifications when reporting claims in general insurance.
+A practical example of random truncation and interval censorship arises in the presence of inaccurate accident date specifications when reporting claims in general insurance.
 The truncation bounds $(L, U)$ in this case will be equal to $(0, \tau - t_0)$ where $t_0$ is the actual accident time and $\tau$ is the calendar time.
 Censoring bounds could, for example, be $(M, V) = (t_1 - \lceil t_0 \rceil, t_1 - \lfloor t_0 \rfloor)$ representing an inaccurate observation of $t_0$ at reporting time $t_1$.
 Technically, $U$ is not (fully) observable in this situation, but can be approximated by $\tau - \lfloor t_0 \rfloor$.
@@ -109,10 +118,30 @@ We aim at maximizing
   \end{cases} \label{eq:cml-likelihood}
 \end{align}
 
-Such a sample $\mathfrak{I}$ is constructed in \proglang{R} using the function `trunc_obs()` where $(M, V)$ corresponds to `xmin`, `xmax` and $(L, U)$ corresponds to `tmin`, `tmax`.
-For practical purposes, the data structure also includes `x`, which is equal to `NA_real_` for interval censored observations ($M < V$) and equal to $M = V$ otherwise.
+## Related packages
 
-# Methods of estimating $\theta$ {short-title="Methods of estimating theta" #methods-of-estimating-theta}
+For the less general cases of censoring without truncation and truncation without censoring, as well as for estimation of distribution parameters in the absence of any censoring or truncation mechanism, there are a number of \proglang{R} packages that can fit distributions, some of them also supporting weights.
+Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}, \pkg{evmix} \citep{evmix}, \pkg{ExtDist} \citep{ExtDist}, \pkg{flexsurv} \citep{flexsurv}.
+Another R6-based interface is provided by \pkg{ROOPSD} \citep{ROOPSD}.
+
+The remaining parts of this paper are structured as follows: Section&nbsp;\ref{pkg-overview} details the core functionality of the corresponding \proglang{R} package \pkg{reservr}.
+It is split into definition of samples $\mathfrak{I}$ (Section&nbsp;\ref{trunc-obs}), definition of distribution families (Section&nbsp;\ref{distributions}), estimation of distribution parameters (Section&nbsp;\ref{fit-dist}) and distribution regression using \pkg{tensorflow} (Section&nbsp;\ref{tensorflow}).
+A conclusion is given in Section&nbsp;\ref{conclusion}.
+
+# Usage of \pkg{reservr} {short-title="Usage of reservr" #pkg-overview}
+
+TODO overall package structure
+
+## Working with samples {#trunc-obs}
+
+TODO describe `trunc_obs()` and friends
+
+## Definition of distribution families {#distributions}
+
+TODO describe `Distribution` class, parameters and methods
+describe erlang mixtures, blended distribution, mixture distribution
+
+## Methods of estimating distribution parameters {#fit-dist}
 
 Sometimes, the conditional likelihood in \eqref{eq:cml-likelihood} can be directly maximized, yielding an estimate for $\theta$.
 This is the default behavior in \pkg{reservr} if no specialized estimation routine for the provided family $\mathcal{F}_\theta$ is found.
@@ -149,11 +178,14 @@ General mixture distributions are defined by its number of components, $k$, the 
   f_\theta(x; \theta_1, \ldots, \theta_k, p_1, \ldots, p_k) = \sum_{i = 1}^k p_i f_i(x; \theta_i)
 \end{align*}
 
-# Related packages
+TODO describe ECME-Algorithms
 
-For the less general cases of censoring without truncation and truncation without censoring, as well as for estimation of distribution parameters in the absence of any censoring or truncation mechanism, there are a number of \proglang{R} packages that can fit distributions, some of them also supporting weights.
-Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}, \pkg{evmix} \citep{evmix}, \pkg{ExtDist} \citep{ExtDist}, \pkg{flexsurv} \citep{flexsurv}.
-Another R6-based interface is provided by \pkg{ROOPSD} \citep{ROOPSD}.
+## Distribution regression using \pkg{tensorflow} integration {short-title="Distribution regression using tensorflow integration" #tensorflow}
+
+# Conclusion {#conclusion}
+
+
+[//]: # (old content:)
 
 # Usage
 
