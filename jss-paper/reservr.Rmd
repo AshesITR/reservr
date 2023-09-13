@@ -224,7 +224,7 @@ At the time of writing, these are:
 
 | Generator function &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description                                                                                                                                                                            |
 |---------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `dist_bdegp(n, m, u, epsilon)`                                                                                      | A Blended Dirac-Erlang-Generalized Pareto distribution, see Section&nbsp;\ref{dist-bdegp}                                                                                              |
+| `dist_bdegp(n, m, u, epsilon)`                                                                                      | A Blended Dirac Erlang Generalized Pareto distribution, see Section&nbsp;\ref{dist-bdegp}                                                                                              |
 | `dist_beta(shape1, shape2, ncp)`                                                                                    | A (non-central) Beta distribution                                                                                                                                                      |
 | `dist_binomial(size, prob)`                                                                                         | A Binomial distribution                                                                                                                                                                |
 | `dist_blended(dists, probs, breaks, bandwidths)`                                                                    | A Blended mixture distribution, see Section&nbsp;\ref{dist-blended}                                                                                                                    |
@@ -361,8 +361,7 @@ This leads to the definition of a blended distribution family:
 
 Given two families $\mathcal{F}, \mathcal{G}$ of distributions on $\mathbb{R}$, and parameters $\kappa \in \mathbb{R}, \varepsilon \in (0, \infty)$, we define the \textit{Blended Distribution family} as the family of Distributions
 \begin{align} \label{eq:blended}
-    \mathop{\mathrm{Blended}}(\mathcal{F}, \mathcal{G}; \kappa, \varepsilon) & := \{ \mathop{\mathrm{Blended}}(P, Q ; p, \kappa, \varepsilon) \mid P \in \mathcal{F}, Q \in
-    \mathcal{G}, p \in [0, 1]^2, \lVert p\rVert_1 = 1 \}.
+    \mathop{\mathrm{Blended}}(\mathcal{F}, \mathcal{G}; \kappa, \varepsilon) & := \{ \mathop{\mathrm{Blended}}(P, Q ; p, \kappa, \varepsilon) \mid P \in \mathcal{F}, Q \in \mathcal{G}, p \in [0, 1]^2, \lVert p\rVert_1 = 1 \}.
 \end{align}
 
 Blended distribution families can be generalized to a number of components $k$ by letting $\kappa$ and $\varepsilon$ become vectors of dimension $k - 1$ such that $\kappa_i + \varepsilon_i \le \kappa_{i + 1} - \varepsilon_{i + 1}$ for $i = 1, \ldots, k - 2$.
@@ -370,9 +369,35 @@ Compared to piecewise distribution families obtained by mixture of truncated dis
 
 \pkg{reservr} provides an implementation via `dist_blended()`.
 
-### The Blended Dirac-Erlang-Generalized Pareto distribution family {#dist-bdegp}
+### The Blended Dirac Erlang Generalized Pareto distribution family {#dist-bdegp}
 
-TODO describe BDEGP family
+Using the construction of a Blended distribution family, we can define the Blended Dirac Erlang Generalized Pareto (BDEGP) family as follows:
+
+Given parameters $n \in \mathbb{N}, m \in \mathbb{N}, \kappa \in \mathbb{R}$ and $\varepsilon \in (0, \infty)$, we define the \textit{Blended Dirac Erlang Generalized Pareto family} as the family of distributions
+
+\begin{align*}
+  \mathop{\mathrm{BDEGP}}(n, m, \kappa, \varepsilon) := & \mathop{\mathrm{Mixture}}( \\
+    & \qquad \delta_0, \delta_1, \ldots, \delta_{n-1}, \\
+    & \qquad \mathop{\mathrm{Blended}}( \\
+      & \qquad\qquad \mathop{\mathrm{ErlangMixture}}(m), \\
+      & \qquad\qquad \mathop{\mathrm{GPD}}(u = \kappa, \sigma \in (0, \infty), \xi \in [0, 1]); \\
+      & \qquad\qquad \kappa, \varepsilon \\
+    & \qquad) \\
+  &)
+\end{align*}
+
+Where
+
+* $\delta_k$ is the dirac distribution with $P(X = k) = 1$
+* $\mathrm{ErlangMixture}(m)$ is the family of Erlang mixture distributions with $m$ components
+* $\mathrm{GPD}$ is the family of generalized Pareto distributions - constrained to having tail index $\xi \in [0, 1]$
+* $\mathrm{Mixture}(\ldots)$ is the family of mixture distributions of the $n+1$ components.
+
+This distribution family has three features making it useful in modelling very general heavy-tailed distributions on $(0, \infty)$:
+
+1. A maximally flexible lower tail
+2. A flexible family of distributions for its body (note that Erlang mixtures are dense in the space of distributions on $(0, \infty)$)
+3. A flexible tail index due to the generalized Pareto component
 
 ## Methods of estimating distribution parameters {#fit-dist}
 
