@@ -125,7 +125,7 @@ Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}
 Another R6-based interface is provided by \pkg{ROOPSD} \citep{ROOPSD}.
 
 The remaining parts of this paper are structured as follows: Section&nbsp;\ref{pkg-overview} details the core functionality of the corresponding \proglang{R} package \pkg{reservr}.
-It is split into definition of samples $\mathfrak{I}$ (Section&nbsp;\ref{trunc-obs}), definition of distribution families (Section&nbsp;\ref{distributions}), estimation of distribution parameters (Section&nbsp;\ref{fit-dist}) and distributional regression using \pkg{tensorflow} (Section&nbsp;\ref{tensorflow}).
+It is split into definition of samples $\mathfrak{I}$ (Section&nbsp;\ref{trunc-obs}), definition of distribution families (Section&nbsp;\ref{distributions}), mathematical definitions of some available distribution families (Section&nbsp;\ref{dist-definitions}), estimation of distribution parameters (Section&nbsp;\ref{fit-dist}) and distributional regression using \pkg{tensorflow} (Section&nbsp;\ref{tensorflow}).
 A conclusion is given in Section&nbsp;\ref{conclusion}.
 
 # Usage of \pkg{reservr} {short-title="Usage of reservr" #pkg-overview}
@@ -222,30 +222,30 @@ This implies that, e.g., for mixture distributions, the total number of componen
 \pkg{reservr} provides a set of basic distributions with fixed parameters as well as some transformations of distributions that take one or more underlying distributions.
 At the time of writing, these are:
 
-| Generator function &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description                                                                                                                                                                            |
-|---------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `dist_bdegp(n, m, u, epsilon)`                                                                                      | A Blended Dirac Erlang Generalized Pareto distribution, see Section&nbsp;\ref{dist-bdegp}                                                                                              |
-| `dist_beta(shape1, shape2, ncp)`                                                                                    | A (non-central) Beta distribution                                                                                                                                                      |
-| `dist_binomial(size, prob)`                                                                                         | A Binomial distribution                                                                                                                                                                |
-| `dist_blended(dists, probs, breaks, bandwidths)`                                                                    | A Blended mixture distribution, see Section&nbsp;\ref{dist-blended}                                                                                                                    |
-| `dist_dirac(point)`                                                                                                 | A Dirac distribution with full mass at `point`                                                                                                                                         |
-| `dist_discrete(size, probs)`                                                                                        | A discrete distribution with support $\{1, \ldots, \text{size}\}$ and $P(X = k) = \text{probs}_k$                                                                                      |
-| `dist_empirical(sample, positive, bw)`                                                                              | An empirical distribution derived from a sample, with density estimated using a kernel density estimate                                                                                |
-| `dist_erlangmix(shapes, scale, probs)`                                                                              | An Erlang mixture distribution, i.e., a mixture of Erlangs with common scale parameter $f_Y(y) = \sum_{i=1}^k \text{probs}_i \cdot \mathrm{d}\Gamma(y; \text{shapes}_i, \text{scale})$ |
-| `dist_exponential(rate)`                                                                                            | An Exponential distribution                                                                                                                                                            |
-| `dist_gamma(shape, rate)`                                                                                           | A Gamma distribution                                                                                                                                                                   |
-| `dist_genpareto(u, sigmau, xi)`                                                                                     | A Generalized Pareto Distribution                                                                                                                                                      |
-| `dist_genpareto1(u, sigmau, xi)`                                                                                    | A Generalized Pareto Distribution with the tail index $\xi$ constrained to $(0, 1)$                                                                                                    |
-| `dist_lognormal(meanlog, sdlog)`                                                                                    | A Log-Normaldistribution                                                                                                                                                               |
-| `dist_mixture(dists, probs)`                                                                                        | A general Mixture distribution $f_Y(y) = \sum_{i=1}^k \text{probs}_i \cdot f_{X_i}(y)$                                                                                                 |
-| `dist_negbinomial(size, mu)`                                                                                        | A negative Binomial distribution                                                                                                                                                       |
-| `dist_normal(mean, sd)`                                                                                             | A Normal distribution                                                                                                                                                                  |
-| `dist_pareto(shape, scale)`                                                                                         | A Pareto Type I distribution, i.e., a Generalized Pareto distribution with `u` = $0$                                                                                                   |
-| `dist_poisson(lambda)`                                                                                              | A Poisson distribution                                                                                                                                                                 |
-| `dist_translate(dist, offset, multiplier)`                                                                          | An affine transformation $Y = a \cdot X + b$ of another distribution                                                                                                                   |
-| `dist_trunc(dist, min, max)`                                                                                        | A truncated distribution, $f_Y(y) = \tfrac{f_X(y)}{\mathrm{Pr}(\text{min} \le X \le \text{max})} \mathbf{1}(\text{min} \le y \le \text{max})$                                          |
-| `dist_uniform(min, max)`                                                                                            | A uniform distribution                                                                                                                                                                 |
-| `dist_weibull(shape, scale)`                                                                                        | A Weibull distribution                                                                                                                                                                 |
+| Generator function      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description                                                                                             |
+|--------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| `dist_bdegp(n, m, u, epsilon)`                                           | A Blended Dirac Erlang Generalized Pareto distribution, see Section&nbsp;\ref{dist-bdegp}               |
+| `dist_beta(shape1, shape2, ncp)`                                         | A (non-central) Beta distribution                                                                       |
+| `dist_binomial(size, prob)`                                              | A Binomial distribution                                                                                 |
+| `dist_blended(dists, probs, breaks, bandwidths)`                         | A Blended mixture distribution, see Section&nbsp;\ref{dist-blended}                                     |
+| `dist_dirac(point)`                                                      | A Dirac distribution with full mass at `point`                                                          |
+| `dist_discrete(size, probs)`                                             | A discrete distribution with support $\{1, \ldots, \text{size}\}$ and $P(X = k) = \text{probs}_k$       |
+| `dist_empirical(sample, positive, bw)`                                   | An empirical distribution derived from a sample, with density estimated using a kernel density estimate |
+| `dist_erlangmix(shapes, scale, probs)`                                   | An Erlang mixture distribution, see Section&nbsp;\ref{dist-erlangmix}                                   |
+| `dist_exponential(rate)`                                                 | An Exponential distribution                                                                             |
+| `dist_gamma(shape, rate)`                                                | A Gamma distribution                                                                                    |
+| `dist_genpareto(u, sigmau, xi)`                                          | A Generalized Pareto Distribution                                                                       |
+| `dist_genpareto1(u, sigmau, xi)`                                         | A Generalized Pareto Distribution with the tail index $\xi$ constrained to $(0, 1)$                     |
+| `dist_lognormal(meanlog, sdlog)`                                         | A Log-Normaldistribution                                                                                |
+| `dist_mixture(dists, probs)`                                             | A general Mixture distribution, see Section&nbsp;\ref{dist-mixture}                                     |
+| `dist_negbinomial(size, mu)`                                             | A negative Binomial distribution                                                                        |
+| `dist_normal(mean, sd)`                                                  | A Normal distribution                                                                                   |
+| `dist_pareto(shape, scale)`                                              | A Pareto Type I distribution, i.e., a Generalized Pareto distribution with `u` = $0$                    |
+| `dist_poisson(lambda)`                                                   | A Poisson distribution                                                                                  |
+| `dist_translate(dist, offset, multiplier)`                               | An affine transformation $Y = a \cdot X + b$ of another distribution                                    |
+| `dist_trunc(dist, min, max)`                                             | A truncated distribution, $Y = X \mid \text{min} \le X \le \text{max}$                                  |
+| `dist_uniform(min, max)`                                                 | A uniform distribution                                                                                  |
+| `dist_weibull(shape, scale)`                                             | A Weibull distribution                                                                                  |
 
 ### Parameters
 
@@ -332,12 +332,36 @@ These are tailored to the needs of maximizing (conditional) likelihoods of weigh
  * `tf_logprobability()` returns a \pkg{tensorflow}-ready version pf `compile_probability_interval()` with implied `log.p = TRUE`.
  * `tf_make_constants()` creates a list of constant tensors for all fixed distribution parameters.
 
+## Special families {#dist-definitions}
+
+Some of the distribution families available in \pkg{reservr} have tailored algorithms for estimation, or are not commonly known.
+This section contains mathematical definitions of those function families.
+
+### Mixture distribution families {#dist-mixture}
+
+A mixture distribution family is defined by a fixed number $k$ of component families via the set of distributions
+
+\begin{align*}
+  \mathop{\mathrm{Mixture}}(\mathcal{F}_1, \ldots, \mathcal{F}_k) & := \{ F \mid F((-\infty, x]) = \sum_{i = 1}^k p_i F_i((-\infty, x]), F_i \in \mathcal{F}_i, p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \}
+\end{align*}
+
+### Erlang mixture distribution families {#dist-erlangmix}
+
+An Erlang mixture distribution family is defined by its number of components $k$ as a mixture of Erlang distributions (Gamma distributions with integer shape parameter) with common scale parameter.
+If $\Gamma_{\alpha, \theta}$ denotes a Gamma distribution with shape $\alpha$ and scale $\theta$, the erlang mixture family with $k$ components can be defined as follows:
+
+\begin{align*}
+  \mathop{\mathrm{ErlangMixture}}(k) := \Bigl\{ F \mid & F((-\infty, x]) = \sum_{i = 1}^k p_i \Gamma_{\alpha_i, \theta}((-\infty, x]), \\
+  & \alpha_i \in \mathbb{N}, \theta \in (0, \infty), p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
+\end{align*}
+
+Note that for $k \to \infty$, Erlang mixtures are dense in the space of distributions on $(0, \infty)$, making them a useful modeling choice for general positive continuous distributions. However, the tail index of all Erlang mixture distributions is always zero due to the exponential decay of Gamma densities.
+
 ### Blended distribution families {#dist-blended}
 
-A Blended distribution is defined as follows: Given two underlying distributions $P, Q$ on $\mathbb{R}$ with cdfs $F(\cdot)=P((-\infty, \cdot])$ and $G(\cdot)=Q((-\infty, \cdot])$, respectively, and parameters $\kappa \in \mathbb{R}, \varepsilon \in (0, \infty), p \in [0, 1]^2, p_1 + p_2 = 1$ such that $F(\kappa) > 0$ and $G(\kappa) < 1$, we define the \textit{Blended Distribution} $B = \mathop{\mathrm{Blended}}(P, Q; p, \kappa, \varepsilon)$ of $P$ and $Q$ with blending interval $[\kappa - \varepsilon, \kappa + \varepsilon]$ and mixture probabilities $p$ via its cdf
+A Blended distribution is defined in \citet{Rosenstock2022} as follows: Given two underlying distributions $P, Q$ on $\mathbb{R}$ with cdfs $F(\cdot)=P((-\infty, \cdot])$ and $G(\cdot)=Q((-\infty, \cdot])$, respectively, and parameters $\kappa \in \mathbb{R}, \varepsilon \in (0, \infty), p \in [0, 1]^2, p_1 + p_2 = 1$ such that $F(\kappa) > 0$ and $G(\kappa) < 1$, we define the \textit{Blended Distribution} $B = \mathop{\mathrm{Blended}}(P, Q; p, \kappa, \varepsilon)$ of $P$ and $Q$ with blending interval $[\kappa - \varepsilon, \kappa + \varepsilon]$ and mixture probabilities $p$ via its cdf
 $F_B$:
-\begin{align}
-\nonumber
+\begin{align*}
     p_{\kappa, \varepsilon}(x) &=
     \begin{cases}
         x & , x \in (-\infty, \kappa-\varepsilon],\\
@@ -353,16 +377,15 @@ $F_B$:
         \tfrac\varepsilon\pi \cos\Big( \frac{\pi (x - \kappa)}{2 \varepsilon} \Big) &, x \in (\kappa-\varepsilon , \kappa+\varepsilon], \\
         x &, x  \in (\kappa +\varepsilon, \infty),
     \end{cases} \\
-    \label{eq:fb}
     F_B(x) & = p_1 \frac{F(p_{\kappa, \varepsilon}(x))}{F(\kappa)} + p_2 \frac{G(q_{\kappa, \varepsilon}(x)) - G(\kappa)}{1 - G(\kappa)}.
-\end{align}
+\end{align*}
 
 This leads to the definition of a blended distribution family:
 
 Given two families $\mathcal{F}, \mathcal{G}$ of distributions on $\mathbb{R}$, and parameters $\kappa \in \mathbb{R}, \varepsilon \in (0, \infty)$, we define the \textit{Blended Distribution family} as the family of Distributions
-\begin{align} \label{eq:blended}
+\begin{align*}
     \mathop{\mathrm{Blended}}(\mathcal{F}, \mathcal{G}; \kappa, \varepsilon) & := \{ \mathop{\mathrm{Blended}}(P, Q ; p, \kappa, \varepsilon) \mid P \in \mathcal{F}, Q \in \mathcal{G}, p \in [0, 1]^2, \lVert p\rVert_1 = 1 \}.
-\end{align}
+\end{align*}
 
 Blended distribution families can be generalized to a number of components $k$ by letting $\kappa$ and $\varepsilon$ become vectors of dimension $k - 1$ such that $\kappa_i + \varepsilon_i \le \kappa_{i + 1} - \varepsilon_{i + 1}$ for $i = 1, \ldots, k - 2$.
 Compared to piecewise distribution families obtained by mixture of truncated distribution families with supports $(-\infty, \kappa]$ and $[\kappa, \infty)$ such as those commonly used for extreme value modelling, blended distribution families exhibit a continuous density within the blending region $(\kappa - \varepsilon, \kappa + \varepsilon)$.
@@ -377,66 +400,40 @@ Given parameters $n \in \mathbb{N}, m \in \mathbb{N}, \kappa \in \mathbb{R}$ and
 
 \begin{align*}
   \mathop{\mathrm{BDEGP}}(n, m, \kappa, \varepsilon) := & \mathop{\mathrm{Mixture}}( \\
-    & \qquad \delta_0, \delta_1, \ldots, \delta_{n-1}, \\
+    & \qquad \{\delta_0\}, \{\delta_1\}, \ldots, \{\delta_{n-1}\}, \\
     & \qquad \mathop{\mathrm{Blended}}( \\
       & \qquad\qquad \mathop{\mathrm{ErlangMixture}}(m), \\
-      & \qquad\qquad \mathop{\mathrm{GPD}}(u = \kappa, \sigma \in (0, \infty), \xi \in [0, 1]); \\
+      & \qquad\qquad \{ \mathop{\mathrm{GPD}}(\kappa, \sigma, \xi) \mid \sigma \in (0, \infty), \xi \in [0, 1]) \}; \\
       & \qquad\qquad \kappa, \varepsilon \\
     & \qquad) \\
   &)
 \end{align*}
 
-Where
-
-* $\delta_k$ is the dirac distribution with $P(X = k) = 1$
-* $\mathrm{ErlangMixture}(m)$ is the family of Erlang mixture distributions with $m$ components
-* $\mathrm{GPD}$ is the family of generalized Pareto distributions - constrained to having tail index $\xi \in [0, 1]$
-* $\mathrm{Mixture}(\ldots)$ is the family of mixture distributions of the $n+1$ components.
+Where $\delta_k$ is the dirac distribution with $P(X = k) = 1$ and $\mathrm{GPD}$ is the generalized Pareto distribution. Note the constraint on the tail index $\xi \in [0, 1]$.
 
 This distribution family has three features making it useful in modelling very general heavy-tailed distributions on $(0, \infty)$:
 
 1. A maximally flexible lower tail
-2. A flexible family of distributions for its body (note that Erlang mixtures are dense in the space of distributions on $(0, \infty)$)
+2. A flexible family of distributions for its body
 3. A flexible tail index due to the generalized Pareto component
 
 ## Methods of estimating distribution parameters {#fit-dist}
 
+This section describes the functions for the problem of estimating a parameter $\theta \in \Theta$ given a sample $\mathfrak{I}$ and a parameterized family $\mathcal{F} = \{F_\theta \mid \theta \in \Theta\}$.
 Sometimes, the conditional likelihood in \eqref{eq:cml-likelihood} can be directly maximized, yielding an estimate for $\theta$.
 This is the default behavior in \pkg{reservr} if no specialized estimation routine for the provided family $\mathcal{F}_\theta$ is found.
-Depending on whether there are box constraints, nonlinear constraints or no constraints on the parameter space $\Theta$, different implementations of nonlinear optimization algorithms from \pkg{nloptr} are employed.
+Depending on whether there are box constraints, nonlinear constraints or no constraints on the parameter space $\Theta$, different implementations of nonlinear optimization algorithms from \pkg{nloptr} \citep{nloptr,nloptr-tnewton,nloptr-lbfgs,nloptr-slsqp} are employed.
 
 In addition to the naive direct optimization approach, some families lend themselves to specialized estimation algorithms which usually show faster convergence due to making use of special structures in the parameter space $\Theta$.
 
 At the time of writing there are specialized algorithms for three types of families:
 
-1. Erlang mixtures (GEM-CMM algorithm from \citet{Gui2018}, with a fixed number of components $M$)
-2. Blended distributions (Algorithm 2 in \citet{Rosenstock2022})
-3. General mixture distributions (Algorithm 1 in \citet{Rosenstock2022})
-
-An erlang mixture family is defined by their number of components, $k$, by
-
-\[
-  \Theta = \mathbb{R}_+ \times \mathbb{N}^k \times [0, 1]_k,
-\]
-
-where $[0, 1]_k := \{ (p_i)_{i = 1}^{k} \in [0, 1]^k | \sum_{i = 1}^{k} p_i = 1 \}$ is a $k$-dimensional mixture parameter.
-And the density
-
-\[
-  f_\theta(x; \lambda, a_1, \ldots, a_k, p_1, \ldots, p_k) = \sum_{i = 1}^k p_i \mathrm{d}\Gamma(a_i, \lambda),
-\]
-where $\mathrm{d}\Gamma(a, \lambda)$ denotes the density of a Gamma distribution with shape $a$ and scale $\lambda$.
-
-Blended distributions were defined in \citet{Rosenstock2022}.
-They are, essentially, a smooth version of piecewise mixtures.
-
-General mixture distributions are defined by its number of components, $k$, the component families $\mathcal{F}_1, \ldots, \mathcal{F}_k$, and their parameter spaces $\Theta_1, \ldots, \Theta_k$ by
-\begin{align*}
-  \Theta = \bigotimes_{i = 1}^k \Theta_i \times [0, 1]_k \\
-  f_\theta(x; \theta_1, \ldots, \theta_k, p_1, \ldots, p_k) = \sum_{i = 1}^k p_i f_i(x; \theta_i)
-\end{align*}
+1. Erlang mixture distributions (GEM-CMM algorithm from \citet{Gui2018}, with a fixed number of components $M$)
+2. Mixture distributions \citep[Algorithm 1]{Rosenstock2022}
+3. Blended distributions \citep[Algorithm 2]{Rosenstock2022}
 
 TODO describe ECME-Algorithms
+TODO describe `fit()` and friends
 
 ## Distributional regression using \pkg{tensorflow} integration {short-title="distributional regression using tensorflow integration" #tensorflow}
 
