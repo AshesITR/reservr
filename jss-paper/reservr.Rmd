@@ -49,7 +49,7 @@ Most statistical analyses are concerned with modelling and estimation of the dis
 In the absence of endogenous variables, this process is usually called distribution fitting, and in the presence of endogenous variables it is called regression.
 Classical regression, such as via generalized linear models, is usually concerned with the influence of endogenous variables on the mean of the outcome, i.e., $\mathbb{E}(Y|X) = f(X)$ for some random variable $Y$ and vector of associated endogenous variables $X$ paired with a homoskedascity assumption linking the other parameters of the outcome distribution to its mean.
 Some models also allow specification of additional parameters of the distribution of the outcome variable, such as GAMLSS, which also allows for the scale parameter to depend on endogeneous variables.
-More recently, deep distribution regression allows for flexible specification of individual outcome distribution parameters.
+More recently, deep distributional regression allows for flexible specification of individual outcome distribution parameters.
 An example implementation of the latter can be found in \citet{deepregression}.
 
 Usual statistical methods require complete data, that is full information on all observations of interest (X, Y).
@@ -125,12 +125,12 @@ Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}
 Another R6-based interface is provided by \pkg{ROOPSD} \citep{ROOPSD}.
 
 The remaining parts of this paper are structured as follows: Section&nbsp;\ref{pkg-overview} details the core functionality of the corresponding \proglang{R} package \pkg{reservr}.
-It is split into definition of samples $\mathfrak{I}$ (Section&nbsp;\ref{trunc-obs}), definition of distribution families (Section&nbsp;\ref{distributions}), estimation of distribution parameters (Section&nbsp;\ref{fit-dist}) and distribution regression using \pkg{tensorflow} (Section&nbsp;\ref{tensorflow}).
+It is split into definition of samples $\mathfrak{I}$ (Section&nbsp;\ref{trunc-obs}), definition of distribution families (Section&nbsp;\ref{distributions}), estimation of distribution parameters (Section&nbsp;\ref{fit-dist}) and distributional regression using \pkg{tensorflow} (Section&nbsp;\ref{tensorflow}).
 A conclusion is given in Section&nbsp;\ref{conclusion}.
 
 # Usage of \pkg{reservr} {short-title="Usage of reservr" #pkg-overview}
 
-The package serves two main goals: fitting distributions to randomly truncated interval censored data and performing (deep) distribution regression with randomly truncated interval censored data.
+The package serves two main goals: fitting distributions to randomly truncated interval censored data and performing (deep) distributional regression with randomly truncated interval censored data.
 Four main components are integrated with each other to facilitate the analysis goals
 
 1. Methods for defining a randomly truncated interval censored sample $\mathfrak{I}$.
@@ -207,8 +207,107 @@ The latter takes inputs of the form $(T_\text{acc}, D, \tau)$ and returns the sa
 
 ## Definition of distribution families {#distributions}
 
-TODO describe `Distribution` class, parameters and methods
-describe erlang mixtures, blended distribution, mixture distribution
+Distribution families are implemented using the \pkg{R6} class system \citep{R6}.
+They inherit from `Distribution` and feature a common interface to
+
+* Manage fixed and free parameters of the underlying familiy
+* Basic distribution functions for sampling, computation of density, cumulative density, hazard and quantile
+* Additional functions supporting parameter estimation procedures such as computing support and discreteness
+* Performance enhancements to speed up basic functions for repeated evaluation
+* \pkg{tensorflow}-specific implementations to support (deep) distributional regression
+
+A `Distribution` object represents a family $\mathcal{F}$ parameterized by a fixed-dimensional parameter space $\Theta$.
+This implies that, e.g., for mixture distributions, the total number of component distributions and their families needs to be fixed.
+
+\pkg{reservr} provides a set of basic distributions with fixed parameters as well as some transformations of distributions that take one or more underlying distributions.
+At the time of writing, these are:
+
+| Generator function &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description                                                                                                                                                                            |
+|---------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `dist_bdegp(n, m, u, epsilon)`                                                                                      | A Blended Dirac-Erlang-Generalized Pareto distribution, see Section&nbsp;\ref{dist-bdegp}                                                                                              |
+| `dist_beta(shape1, shape2, ncp)`                                                                                    | A (non-central) Beta distribution                                                                                                                                                      |
+| `dist_binomial(size, prob)`                                                                                         | A Binomial distribution                                                                                                                                                                |
+| `dist_blended(dists, probs, breaks, bandwidths)`                                                                    | A Blended mixture distribution, see Section&nbsp;\ref{dist-blended}                                                                                                                    |
+| `dist_dirac(point)`                                                                                                 | A Dirac distribution with full mass at `point`                                                                                                                                         |
+| `dist_discrete(size, probs)`                                                                                        | A discrete distribution with support $\{1, \ldots, \text{size}\}$ and $P(X = k) = \text{probs}_k$                                                                                      |
+| `dist_empirical(sample, positive, bw)`                                                                              | An empirical distribution derived from a sample, with density estimated using a kernel density estimate                                                                                |
+| `dist_erlangmix(shapes, scale, probs)`                                                                              | An Erlang mixture distribution, i.e., a mixture of Erlangs with common scale parameter $f_Y(y) = \sum_{i=1}^k \text{probs}_i \cdot \mathrm{d}\Gamma(y; \text{shapes}_i, \text{scale})$ |
+| `dist_exponential(rate)`                                                                                            | An Exponential distribution                                                                                                                                                            |
+| `dist_gamma(shape, rate)`                                                                                           | A Gamma distribution                                                                                                                                                                   |
+| `dist_genpareto(u, sigmau, xi)`                                                                                     | A Generalized Pareto Distribution                                                                                                                                                      |
+| `dist_genpareto1(u, sigmau, xi)`                                                                                    | A Generalized Pareto Distribution with the tail index $\xi$ constrained to $(0, 1)$                                                                                                    |
+| `dist_lognormal(meanlog, sdlog)`                                                                                    | A Log-Normaldistribution                                                                                                                                                               |
+| `dist_mixture(dists, probs)`                                                                                        | A general Mixture distribution $f_Y(y) = \sum_{i=1}^k \text{probs}_i \cdot f_{X_i}(y)$                                                                                                 |
+| `dist_negbinomial(size, mu)`                                                                                        | A negative Binomial distribution                                                                                                                                                       |
+| `dist_normal(mean, sd)`                                                                                             | A Normal distribution                                                                                                                                                                  |
+| `dist_pareto(shape, scale)`                                                                                         | A Pareto Type I distribution, i.e., a Generalized Pareto distribution with `u` = $0$                                                                                                   |
+| `dist_poisson(lambda)`                                                                                              | A Poisson distribution                                                                                                                                                                 |
+| `dist_translate(dist, offset, multiplier)`                                                                          | An affine transformation $Y = a \cdot X + b$ of another distribution                                                                                                                   |
+| `dist_trunc(dist, min, max)`                                                                                        | A truncated distribution, $f_Y(y) = \tfrac{f_X(y)}{\mathrm{Pr}(\text{min} \le X \le \text{max})} \mathbf{1}(\text{min} \le y \le \text{max})$                                          |
+| `dist_uniform(min, max)`                                                                                            | A uniform distribution                                                                                                                                                                 |
+| `dist_weibull(shape, scale)`                                                                                        | A Weibull distribution                                                                                                                                                                 |
+
+### Parameters
+
+TODO describe parameter interface
+
+### Basic distribution functions
+
+The basic distribution functions (density, probability, hazard, quantile, sample) are provided by each distribution with signatures.
+In general, the argument `with_params` can be used to both specify missing parameters (placeholders) and to override fixed distribution parameters.
+If the provided parameters are vectors of length greater than 1, they must conform to the input dimension (e.g. `x` for `density`).
+In this case, the parameters are "vectorized" in the sense that the $i$th output element will be computed using the $i$th entry from the parameter list.
+
+ * `density(x, log = FALSE, with_params = list())` compute (log-)density.
+ * `probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list()` compute (log-)cumulative density or (log-)survival.
+ * `hazard(x, log = FALSE. with_params = list())` compute (log-)hazard.
+ * `quantile(p, lower.tail = TRUE, log.p = FALSE, with_params = list())` compute upper or lower quantiles.
+ * `sample(n, with_params = list())` generate a random sample (`with_params` can contain length `n` vectors in this case).
+
+### Additional functions
+
+In addition to the basic functions, there are several supporting functions useful for faster or more accurate estimation of parameters.
+These functions are not necessarily implemented for all distribution classes, but will be automatically used by, e.g., `fit_dist()` if useful.
+
+ * `export_functions(name, with_params = list())` exports `{d,p,q,r}<name>` functions adhering to the common R convention for distribution functions.
+ * `get_type()` returns one of `"continuous"`, `"discrete"`, or `"mixed"` depending on whether the distribution has a density with respect to the Lebesgue measure, the counting measure, or their sum.
+ * `is_continuous()` and `is_discrete()` testing for the particular type.
+ * `has_capability(caps)` gives information on whether a specific implementation provides some or all of the features described.
+   Possible capabilities are `"sample"`, `"density"`, `"probability"`, `"quantile"`, `"diff_density"`, `"diff_probability"`, `"tf_logdensity"`, `"tf_logprobability"`.
+ * `require_capability(caps)` errors if the specified capabilities are not implemented for the distribution at hand.
+ * `is_discrete_at(x, with_params = list())` returns a logical vector indicating whether the distribution has a point mass at `x`.
+ * `is_in_support(x, with_params = list())` returns a logical vector indicating whether the distribution has any mass at `x`.
+
+### Performance enhancements
+
+When working with larger data or many calls to distribution functions, such as when performing a fit, it can be beneficial to just-in-time compile specialized functions that avoid overhead for dealing with the generic structure of distributions and their parametrization.
+Distributions offer a set of "compiler" functions that return simplified, faster, versions of the basic distribution functions, or that avoid having to numerically compute gradients where possible.
+
+ * `compile_density()` compiles a fast function with signature `(x, param_matrix, log = FALSE)` that will compute the density with fixed parameters hard-coded and taking the free parameters as a matrix with defined layout instead of a nested list.
+ * `compile_probability()` compiles a fast replacement for `probability` with signature `(q, param_matrix, lower.tail = TRUE, log.p = FALSE)`.
+ * `compile_probability_interval()` compiles a fast function with signature `(qmin, qmax, param_matrix, log.p = FALSE)` computing $P(X \in [\mathtt{qmin}, \mathtt{qmax}])$ or its logarithm efficiently. This expression is necessary for computing truncation probabilities.
+ * `compile_sample()` compiles a fast replacement for `sample` with signature `(n, param_matrix)`.
+ * `diff_density(x, log = FALSE, with_params = list())` computes the (log-)gradients of the density function with respect to free distribution parameters, useful for maximum likelihood optimization.
+ * `diff_probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list())` computes the (log-)gradients of the cumulative density function with respect to free distribution parameters
+
+### \pkg{tensorflow} interface {short-title="tensorflow interface"}
+
+Use of distributions from within \pkg{tensorflow} networks requires specialized implementations using the \pkg{tensorflow} APIs instead of regular \proglang{R} functions.
+These are tailored to the needs of maximizing (conditional) likelihoods of weighted, censored and randomly truncated data.
+
+ * `tf_compile_params(input, name_prefix = "")` creates \pkg{keras} layers that take an `input` layer and transform it into a valid parametrization of the distribution.
+ * `tf_is_discrete_at()` returns a \pkg{tensorflow}-ready version of `is_discrete_at()`.
+ * `tf_logdensity()` returns a \pkg{tensorflow}-ready version of  `compile_density()` with implied `log = TRUE`.
+ * `tf_logprobability()` returns a \pkg{tensorflow}-ready version pf `compile_probability_interval()` with implied `log.p = TRUE`.
+ * `tf_make_constants()` creates a list of constant tensors for all fixed distribution parameters.
+
+### Blended distribution families {#dist-blended}
+
+TODO describe blended distributions
+
+### The Blended Dirac-Erlang-Generalized Pareto distribution family {#dist-bdegp}
+
+TODO describe BDEGP family
 
 ## Methods of estimating distribution parameters {#fit-dist}
 
@@ -249,7 +348,7 @@ General mixture distributions are defined by its number of components, $k$, the 
 
 TODO describe ECME-Algorithms
 
-## Distribution regression using \pkg{tensorflow} integration {short-title="Distribution regression using tensorflow integration" #tensorflow}
+## Distributional regression using \pkg{tensorflow} integration {short-title="distributional regression using tensorflow integration" #tensorflow}
 
 # Conclusion {#conclusion}
 
@@ -620,56 +719,6 @@ prob_report(dist, ints, with_params = params)
 This section describes the software architecture of the package.
 A more task-focused introduction to the interface is provided in [Usage].
 Note that the most up-to-date documentation for \pkg{reservr} can be found at https://ashesitr.github.io/reservr/index.html.
-
-## Basic distribution functions
-
-The basic distribution functions (density, probability, hazard, quantile, sample) are provided by each distribution with signatures.
-In general, the argument `with_params` can be used to both specify missing parameters (placeholders) and to override fixed distribution parameters.
-If the provided parameters are vectors of length greater than 1, they must conform to the input dimension (e.g. `x` for `density`).
-In this case, the parameters are "vectorized" in the sense that the $i$th output element will be computed using the $i$th entry from the parameter list.
-
- * `density(x, log = FALSE, with_params = list())` compute (log-)density.
- * `probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list()` compute (log-)cumulative density or (log-)survival.
- * `hazard(x, log = FALSE. with_params = list())` compute (log-)hazard.
- * `quantile(p, lower.tail = TRUE, log.p = FALSE, with_params = list())` compute upper or lower quantiles.
- * `sample(n, with_params = list())` generate a random sample (`with_params` can contain length `n` vectors in this case).
-
-## Additional functions
-
-In addition to the basic functions, there are several supporting functions useful for faster or more accurate estimation of parameters.
-These functions are not necessarily implemented for all distribution classes, but will be automatically used by, e.g., `fit_dist()` if useful.
-
- * `export_functions(name, with_params = list())` exports `{d,p,q,r}<name>` functions adhering to the common R convention for distribution functions.
- * `get_type()` returns one of `"continuous"`, `"discrete"`, or `"mixed"` depending on whether the distribution has a density with respect to the Lebesgue measure, the counting measure, or their sum.
- * `is_continuous()` and `is_discrete()` testing for the particular type.
- * `has_capability(caps)` gives information on whether a specific implementation provides some or all of the features described.
-   Possible capabilities are `"sample"`, `"density"`, `"probability"`, `"quantile"`, `"diff_density"`, `"diff_probability"`, `"tf_logdensity"`, `"tf_logprobability"`.
- * `require_capability(caps)` errors if the specified capabilities are not implemented for the distribution at hand.
- * `is_discrete_at(x, with_params = list())` returns a logical vector indicating whether the distribution has a point mass at `x`.
- * `is_in_support(x, with_params = list())` returns a logical vector indicating whether the distribution has any mass at `x`.
-
-## Performance enhancements
-
-When working with larger data or many calls to distribution functions, such as when performing a fit, it can be beneficial to just-in-time compile specialized functions that avoid overhead for dealing with the generic structure of distributions and their parametrization.
-Distributions offer a set of "compiler" functions that return simplified, faster, versions of the basic distribution functions, or that avoid having to numerically compute gradients where possible.
-
- * `compile_density()` compiles a fast function with signature `(x, param_matrix, log = FALSE)` that will compute the density with fixed parameters hard-coded and taking the free parameters as a matrix with defined layout instead of a nested list.
- * `compile_probability()` compiles a fast replacement for `probability` with signature `(q, param_matrix, lower.tail = TRUE, log.p = FALSE)`.
- * `compile_probability_interval()` compiles a fast function with signature `(qmin, qmax, param_matrix, log.p = FALSE)` computing $P(X \in [\mathtt{qmin}, \mathtt{qmax}])$ or its logarithm efficiently. This expression is necessary for computing truncation probabilities.
- * `compile_sample()` compiles a fast replacement for `sample` with signature `(n, param_matrix)`.
- * `diff_density(x, log = FALSE, with_params = list())` computes the (log-)gradients of the density function with respect to free distribution parameters, useful for maximum likelihood optimization.
- * `diff_probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list())` computes the (log-)gradients of the cumulative density function with respect to free distribution parameters
-
-## \pkg{tensorflow} integration {short-title="tensorflow integration" #tensorflow-integration}
-
-Use of distributions from within \pkg{tensorflow} networks requires specialized implementations using the \pkg{tensorflow} APIs instead of regular \proglang{R} functions.
-These are tailored to the needs of maximizing (conditional) likelihoods of weighted, censored and randomly truncated data.
-
- * `tf_compile_params(input, name_prefix = "")` creates \pkg{keras} layers that take an `input` layer and transform it into a valid parametrization of the distribution.
- * `tf_is_discrete_at()` returns a \pkg{tensorflow}-ready version of `is_discrete_at()`.
- * `tf_logdensity()` returns a \pkg{tensorflow}-ready version of  `compile_density()` with implied `log = TRUE`.
- * `tf_logprobability()` returns a \pkg{tensorflow}-ready version pf `compile_probability_interval()` with implied `log.p = TRUE`.
- * `tf_make_constants()` creates a list of constant tensors for all fixed distribution parameters.
 
 ## Fitting
 
