@@ -249,7 +249,38 @@ At the time of writing, these are:
 
 ### Parameters
 
-TODO describe parameter interface
+Parameters of distribution families can either be fixed to a set value, or free.
+Free parameters (_placeholders_) are those that should be estimated from data whereas fixed parameters are held fixed.
+Most distribution methods have an argument `with_params` to provide values for the free parameters and need fully specified parameters to work.
+For example, generating samples from a distribution is only possible if it is fully parameterized using fixed parameters and the `with_params` argument of `Distribution$sample()`.
+
+Distributions have a set of fields and methods related to managing parameters
+
+* `default_params`, `get_params()` gets or sets the list of all parameters and their fixed values, `NULL` represents a free parameter. `get_params()` traverses component distribution parameters while `default_params` contains the `Distribution` objects for the respective parameters.
+* `get_placeholders()` gets the list of free parameters with `NULL` as values.
+* `param_bounds`, `get_param_bounds()` gets or sets the domain of each parameter as an `Interval` object. Setting a bound via the `param_bounds` active binding allows restricting the natural parameter space of a distribution. `get_param_bounds()` only returns the bounds of free parameters while `param_bounds` includes all parameters.
+* `get_param_constraint()` returns `NULL` or a function that evaluates non-box constraints on the parameter set. The function must return a list with elements `constraints` and `jacobian` or just a vector of constraint values (that need to be equal to $0$ for valid parameters), optionally together with the jacobian of the constraint function. Used in `nloptr::slsqp(heq=)` for estimation. An example is that mixture distributions require the `probs` parameters to sum to $1$ in addition to the box constraint that each parameter is in $[0, 1]$.
+* `get_components()` returns a list of component distributions for transformations or mixtures. The list is empty for basic families.
+
+Here is an example for a normal family with fixed standard deviation $\sigma = 1$ and a mixture distribution with two components, one of which is specified as a normal distribution:
+
+```{r}
+dist <- dist_normal(sd = 1.0)
+mix <- dist_mixture(dists = list(dist_normal(), NULL))
+
+dist$default_params
+mix$default_params
+str(dist$get_placeholders())
+str(mix$get_placeholders())
+str(dist$param_bounds)
+str(mix$param_bounds)
+str(dist$get_param_bounds())
+str(mix$get_param_bounds())
+str(dist$get_param_constraints())
+str(mix$get_param_constraints())
+dist$get_components()
+mix$get_components()
+```
 
 ### Basic distribution functions
 
