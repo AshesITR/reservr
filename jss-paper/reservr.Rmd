@@ -426,14 +426,75 @@ Depending on whether there are box constraints, nonlinear constraints or no cons
 
 In addition to the naive direct optimization approach, some families lend themselves to specialized estimation algorithms which usually show faster convergence due to making use of special structures in the parameter space $\Theta$.
 
+Fitting distributions to truncated observations is handled using the generic `fit()` method.
+It delegates to `fit_dist()`, which is also generic with signature:
+
+* `dist`: The distribution family to be fit
+* `obs`: The `trunc_obs` object, or a vector of observed values
+* `start`: Starting parameters, as a list compatible with `dist$get_placeholders()`.
+
 At the time of writing there are specialized algorithms for three types of families:
 
-1. Erlang mixture distributions (GEM-CMM algorithm from \citet{Gui2018}, with a fixed number of components $M$)
-2. Mixture distributions \citep[Algorithm 1]{Rosenstock2022}
-3. Blended distributions \citep[Algorithm 2]{Rosenstock2022}
+1. Blended distributions \citep[Algorithm 2]{Rosenstock2022}
+2. Erlang mixture distributions (GEM-CMM algorithm from \citet{Gui2018}, with a fixed number of components $M$)
+3. Generalized pareto distributions with free lower bound `u`
+4. Mixture distributions \citep[Algorithm 1]{Rosenstock2022}
+5. Translated distributions with fixed `offset` and `multiplier` (transform the sample to the space of the component distribution family before fitting)
+6. Uniform distributions (match free parameters to the range of the sample directly)
 
-TODO describe ECME-Algorithms
-TODO describe `fit()` and friends
+If not present, the `start` parameter is obtained via the `fit_dist_start()` generic.
+This generic implements a family specific method of generating valid starting values for all placeholder parameters.
+A notable implementation is `fit_dist_start.ErlangMixtureDistribution()` for Erlang mixture distributions.
+If the shape parameters are free, there are different initialization strategies that can be chosen using additional arguments to `fit_dist_start()`:
+
+* `init = "shapes"` paired with `shapes = c(...)` manually specifies starting shape parameters $\alpha$
+* `init = "fan"` paired with `spread = d` uses $\alpha = (1, 1 + d, \ldots, 1 + (k - 1) \cdot d)$ with a default of $d = 1$ resulting in $\alpha = (1, \ldots, k)$
+* `init = "kmeans"` uses 1-dimensional K-means based clustering of the sample observations such that each cluster corresponds to a unique shape
+* `init = "cmm"` uses the centralized method of moments procedure described in \citet{Gui2018}
+
+Re-using `dist` $= \mathcal{N}_{\sigma = 1}$ from above and the generated sample `obs`, we can fit the free parameter `mean`:
+
+```{r}
+str(fit(dist, obs))
+```
+
+We follow with an example of fitting an $\mathrm{ErlangMixture}(3)$ distribution family using various initialization strategies.
+Note that both, `"kmeans"` and `"cmm"` use the random number generator for internal K-means clustering.
+This necessitates setting a constant seed before running `fit_dist_start()` and `fit()` to ensure the chosen starting parameters are the same for both calls.
+
+```{r}
+dist <- dist_erlangmix(list(NULL, NULL, NULL))
+params <- list(
+  shapes = list(1L, 4L, 12L),
+  scale = 2.0,
+  probs = list(0.5, 0.3, 0.2)
+)
+
+set.seed(1234)
+x <- dist$sample(100L, with_params = params)
+
+set.seed(32)
+init_true <- fit_dist_start(dist, x, init = "shapes",
+                              shapes = as.numeric(params$shapes))
+init_fan <- fit_dist_start(dist, x, init = "fan", spread = 3L)
+init_kmeans <- fit_dist_start(dist, x, init = "kmeans")
+init_cmm <- fit_dist_start(dist, x, init = "cmm")
+flatten_params(init_true)
+flatten_params(init_fan)
+flatten_params(init_kmeans)
+flatten_params(init_cmm)
+
+set.seed(32)
+str(fit(dist, x, init = "shapes", shapes = as.numeric(params$shapes)))
+fit(dist, x, init = "fan", spread = 3L)$logLik
+fit(dist, x, init = "kmeans")$logLik
+fit(dist, x, init = "cmm")$logLik
+```
+
+It should be noted that the different initialization methods had a considerable impact on the outcome due to the discrete nature of Erlang mixture distributions and thus the combinatorial difficulty of picking optimal shapes $\alpha$.
+The `fit()` result for Erlang mixture distributions contains an element named `"params_hist"`.
+This can be populated by passing `trace = TRUE` to `fit()` and will record parameters after all ECME steps.
+The element `"iter"` contains the number of full ECME-Iterations that were performed.
 
 ## Distributional regression using \pkg{tensorflow} integration {short-title="distributional regression using tensorflow integration" #tensorflow}
 
