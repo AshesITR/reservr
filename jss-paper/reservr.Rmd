@@ -455,7 +455,24 @@ If the shape parameters are free, there are different initialization strategies 
 Re-using `dist` $= \mathcal{N}_{\sigma = 1}$ from above and the generated sample `obs`, we can fit the free parameter `mean`:
 
 ```{r}
-str(fit(dist, obs))
+the_fit <- fit(dist, obs)
+str(the_fit)
+```
+
+Using the function `plot_distributions()` we can also assess the quality of the fit.
+
+```{r}
+plot_distributions(
+  true = dist,
+  fitted = dist,
+  empirical = dist_empirical(0.5 * (obs$xmin + obs$xmax)),
+  .x = seq(-5, 5, length.out = 201),
+  plots = "density",
+  with_params = list(
+    true = list(mean = 0.0, sd = 1.0),
+    fitted = the_fit$params
+  )
+)
 ```
 
 We follow with an example of fitting an $\mathrm{ErlangMixture}(3)$ distribution family using various initialization strategies.
@@ -504,42 +521,6 @@ The element `"iter"` contains the number of full ECME-Iterations that were perfo
 [//]: # (old content:)
 
 # Usage
-
-This is a basic example which shows how to fit a normal distribution to randomly truncated and censored data.
-
-\pkg{reservr} can be used to fit a normal distribution to the observations described in `obs` as follows.
-First, the distribution family to be fitted is constructed.
-It is possible to provide a-priori fixed values for some parameters as well, but we will not do this in this example.
-
-```{r}
-dist <- dist_normal()
-```
-
-Next, we can instruct \pkg{reservr} to estimate the parameters of `dist` from truncated observations `obs` using the `fit()` generic method.
-This generic automatically selects an estimation algorithm depending on the distribution family that is provided.
-In the case of a normal distribution, a generic \pkg{nloptr} based approach will be used.
-
-```{r}
-the_fit <- fit(dist, obs)
-str(the_fit)
-```
-
-The fit results contain the estimated parameters, the result object of the call to \pkg{nloptr}, and the value of the conditional log-likelihood attained at the estimated parameters.
-Using the function `plot_distributions()` we can also assess the quality of the fit.
-
-```{r}
-plot_distributions(
-  true = dist,
-  fitted = dist,
-  empirical = dist_empirical(0.5 * (obs$xmin + obs$xmax)),
-  .x = seq(-5, 5, length.out = 201),
-  plots = "density",
-  with_params = list(
-    true = list(mean = 0.0, sd = 1.0),
-    fitted = the_fit$params
-  )
-)
-```
 
 ## Working with Distributions
 
