@@ -334,7 +334,41 @@ These are tailored to the needs of maximizing (conditional) likelihoods of weigh
 
 ### Blended distribution families {#dist-blended}
 
-TODO describe blended distributions
+A Blended distribution is defined as follows: Given two underlying distributions $P, Q$ on $\mathbb{R}$ with cdfs $F(\cdot)=P((-\infty, \cdot])$ and $G(\cdot)=Q((-\infty, \cdot])$, respectively, and parameters $\kappa \in \mathbb{R}, \varepsilon \in (0, \infty), p \in [0, 1]^2, p_1 + p_2 = 1$ such that $F(\kappa) > 0$ and $G(\kappa) < 1$, we define the \textit{Blended Distribution} $B = \mathop{\mathrm{Blended}}(P, Q; p, \kappa, \varepsilon)$ of $P$ and $Q$ with blending interval $[\kappa - \varepsilon, \kappa + \varepsilon]$ and mixture probabilities $p$ via its cdf
+$F_B$:
+\begin{align}
+\nonumber
+    p_{\kappa, \varepsilon}(x) &=
+    \begin{cases}
+        x & , x \in (-\infty, \kappa-\varepsilon],\\
+        \tfrac12 (x + \kappa - \varepsilon) +
+        \tfrac\varepsilon\pi \cos\Big( \frac{\pi (x - \kappa)}{2 \varepsilon} \Big) &, x \in (\kappa-\varepsilon , \kappa+\varepsilon], \\
+        \kappa &, x  \in (\kappa +\varepsilon, \infty),
+    \end{cases} \\
+    \nonumber
+    q_{\kappa, \varepsilon}(x) & =
+    \begin{cases}
+        \kappa & , x \in (-\infty, \kappa-\varepsilon],\\
+        \tfrac12 (x + \kappa + \varepsilon) -
+        \tfrac\varepsilon\pi \cos\Big( \frac{\pi (x - \kappa)}{2 \varepsilon} \Big) &, x \in (\kappa-\varepsilon , \kappa+\varepsilon], \\
+        x &, x  \in (\kappa +\varepsilon, \infty),
+    \end{cases} \\
+    \label{eq:fb}
+    F_B(x) & = p_1 \frac{F(p_{\kappa, \varepsilon}(x))}{F(\kappa)} + p_2 \frac{G(q_{\kappa, \varepsilon}(x)) - G(\kappa)}{1 - G(\kappa)}.
+\end{align}
+
+This leads to the definition of a blended distribution family:
+
+Given two families $\mathcal{F}, \mathcal{G}$ of distributions on $\mathbb{R}$, and parameters $\kappa \in \mathbb{R}, \varepsilon \in (0, \infty)$, we define the \textit{Blended Distribution family} as the family of Distributions
+\begin{align} \label{eq:blended}
+    \mathop{\mathrm{Blended}}(\mathcal{F}, \mathcal{G}; \kappa, \varepsilon) & := \{ \mathop{\mathrm{Blended}}(P, Q ; p, \kappa, \varepsilon) \mid P \in \mathcal{F}, Q \in
+    \mathcal{G}, p \in [0, 1]^2, \lVert p\rVert_1 = 1 \}.
+\end{align}
+
+Blended distribution families can be generalized to a number of components $k$ by letting $\kappa$ and $\varepsilon$ become vectors of dimension $k - 1$ such that $\kappa_i + \varepsilon_i \le \kappa_{i + 1} - \varepsilon_{i + 1}$ for $i = 1, \ldots, k - 2$.
+Compared to piecewise distribution families obtained by mixture of truncated distribution families with supports $(-\infty, \kappa]$ and $[\kappa, \infty)$ such as those commonly used for extreme value modelling, blended distribution families exhibit a continuous density within the blending region $(\kappa - \varepsilon, \kappa + \varepsilon)$.
+
+\pkg{reservr} provides an implementation via `dist_blended()`.
 
 ### The Blended Dirac-Erlang-Generalized Pareto distribution family {#dist-bdegp}
 
