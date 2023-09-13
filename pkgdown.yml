@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   distributions: distributions.html
   tensorflow: tensorflow.html
-last_built: 2023-09-13T19:32Z
+last_built: 2023-09-13T20:34Z
 urls:
   reference: https://ashesitr.github.io/reservr/reference
   article: https://ashesitr.github.io/reservr/articles
