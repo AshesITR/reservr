@@ -515,238 +515,34 @@ The element `"iter"` contains the number of full ECME-Iterations that were perfo
 
 ## Distributional regression using \pkg{tensorflow} integration {short-title="distributional regression using tensorflow integration" #tensorflow}
 
-# Conclusion {#conclusion}
+This section describes the functions for the problem of regressing a function $g : \mathfrak{X} \to \Theta$ given a sample $\mathfrak{I}$ with associated covariates $X \in \mathfrak{X}$, a parameterized family $\mathcal{F} = \{F_\theta \mid \theta \in \Theta\}$ and a family $\mathcal{G}$ of functions from $\mathfrak{X}$ to $\Theta$.
+Distributional regression can be formulated as
 
+\begin{align}\label{eq:cml-regression-likelihood}
+  \ell(g | \mathfrak{I}, X) & := \sum_{(m, v, l, u) \in \mathfrak{I}, x \in X} w \cdot \begin{cases}
+    \log f_{g(x)}(m) - \log F_{g(x)} ([l, u]) & m = v \\
+    \log F_{g(x)}([m, v]) - \log F_{g(x)}([l, u]) & m < v
+  \end{cases}, \text{and} \\
+  \hat g & = \mathop{\mathrm{arg\,max}}_{g \in \mathcal{G}} \ell(g | \mathfrak{I}, X). \nonumber
+\end{align}
 
-[//]: # (old content:)
+Compared with \eqref{eq:cml-likelihood}, the global parameter $\theta$ is replaced by the regression function $g$ evaluated at the associated covariates.
 
-# Usage
+The maximization problem is delegated to \pkg{tensorflow}, which supplies ample stochastic optimization algorithms.
+Functions in \pkg{reservr} are necessary to create a suitable output layer for \pkg{tensorflow} that maps onto $\Theta$ and to provide an implementation of the (negative) log-likelihood \eqref{eq:cml-regression-likelihood}.
+These two tasks are combined in `tf_compile_model()`.
+The function returns an object of class `reservr_keras_model`, which can be used for the estimation procedure.
 
-## Working with Distributions
+Given input layers `inputs` and an intermediate output layer `intermediate_output` as well as a family of distributions `dist`, the function
 
-Distributions are a set of classes available in \pkg{reservr} to specify distribution families of random variables.
-A Distribution inherits from the R6 Class `Distribution` and provides all functionality necessary for working with a
-specific family.
+* Compiles the loss for `dist` defined by \eqref{eq:cml-regression-likelihood} as $l(g) = -\tfrac{1}{\#(\mathfrak{I})} \ell(g|\mathfrak{I}, X)$, optionally disabling `censoring` or `truncation` for efficiency.
+* Creates a list of final output layers mapping `intermediate_output` onto the parameter space $\Theta$ of `dist` using `Distribution$tf_compile_params()`.
+* Runs `keras::compile()` on the underlying `keras.engine.training.Model`.
 
-A Distribution can be defined by calling one of the constructor functions, prefixed by `dist_` in the package.
-All constructors accept parameters of the family as arguments.
-If these arguments are specified, the corresponding parameter is considered _fixed_ in the sense that it need not be
-specified when computing something for the distribution and it will be assumed fixed when calling `fit()` on the
-distribution instance.
-
-### Sample
-
-For example, an unspecified normal distribution can be created by calling `dist_normal()` without arguments.
-This means the parameters `mean` and `sd` are considered _placeholders_.
-If we want to, e.g., sample from `norm`, we must specify these placeholders in the `with_params` argument:
-
-```{r}
-set.seed(1L)
-# Instantiate an unspecified normal distribution
-norm <- dist_normal()
-x <- norm$sample(n = 10L, with_params = list(mean = 3, sd = 1))
-
-set.seed(1L)
-norm2 <- dist_normal(sd = 1)
-x2 <- norm2$sample(n = 10L, with_params = list(mean = 3))
-
-# The same RVs are drawn because the distribution parameters
-# and the seed are the same.
-stopifnot(identical(x, x2))
-```
-
-### Density
-
-The `density()` function computes the density of the distribution with respect to its natural measure.
-Use `is_discrete_at()` to check if a point has discrete mass or lebesgue density.
+The following example defines a linear model with homoskedasticity assumption and fits it using $100$ iterations of the Adam optimization algorithm.
+First, we simulate data from the model $Y | X = \mathcal{N}(\mu 2 \cdot X, \sigma = 1)$.
 
 ```{r}
-norm$density(x, with_params = list(mean = 3, sd = 1))
-dnorm(x, mean = 3, sd = 1)
-# Compute the log-density:
-norm$density(x, log = TRUE, with_params = list(mean = 3, sd = 1))
-norm$is_discrete_at(x, with_params = list(mean = 3, sd = 1))
-
-# A discrete distribution with mass only at point = x[1].
-dd <- dist_dirac(point = x[1])
-dd$density(x)
-dd$is_discrete_at(x)
-```
-
-`diff_density()` computes the gradient of the density with respect to each free parameter.
-Setting `log = TRUE` computes the gradient of the log-density, i.e., the gradient of $\log f(x, params)$ instead.
-
-```{r}
-norm$diff_density(x, with_params = list(mean = 3, sd = 1))
-```
-
-### Probability
-
-With `probability()`, the c.d.f., survival function, and their logarithms can be computed.
-For discrete distributions, `dist$probability(x, lower.tail = TRUE)` returns $P(X \le x)$ and
-`dist$probability(x, lower.tail = FALSE)` returns $P(X > x)$.
-
-```{r}
-norm$probability(x, with_params = list(mean = 3, sd = 1))
-pnorm(x, mean = 3, sd = 1)
-
-dd$probability(x)
-dd$probability(x, lower.tail = FALSE, log.p = TRUE)
-```
-
-Gradients of the (log-)c.d.f. or survival function with respect to parameters can be computed using
-`diff_probability()`.
-
-```{r}
-norm$diff_probability(x, with_params = list(mean = 3, sd = 1))
-```
-
-### Hazard
-
-The hazard rate is defined by $h(x, \theta) = f(x, \theta) / S(x, \theta)$, i.e., the ratio of the density to the
-survival function.
-
-```{r}
-norm$hazard(x, with_params = list(mean = 3, sd = 1))
-norm$hazard(x, log = TRUE, with_params = list(mean = 3, sd = 1))
-```
-
-### Fitting
-
-The `fit()` generic is defined for Distributions and will perform conditional maximum likelihood estimation, or a ECME-type algorithm depending on the Distribution family.
-It accepts a weighted, censored and truncated sample of class `trunc_obs`, but can also accept uncensored,
-untruncated observations without weight in the form of a numeric vector.
-```{r}
-# Fit with mean, sd free
-fit1 <- fit(norm, x)
-# Fit with mean free
-fit2 <- fit(norm2, x)
-# Fit with sd free
-fit3 <- fit(dist_normal(mean = 3), x)
-
-# Fitted parameters
-str(fit1$params)
-str(fit2$params)
-str(fit3$params)
-
-# log-Likelihoods can be computed on
-AIC(fit1$logLik)
-AIC(fit2$logLik)
-AIC(fit3$logLik)
-
-# Convergence checks
-fit1$opt$message
-fit2$opt$message
-fit3$opt$message
-```
-
-### Fitting censored data
-
-Estimation from censored data is done by constructing an appropriate `trunc_obs` object.
-
-```{r}
-params <- list(mean = 30, sd = 10)
-x <- norm$sample(100L, with_params = params)
-xl <- floor(x)
-xr <- ceiling(x)
-
-cens_fit <- fit(norm, trunc_obs(xmin = xl, xmax = xr))
-str(cens_fit)
-```
-
-### Fitting truncated data
-
-Similarly, randomly truncated data can be supplied.
-There is a helper function `truncate_obs()` to artificially truncate observations.
-
-```{r}
-params <- list(mean = 30, sd = 10)
-x <- norm$sample(100L, with_params = params)
-tl <- runif(length(x), min = 0, max = 20)
-tr <- runif(length(x), min = 0, max = 60) + tl
-
-trunc_fit <- fit(norm, truncate_obs(x, tl, tr))
-str(trunc_fit)
-
-x_keep <- tl <= x & x <= tr
-trunc_fit2 <- fit(norm, trunc_obs(x = x[x_keep], tmin = tl[x_keep], tmax = tr[x_keep]))
-stopifnot(identical(trunc_fit, trunc_fit2))
-
-attr(trunc_fit$logLik, "nobs")
-```
-
-### Plotting
-
-Visualising different distributions, or parametrizations, e.g., fits, can be done with the function `plot_distributions()`.
-
-```{r}
-# Plot fitted densities
-plot_distributions(
-  true = norm,
-  fit1 = norm,
-  fit2 = norm2,
-  fit3 = dist_normal(3),
-  .x = seq(-2, 7, 0.01),
-  with_params = list(
-    true = list(mean = 3, sd = 1),
-    fit1 = fit1$params,
-    fit2 = fit2$params,
-    fit3 = fit3$params
-  ),
-  plots = "density"
-)
-
-# Plot fitted densities, c.d.f.s and hazard rates
-plot_distributions(
-  true = norm,
-  cens_fit = norm,
-  trunc_fit = norm,
-  .x = seq(0, 60, length.out = 101L),
-  with_params = list(
-    true = list(mean = 30, sd = 10),
-    cens_fit = cens_fit$params,
-    trunc_fit = trunc_fit$params
-  )
-)
-
-# More complex distributions
-plot_distributions(
-  bdegp = dist_bdegp(2, 3, 10, 3),
-  .x = c(seq(0, 12, length.out = 121), 1.5 - 1e-6),
-  with_params = list(
-    bdegp = list(
-      dists = list(
-        list(), list(), list(
-          dists = list(
-            list(
-              dist = list(
-                shapes = as.list(1:3),
-                scale = 2.0,
-                probs = list(0.2, 0.5, 0.3)
-              )
-            ),
-            list(
-              sigmau = 0.4,
-              xi = 0.2
-            )
-          ),
-          probs = list(0.7, 0.3)
-        )
-      ),
-      probs = list(0.15, 0.1, 0.75)
-    )
-  )
-)
-```
-
-## Working with \pkg{tensorflow} {short-title="Working with tensorflow" #working-with-tensorflow}
-
-\pkg{reservr} also provides integration with \pkg{tensorflow} \citep{tensorflow} to allow training arbitrary neural networks using the negative conditional likelihood as a loss.
-Resulting fits can be used to predict distribution parameters of the specified distribution given arbitrary input predictors.
-The core of this integration is `tf_compile_model()`, which returns a specialized `reservr_keras_model` object with `fit()` and `predict()` methods.
-
-```{r tensorflow-example, eval = FALSE}
-library(ggplot2)
 set.seed(1431L)
 tensorflow::set_random_seed(1432L)
 
@@ -754,40 +550,66 @@ dataset <- tibble::tibble(
   x = runif(100, min = 10, max = 20),
   y = 2 * x + rnorm(100)
 )
+```
 
-# Specify distributional assumption of OLS:
-dist <- dist_normal(sd = 1.0) # OLS assumption: homoskedasticity
+Next, we specify the distribution family $\mathcal{F} = \mathcal{N}_{\sigma = 1}$, incorporating the homoskedasticity assumption.
 
-# Optional: Compute a global fit
-global_fit <- fit(dist, dataset$y)
+```{r}
+dist <- dist_normal(sd = 1.0)
+```
 
-# Define a neural network
+Using \pkg{keras}, we define an empty neural network, just taking $X$ as an input and performing no transformation.
+
+```{r}
 nnet_input <- keras::layer_input(shape = 1L, name = "x_input")
-# in practice, this would be deeper
 nnet_output <- nnet_input
+```
 
-optimizer <- keras::optimizer_adam(learning_rate = 0.1)
+Then, `tf_compile_model()` adapts the input layer to the free parameter space $\Theta = \mathbb{R}$.
+This introduces two parameters to the function family $\mathcal{G}$ and implies the functional relationship $\mu = \theta_1 \cdot x + \theta_0$.
+Since our sample is fully observed, we disable censoring and truncation, leading to the simplified loss
 
+\begin{align*}
+  l(g) = -\tfrac{1}{100} \sum_{x, y} \log f_{g(x)}(y),
+\end{align*}
+
+where $f_\mu(y)$ is the density of $\mathcal{N}_{\mu=\mu, \sigma=1}$ evaluated at $y$.
+
+```{r}
 nnet <- tf_compile_model(
   inputs = list(nnet_input),
   intermediate_output = nnet_output,
   dist = dist,
-  optimizer = optimizer,
-  censoring = FALSE, # Turn off unnecessary features for this problem
+  optimizer = keras::optimizer_adam(learning_rate = 0.1),
+  censoring = FALSE,
   truncation = FALSE
 )
+nnet$dist
+nnet$model
+```
 
+The fit can now be performed, modifying the parameters (weights) of `nnet` in-place.
+Note that the argument `y` of fit accepts a `trunc_obs` object.
+In our example, the vector `y` is silently converted to an untruncated, uncensored `trunc_obs` object.
+`fit()` returns the `keras_training_history` of the underlying call to `fit()` on the `keras.engine.training.Model`.
+
+```{r}
 nnet_fit <- fit(
   nnet,
   x = dataset$x,
   y = dataset$y,
   epochs = 100L,
   batch_size = 100L,
-  shuffle = FALSE
+  shuffle = FALSE,
+  verbose = FALSE
 )
-
 plot(nnet_fit)
+```
 
+The `predict()` method of `reservr_keras_model` takes input tensors and returns the predicted distribution parameters as a list compatible with `dist$get_placeholders()`.
+We can thus extract the only parameter `mean` and compare it to an OLS fit for the same dataset:
+
+```{r}
 pred_params <- predict(nnet, data = list(keras::k_constant(dataset$x)))
 
 lm_fit <- lm(y ~ x, data = dataset)
@@ -795,131 +617,23 @@ lm_fit <- lm(y ~ x, data = dataset)
 dataset$y_pred <- pred_params$mean
 dataset$y_lm <- predict(lm_fit, newdata = dataset, type = "response")
 
+library(ggplot2)
 ggplot(dataset, aes(x = x, y = y)) +
   geom_point() +
   geom_line(aes(y = y_pred), color = "blue") +
   geom_line(aes(y = y_lm), linetype = 2L, color = "green")
+```
 
+Since a `reservr_keras_model` includes the underlying `keras.engine.training.Model`, its parameters can also be extracted and compared to the OLS coefficients
+
+```{r}
 coef_nnet <- rev(as.numeric(nnet$model$get_weights()))
-coef_lm <- coef(lm_fit)
+coef_lm <- unname(coef(lm_fit))
 
 str(coef_nnet)
 str(coef_lm)
 ```
 
-## An actuarial application
+# Conclusion {#conclusion}
 
-The package also contains the function `prob_report()`, designed to compute the expected proportion of claims that are reported to an insurer at some calendar time interval $[\tau_0, \tau_1]$ given they occurred during calendar time $[t_0, t_1]$.
-Some additional assumptions are necessary:
-
-1. Claims during $[t_0, t_1]$ occur according to a Poisson Point Process $\xi$ with intensity $\lambda(t)$.
-2. All occurred claims are independently marked with their reporting delay $D$, which is also independent of the occurrence time $T \in [t_0, t_1]$.
-
-Then
-\begin{align*}
-  \mathbb E(\xi(\{(t, d) : t \in [t_0, t_1], t + d \in [\tau_0, \tau_1]\})) & = \int_{t_0}^{t_1} \lambda(t) P(\tau_0 \le t + D \le \tau_1) \,\mathrm{d}t \\
-  & = \int_{t_0}^{t_1} \lambda(t) P_D([\tau_0 - t, \tau_1 - t]) \mathrm{d}t \\
-  \mathbb E(\xi(\{(t, d) : t \in [t_0, t_1]\})) & = \int_{t_0}^{t_1} \lambda(t) \mathrm{d}t \\
-  \mathtt{prob\_report}(t_0, t_1, \tau_0, \tau_1; \lambda) & = \frac{\int_{t_0}^{t_1} \lambda(t) P_D([\tau_0 - t, \tau_1 - t]) \mathrm{d}t}{\int_{t_0}^{t_1} \lambda(t) \mathrm{d}t},
-\end{align*}
-
-and for $\lambda \equiv \text{const}$, this further simplifies to
-$$
-  \mathtt{prob\_report}(t_0, t_1, \tau_0, \tau_1; \lambda) = \frac{1}{t_1 - t_0} \int_{t_0}^{t_1} P_D([\tau_0 - t, \tau_1 - t]) \mathrm{d}t.
-$$
-
-The \proglang{R} function `prob_report()` takes $(t_0, t_1, \tau_0, \tau_1)$ as a `trunc_obs` tibble with `xmin` and `xmax` taking the role of $t_0$ and $t_1$, and with `tmin` and `tmax` representing $\tau_0$ and $\tau_1$. $\lambda$ is passed as the argument `expo` which, if equal to `NULL`, assumes a homogeneous Poisson Point Process, i.e., $\lambda \equiv \text{const}$. For example, if $D \sim \mathrm{Exp}(r)$ and $\lambda(t) \equiv \text{const}$ is constant, the reporting probabilities for the first 5 development periods with $r = 1.0$ and $r = 0.5$ can be computed using the following \proglang{R} code.
-
-```{r}
-dist <- dist_exponential()
-ints <- data.frame(
-  xmin = 0,
-  xmax = 1,
-  tmin = rep(seq_len(5) - 1.0, times = 2L),
-  tmax = rep(seq_len(5), times = 2L)
-)
-params <- list(rate = rep(c(1, 0.5), each = 5))
-
-prob_report(dist, ints, with_params = params)
-```
-
-# Package architecture
-
-This section describes the software architecture of the package.
-A more task-focused introduction to the interface is provided in [Usage].
-Note that the most up-to-date documentation for \pkg{reservr} can be found at https://ashesitr.github.io/reservr/index.html.
-
-## Fitting
-
-Every distribution supported by reservr is represented by an R6 class, inheriting from the R6 class `Distribution`.
-Additionally, there are three S3 generics relevant to estimation of parameters for `Distribution`s:
-
- * `fit_dist_start()` to obtain suitable starting values for distribution fits, based on a `trunc_obs` observation object.
- * `fit_dist()` to perform estimation of _free_ parameters of the distribution.
- * `fit()`, delegating to `fit_dist()`.
-
-The result of `fit_dist_start(dist, obs)` is a list of starting values compatible with `dist$get_placeholders()`.
-Instead of passing a `trunc_obs` object to derive starting values from, a numeric vector of observations can also be used.
-
-```{r}
-dist <- dist_normal(sd = 1.0)
-x <- dist$sample(100L, with_params = list(mean = 3.0))
-str(fit_dist_start(dist, x))
-```
-
-A `fit_dist(dist, obs)` result is a list with elements
-
- * `params`: The final estimated parameters, compatible with `dist$get_placeholders()`.
- * `opt` (optional): The return value from `nloptr` if conditional ML was used to estimate the parameters.
- * `iter` (optional): The number of EM-Iterations performed if an EM-type algorithm was used to estimate the parameters.
- * `params_hist` (optional): The history of inner EM parameter estimates (only if fit with `trace = TRUE`).
- * `logLik`: An object of class 'logLik' containing the final log-likelihood and with `df` equal to `dist$get_dof()`.
-
-## Parameters
-
-A Distribution instance, created by the corresponding `dist_*()` function represents a family $\mathcal{F}$ of distributions.
-Parameters of the underlying distribution can be held fixed (removing a degree of freedom from the family), or kept as a _placeholder_.
-
-For example, `dist_normal()` represents the family of normal distributions with parameters $(\mu, \sigma) \in \mathbb{R} \times (0, \infty)$.
-`dist_normal(mean = 0.0)` represents the family of centered normal distributions with mean $0$ and parameter $\sigma \in (0, \infty)$.
-
-Distribution parameters are stored as named lists, with the sentinel value `NULL` representing a free parameter.
-The instance method `get_params()` returns a list of all parameters, both fixed and free, and `get_placeholders()` returns a list structure containing only the free parameters.
-`default_params` is an active binding with the same structure as `get_params()` but the possibility for overwriting values.
-
-```{r}
-dist <- dist_normal(mean = 0.0)
-str(dist$get_params())
-str(dist$default_params)
-str(dist$get_placeholders())
-```
-
-The free parameters have associated domains, which can be queried using `get_param_bounds()`, which returns a list with the same structure as `get_placeholders()`, but with leaves not equal to `NULL` but instead the real or integer `Interval` bounds for the parameter.
-If there are additional constraints, such as for mixture distributions, where the probability weights parameters must add up to $1$, these constraints are available via `get_param_constraints()`.
-This function returns a constraint function which returns the value and the Jacobian of the constraints with respect to the parameters, and whose value must be zero for admissible parameters.
-All distributions also provide a `get_components()` function returning a list of component distributions (or an empty list).
-
-```{r}
-str(dist$get_param_bounds())
-str(dist$get_param_constraints())
-
-# Mixture of two components
-mixd <- dist_mixture(
-  dists = list(
-    dist_normal(mean = 0.0),
-    dist_normal(sd = 1.0)
-  )
-)
-str(mixd$get_placeholders())
-str(mixd$get_param_constraints())
-str(mixd$get_components())
-```
-
-The degrees of freedom of a family, defined as the dimension of the space of admissible parameters is used for returning information criteria of distribution fits and is returned by the instance method `get_dof()`.
-```{r}
-c(
-  dist_normal()$get_dof(),
-  dist$get_dof(),
-  mixd$get_dof()
-)
-```
+TODO conclude
