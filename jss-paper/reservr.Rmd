@@ -672,4 +672,6 @@ str(coef_lm)
 
 # Conclusion {#conclusion}
 
-TODO conclude
+We presented \pkg{reservr}, a package that supports distribution estimation and distribution regression using \proglang{R}.
+Both tasks are supported for samples with or without interval censoring and with or without random truncation, a more general form of truncation than what typical packages support.
+The package includes facilities for (1) definition of randomly truncated and interval censored samples, (2) definition of distribution families to consider, (3) global distribution parameter estimation under an i.i.d. assumption on the sample and (4) distributional regression - employing the \pkg{tensorflow} package for flexibility and speed.
