@@ -58,18 +58,54 @@ Data with _interval censoring_ applied to the outcome $Y$ only consists of lower
 Truncated data misses observations for which the outcome $Y$ falls out of a certain lower and upper truncation bound.
 We consider the case of _random truncation_, where these truncation bounds are also random variables that vary for each observation.
 
-[//]: # (TODO continue here)
-
-Interval censored observations can be described as follows: let $(Y, M, V)$ denote a random vector, where $Y$ is the variable of interest that is supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measuer $\mu$.
-The pair $(M, V)$ shall satisfy $M \le Y \le V$, with $M$ possibly equal to $-\infty$ and $V$ possibly equal to $+\infty$.
-Further, assume $Y$ to be conditionally independent of $(M, V)$ given $M \le Y \le V$ and $(M, V)$ to have density $f_{(M, V)}$ with respect to some dominating sigma-finite measure $\nu$.
-A complete sample $(Y, M, V)$ is therefore drawn from the $(\mu \otimes \nu)$-density
+Interval censored observations can be described as follows: let $(Y, M_0, V_0)$ denote a random vector, where $Y$ is the variable of interest, with c.d.f. $F_\theta$ depending on a parameter $\theta \in \Theta$.
+The pair $(M_0, V_0)$ shall satisfy $M_0 \le V_0$. Further, assume $Y$ to be independent of $(M_0, V_0)$.
+Further, assume $\mathbb{P}(Y \in \{M_0, V_0\} | M_0, V_0) = 0$ for all $(M_0, V_0)$.
+Let
+\begin{align*}
+  D & := \mathbf{1}(Y > M_0) + \mathbf{1}(Y > V_0),
+\end{align*}
+and consider the conditional likelihood of $D$ given $(M_0, V_0)$:
 
 \begin{align}
-  f_{(Y, M, V) | M \le Y \le V}(y, m, v) & = f_{Y | M \le Y \le V}(y) f_{(M, V) | M \le Y \le V}(m, v) \nonumber\\
-& = \frac{f_\theta(y)}{\mathrm{Pr}(M \le Y \le V)} f_{(M, V) | M \le Y \le V}(m, v) \mathbf{1}(m \le y \le v)
+  \mathbb{P}(D = d | M_0, V_0) & = \begin{cases}
+    \mathbb{P}(Y \le M_0) & D = 0 \\
+    \mathbb{P}(M_0 < Y \le V_0) & D = 1 \\
+    \mathbb{P}(V_0 < Y) & D = 2
+  \end{cases} \nonumber \\
+  & = \begin{cases}
+    F_\theta((-\infty, M_0]) & D = 0 \\
+    F_\theta((M_0, V_0]) & D = 1 \\
+    F_\theta((V_0, \infty)) & D = 2
+  \end{cases}. \label{eq:lik-cens0}
 \end{align}
 
+Define new random variables $(M, V)$ by
+
+\begin{align*}
+  M & := \begin{cases}
+    -\infty & D = 0 \\
+    M_0 & D = 1 \\
+    V_0 & D = 2
+  \end{cases} \\
+  V & := \begin{cases}
+    M_0 & D = 0 \\
+    V_0 & D = 1 \\
+    \infty & D = 2
+  \end{cases}
+\end{align*}
+
+Then we can simplify \eqref{eq:lik-cens0} to
+
+\begin{align}
+  \mathbb{P}(D = d | M_0, V_0) & = F_\theta([M, V]) \label{eq:lik-cens} \\
+  D & = \begin{cases}
+    0 & M = -\infty \\
+    1 & M > -\infty, V < \infty \\
+    2 & V = \infty
+  \end{cases} \nonumber \\
+  \Rightarrow \ell(\theta | M_0, V_0) & = \log F_\theta([M, V]). \nonumber
+\end{align}
 
 The random truncation problem can be formulated as follows: let $(Y, L, U)$ denote a random vector, where $Y$ is the variable of interest that is supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measure $\mu$.
 The pair $(L, U)$ is assumed to be independent of $Y$ and shall satisfy $L \le U$, with $L$ possibly equal to $-\infty$ and $U$ possibly equal to $+\infty$.
@@ -78,13 +114,13 @@ A sample of _randomly truncated observations_ from $(Y, L, U)$ consists of indep
 As a consequence, any observed value can be regarded as being drawn from the $(\mu \otimes \nu)$-density
 
 \begin{align}
-  f_{(Y, L, U) | L \le Y \le U}(y, l, u) = \frac{f_{(L, U)}(l, u) f_\theta(y)}{\mathrm{Pr}(L \le Y \le U)} \mathbf{1}(l \le y \le u) \label{eq:trunc-dens}
+  f_{(Y, L, U) | L \le Y \le U}(y, l, u) = \frac{f_{(L, U)}(l, u) f_\theta(y)}{\mathrm{Pr}(L \le Y \le U)} \mathbf{1}(l \le y \le u). \label{eq:trunc-dens}
 \end{align}
 
 Subsequently, we write $(Y^{(t)}, L^{(t)}, U^{(t)})$ for a random vector following the above density, i.e.,
 
 \[
-  f_{(Y^{(t)}, L^{(t)}, U^{(t)})}(y, l, u) = f_{(Y, L, U) | L \le Y \le U}(y, l, u)
+  f_{(Y^{(t)}, L^{(t)}, U^{(t)})}(y, l, u) = f_{(Y, L, U) | L \le Y \le U}(y, l, u).
 \]
 
 Estimating $\theta$ based on maximum likelihood requires specifying a distribution for $(L, U)$ (which can be regarded as a nuisance parameter) and calculating the denominator in \eqref{eq:trunc-dens}.
@@ -96,10 +132,10 @@ In our case, we rely on considering the density of $Y^{(t)}$ conditional on the 
     & = \frac{f_{(Y, L, U) | L \le Y \le U}(y, l, u)}{\int_{[l, u]} f_{(Y, L, U) | L \le Y \le U}(z, l, u) \,\mathrm{d}z} = \frac{f_\theta(y)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z}
 \end{align*}
 
-Combining interval censoring and random truncation yields the conditional likelihood
+Combining the compressed representation of interval censoring using \eqref{eq:lik-cens} and random truncation yields the conditional log-likelihood
 
 \begin{align}
-  \ell(\theta; M^{(t)} = m, V^{(t)} = v, L^{(t)} = l, U^{(t)} = u) & = \log F_\theta([m, v]) - \log F_\theta([l, u])
+  \ell(\theta | M^{(t)} = m, V^{(t)} = v, L^{(t)} = l, U^{(t)} = u) & = \log F_\theta([m, v]) - \log F_\theta([l, u])
 \end{align}
 
 A practical example of random truncation and interval censorship arises in the presence of inaccurate accident date specifications when reporting claims in general insurance.
