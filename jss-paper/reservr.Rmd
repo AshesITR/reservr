@@ -29,8 +29,8 @@ abstract: >
   Additional utilities for application in a general insurance context, as well as the usual sampling, density,
   probability and quantile functions are provided.
 keywords:
-  formatted: [distribution fitting, truncation, random truncation, censoring, "\\proglang{R} packages"]
-  plain:     [distribution fitting, truncation, random truncation, censoring, R packages]
+  formatted: [distribution fitting, truncation, random truncation, censoring, "\\proglang{R} packages", distributional regression]
+  plain:     [distribution fitting, truncation, random truncation, censoring, R packages, distributional regression]
 preamble: >
   \usepackage{amsmath}
   \usepackage{amssymb}
