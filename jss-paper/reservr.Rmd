@@ -20,8 +20,7 @@ abstract: >
   the point of truncation varies by observation.
   In practice, it is often of interest to also consider the influence of other parameters (predictors) on the
   distribution of an outcome variable.
-  We present the features and implementation of the \proglang{R} package \pkg{reservr} for a large class of
-  distributions.
+  We present the features and implementation of the \proglang{R} package \pkg{reservr}.
   The package provides a flexible interface to specify distribution families, provides algorithms to perform parameter
   estimation for censored and randomly truncated data based on (conditional) maximum likelihood, and exposes an
   interface to the \proglang{R} package \pkg{tensorflow} for training flexible neural network models on censored and
@@ -43,24 +42,26 @@ library(reservr)
 options(prompt = 'R> ', continue = '+ ')
 ```
 
+\shortcites{deepregression}
+
 # Introduction
 
 Most statistical analyses are concerned with modelling and estimation of the distribution of some measured variable of interest, the outcome, possibly conditional on the value of one or several endogenous variables.
 In the absence of endogenous variables, this process is usually called distribution fitting, and in the presence of endogenous variables it is called regression.
-Classical regression, such as via generalized linear models, is usually concerned with the influence of endogenous variables on the mean of the outcome, i.e., $\mathbb{E}(Y|X) = f(X)$ for some random variable $Y$ and vector of associated endogenous variables $X$ paired with a homoskedascity assumption linking the other parameters of the outcome distribution to its mean.
+Classical regression, such as via generalized linear models, is usually concerned with the influence of endogenous variables on the mean of the outcome, i.e., $\E(Y|X) = f(X)$ for some random variable $Y$ and vector of associated endogenous variables $X$ paired with a homoskedascity assumption linking the other parameters of the outcome distribution to its mean.
 Some models also allow specification of additional parameters of the distribution of the outcome variable, such as GAMLSS, which also allows for the scale parameter to depend on endogeneous variables.
 More recently, deep distributional regression allows for flexible specification of individual outcome distribution parameters.
 An example implementation of the latter can be found in \citet{deepregression}.
 
-Usual statistical methods require complete data, that is full information on all observations of interest (X, Y).
+Usual statistical methods require complete data, that is full information on all observations of interest $(X, Y)$ where $Y$ is some outcome of interest and $X$ represent corresponding covariates.
 In addition to this usual scenario we study two observation schemes that do not provide all observations.
 Data with _interval censoring_ applied to the outcome $Y$ only consists of lower and upper bounds for $Y$ instead of the actual value.
 Truncated data misses observations for which the outcome $Y$ falls out of a certain lower and upper truncation bound.
 We consider the case of _random truncation_, where these truncation bounds are also random variables that vary for each observation.
 
 Interval censored observations can be described as follows: let $(Y, M_0, V_0)$ denote a random vector, where $Y$ is the variable of interest, with c.d.f. $F_\theta$ depending on a parameter $\theta \in \Theta$.
-The pair $(M_0, V_0)$ shall satisfy $M_0 \le V_0$. Further, assume $Y$ to be independent of $(M_0, V_0)$.
-Further, assume $\mathbb{P}(Y \in \{M_0, V_0\} | M_0, V_0) = 0$ for all $(M_0, V_0)$.
+The pair $(M_0, V_0)$ shall satisfy $M_0 \le V_0$.
+Further, assume $Y$ to be independent of $(M_0, V_0)$ and $\Prob(Y \in \{M_0, V_0\} | M_0, V_0) = 0$, i.e.\ there is almost surely no point mass at censoring bounds.
 Let
 \begin{align*}
   D & := \mathbf{1}(Y > M_0) + \mathbf{1}(Y > V_0),
@@ -68,46 +69,52 @@ Let
 and consider the conditional likelihood of $D$ given $(M_0, V_0)$:
 
 \begin{align}
-  \mathbb{P}(D = d | M_0, V_0) & = \begin{cases}
-    \mathbb{P}(Y \le M_0) & D = 0 \\
-    \mathbb{P}(M_0 < Y \le V_0) & D = 1 \\
-    \mathbb{P}(V_0 < Y) & D = 2
+  \Prob(D = d | M_0, V_0) & = \begin{cases}
+    \Prob(Y \le M_0 | M_0, V_0) & d = 0 \\
+    \Prob(M_0 < Y \le V_0 | M_0, V_0) & d = 1 \\
+    \Prob(V_0 < Y | M_0, V_0) & d = 2
   \end{cases} \nonumber \\
   & = \begin{cases}
-    F_\theta((-\infty, M_0]) & D = 0 \\
-    F_\theta((M_0, V_0]) & D = 1 \\
-    F_\theta((V_0, \infty)) & D = 2
+    F_\theta((-\infty, M_0]) & d = 0 \\
+    F_\theta((M_0, V_0]) & d = 1 \\
+    F_\theta((V_0, \infty)) & d = 2
   \end{cases}. \label{eq:lik-cens0}
 \end{align}
 
 Define new random variables $(M, V)$ by
 
-\begin{align*}
+\begin{align}
   M & := \begin{cases}
     -\infty & D = 0 \\
     M_0 & D = 1 \\
     V_0 & D = 2
-  \end{cases} \\
+  \end{cases} \nonumber \\
   V & := \begin{cases}
     M_0 & D = 0 \\
     V_0 & D = 1 \\
     \infty & D = 2
-  \end{cases}
-\end{align*}
+  \end{cases} \label{eq:int-cens}
+\end{align}
 
 Then we can simplify \eqref{eq:lik-cens0} to
 
 \begin{align}
-  \mathbb{P}(D = d | M_0, V_0) & = F_\theta([M, V]) \label{eq:lik-cens} \\
+  \Prob(D = d | M_0, V_0) & = F_\theta([M, V]) \label{eq:lik-cens} \\
   D & = \begin{cases}
     0 & M = -\infty \\
     1 & M > -\infty, V < \infty \\
     2 & V = \infty
-  \end{cases} \nonumber \\
-  \Rightarrow \ell(\theta | M_0, V_0) & = \log F_\theta([M, V]). \nonumber
+  \end{cases}. \nonumber
 \end{align}
+This leads to the conditional log-likelihood
 
-The random truncation problem can be formulated as follows: let $(Y, L, U)$ denote a random vector, where $Y$ is the variable of interest that is supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measure $\mu$.
+\[
+\ell(\theta | M_0, V_0) = \log F_\theta([M, V]).
+\]
+
+A sample of \textit{non-informatively interval censored observations} from $(M, V)$ consists of independent observations $(m_i, v_i)$ that are sampled according to \eqref{eq:int-cens}.
+
+The random truncation problem is formulated as follows in \citet{Rosenstock2022}: let $(Y, L, U)$ denote a random vector, where $Y$ is the variable of interest that is supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measure $\mu$.
 The pair $(L, U)$ is assumed to be independent of $Y$ and shall satisfy $L \le U$, with $L$ possibly equal to $-\infty$ and $U$ possibly equal to $+\infty$.
 Further, $(L, U)$ shall have density $f_{(L, U)}$ with respect to some dominating sigma-finite measure $\nu$.
 A sample of _randomly truncated observations_ from $(Y, L, U)$ consists of independent observations $(y_i, l_i, u_i)$ that we only happen to see if $l_i \le y_i \le u_i$.
@@ -129,7 +136,7 @@ In our case, we rely on considering the density of $Y^{(t)}$ conditional on the 
 
 \begin{align*}
   f_{Y^{(t)} | L^{(t)} = l, U^{(t)} = u}(y) & = \frac{f_{(Y^{(t)}, L^{(t)}, U^{(t)})}(y, l, u)}{f_{(L^{(t)}, U^{(t)})}(l, u)} \\
-    & = \frac{f_{(Y, L, U) | L \le Y \le U}(y, l, u)}{\int_{[l, u]} f_{(Y, L, U) | L \le Y \le U}(z, l, u) \,\mathrm{d}z} = \frac{f_\theta(y)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}z}
+    & = \frac{f_{(Y, L, U) | L \le Y \le U}(y, l, u)}{\int_{[l, u]} f_{(Y, L, U) | L \le Y \le U}(z, l, u) \,\mathrm{d}\mu(z)} = \frac{f_\theta(y)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}\mu(z)}.
 \end{align*}
 
 Combining the compressed representation of interval censoring using \eqref{eq:lik-cens} and random truncation yields the conditional log-likelihood
@@ -172,7 +179,7 @@ Four main components are integrated with each other to facilitate the analysis g
 1. Methods for defining a randomly truncated interval censored sample $\mathfrak{I}$.
 2. Methods for specifying distribution families $\mathcal{F}$ to be fitted.
 3. Methods for estimating distribution parameters given a sample $\mathfrak{I}$ and a family $\mathcal{F}_\theta$.
-4. Methods for regression of distribution parameters given a sample $\mathfrak{I}$ with associated covariates $X$, a family $\mathcal{F}_\theta$ and a general \pkg{tensorflow} network $g$ that processes $X$ to estimate $Y | X = F_{g(x)}$.
+4. Methods for regression of distribution parameters given a sample $\mathfrak{I}$ with associated covariates $X$, a family $\mathcal{F}_\theta$ and a general \pkg{tensorflow} network $g$ that processes $X$ to estimate $Y | X = F_{g(X)}$.
 
 Each of these components is described one by one in the following sections.
 
@@ -203,14 +210,17 @@ N <- 1000L
 x <- rnorm(N)
 is_censored <- rbinom(N, size = 1L, prob = 0.8) == 1L
 x_lower <- x
-x_lower[is_censored] <- x[is_censored] -
-  runif(sum(is_censored), min = 0, max = 0.5)
+x_lower[is_censored] <- runif(sum(is_censored), min = -2.0, max = 0.0)
 x_upper <- x
-x_upper[is_censored] <- x[is_censored] +
-  runif(sum(is_censored), min = 0, max = 0.5)
+x_upper[is_censored] <- x_lower[is_censored] + runif(sum(is_censored), min = 0, max = 1.0)
 
-t_lower <- runif(N, min = -2, max = 0)
-t_upper <- runif(N, min = 0, max = 2)
+x_upper[x < x_lower] <- x_lower[x < x_lower]
+x_lower[x < x_lower] <- -Inf
+x_lower[x > x_upper] <- x_upper[x > x_upper]
+x_upper[x > x_upper] <- Inf
+
+t_lower <- runif(N, min = -2.0, max = 0.0)
+t_upper <- runif(N, min = 0.0, max = 2.0)
 
 is_observed <- t_lower <= x & x <= t_upper
 
@@ -239,49 +249,52 @@ sum(is.na(obs$x))
 ```
 
 In addition to the `trunc_obs()` constructor function, there are `as_trunc_obs()` for coercion, `truncate_obs()` for artifically changing truncation bounds, and `repdel_obs()` for computing randomly truncated reporting delay observations from general insurance claims data containing accident date, reporting delay and evaluation date information.
-The latter takes inputs of the form $(T_\text{acc}, D, \tau)$ and returns the sample $(\mathtt{xmin} = \mathtt{xmax} = D, \mathtt{tmin} = 0, \mathtt{tmax} = \tau - T_{\text{acc}}, \mathtt{w} = 1)$ suitable for estimating the reporting delay distribution where a claim is only observed if it has been reported by the evaluation date, i.e., $T_{\text{acc}} + D \le \tau$.
+The latter takes inputs of the form $(T_\text{acc}, D, \tau)$ where $T_{\text{acc}} < \tau$ are accident dates with corresponding reporting delays $D \ge 0$ and $\tau$ is the calendar date of observation.
+It returns the sample $(\mathtt{xmin} = \mathtt{xmax} = D, \mathtt{tmin} = 0, \mathtt{tmax} = \tau - T_{\text{acc}}, \mathtt{w} = 1)$ suitable for estimating the reporting delay distribution where a claim is only observed if it has been reported by the evaluation date, i.e., $T_{\text{acc}} + D \le \tau$.
 
 ## Definition of distribution families {#distributions}
 
 Distribution families are implemented using the \pkg{R6} class system \citep{R6}.
-They inherit from `Distribution` and feature a common interface to
+They inherit from the class `Distribution` and feature a common interface to
 
-* Manage fixed and free parameters of the underlying familiy
-* Basic distribution functions for sampling, computation of density, cumulative density, hazard and quantile
-* Additional functions supporting parameter estimation procedures such as computing support and discreteness
-* Performance enhancements to speed up basic functions for repeated evaluation
-* \pkg{tensorflow}-specific implementations to support (deep) distributional regression
+* manage fixed and free parameters of the underlying familiy,
+* use basic distribution functions for sampling, computation of density, cumulative density, hazard and quantile,
+* use additional functions supporting parameter estimation procedures such as computing support and discreteness,
+* compile performance enhanced functions to speed up basic functions for repeated evaluation,
+* and provide \pkg{tensorflow}-specific implementations to support (deep) distributional regression.
 
 A `Distribution` object represents a family $\mathcal{F}$ parameterized by a fixed-dimensional parameter space $\Theta$.
 This implies that, e.g., for mixture distributions, the total number of component distributions and their families needs to be fixed.
 
-\pkg{reservr} provides a set of basic distributions with fixed parameters as well as some transformations of distributions that take one or more underlying distributions.
+\pkg{reservr} provides a set of basic distribution families with fixed parameters as well as some transformations of distribution families that take one or more underlying distribution family.
 At the time of writing, these are:
 
-| Generator function      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description                                                                                             |
-|--------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
-| `dist_bdegp(n, m, u, epsilon)`                                           | A Blended Dirac Erlang Generalized Pareto distribution, see Section&nbsp;\ref{dist-bdegp}               |
-| `dist_beta(shape1, shape2, ncp)`                                         | A (non-central) Beta distribution                                                                       |
-| `dist_binomial(size, prob)`                                              | A Binomial distribution                                                                                 |
-| `dist_blended(dists, probs, breaks, bandwidths)`                         | A Blended mixture distribution, see Section&nbsp;\ref{dist-blended}                                     |
-| `dist_dirac(point)`                                                      | A Dirac distribution with full mass at `point`                                                          |
-| `dist_discrete(size, probs)`                                             | A discrete distribution with support $\{1, \ldots, \text{size}\}$ and $P(X = k) = \text{probs}_k$       |
-| `dist_empirical(sample, positive, bw)`                                   | An empirical distribution derived from a sample, with density estimated using a kernel density estimate |
-| `dist_erlangmix(shapes, scale, probs)`                                   | An Erlang mixture distribution, see Section&nbsp;\ref{dist-erlangmix}                                   |
-| `dist_exponential(rate)`                                                 | An Exponential distribution                                                                             |
-| `dist_gamma(shape, rate)`                                                | A Gamma distribution                                                                                    |
-| `dist_genpareto(u, sigmau, xi)`                                          | A Generalized Pareto Distribution                                                                       |
-| `dist_genpareto1(u, sigmau, xi)`                                         | A Generalized Pareto Distribution with the tail index $\xi$ constrained to $(0, 1)$                     |
-| `dist_lognormal(meanlog, sdlog)`                                         | A Log-Normaldistribution                                                                                |
-| `dist_mixture(dists, probs)`                                             | A general Mixture distribution, see Section&nbsp;\ref{dist-mixture}                                     |
-| `dist_negbinomial(size, mu)`                                             | A negative Binomial distribution                                                                        |
-| `dist_normal(mean, sd)`                                                  | A Normal distribution                                                                                   |
-| `dist_pareto(shape, scale)`                                              | A Pareto Type I distribution, i.e., a Generalized Pareto distribution with `u` = $0$                    |
-| `dist_poisson(lambda)`                                                   | A Poisson distribution                                                                                  |
-| `dist_translate(dist, offset, multiplier)`                               | An affine transformation $Y = a \cdot X + b$ of another distribution                                    |
-| `dist_trunc(dist, min, max)`                                             | A truncated distribution, $Y = X \mid \text{min} \le X \le \text{max}$                                  |
-| `dist_uniform(min, max)`                                                 | A uniform distribution                                                                                  |
-| `dist_weibull(shape, scale)`                                             | A Weibull distribution                                                                                  |
+| Generator function      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description                                                                                                    |
+|--------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| `dist_bdegp(n, m, u, epsilon)`                                           | A Blended Dirac Erlang Generalized Pareto distribution family, see Section&nbsp;\ref{dist-bdegp}               |
+| `dist_beta(shape1, shape2, ncp)`                                         | A (non-central) Beta distribution family                                                                       |
+| `dist_binomial(size, prob)`                                              | A Binomial distribution family                                                                                 |
+| `dist_dirac(point)`                                                      | A Dirac distribution family with full mass at `point`                                                          |
+| `dist_discrete(size, probs)`                                             | A discrete distribution family with fixed support $\{1, \ldots, \text{size}\}$ and $P(X = k) = \text{probs}_k$ |
+| `dist_erlangmix(shapes, scale, probs)`                                   | An Erlang mixture distribution family, see Section&nbsp;\ref{dist-erlangmix}                                   |
+| `dist_exponential(rate)`                                                 | An Exponential distribution family                                                                             |
+| `dist_gamma(shape, rate)`                                                | A Gamma distribution family                                                                                    |
+| `dist_genpareto(u, sigmau, xi)`                                          | A Generalized Pareto Distribution family                                                                       |
+| `dist_genpareto1(u, sigmau, xi)`                                         | A Generalized Pareto Distribution family with the tail index $\xi$ constrained to $(0, 1)$                     |
+| `dist_lognormal(meanlog, sdlog)`                                         | A Log-Normaldistribution family                                                                                |
+| `dist_negbinomial(size, mu)`                                             | A negative Binomial distribution family                                                                        |
+| `dist_normal(mean, sd)`                                                  | A Normal distribution family                                                                                   |
+| `dist_pareto(shape, scale)`                                              | A Pareto Type I distribution family, i.e., a Generalized Pareto distribution family with `u` = $0$             |
+| `dist_poisson(lambda)`                                                   | A Poisson distribution family                                                                                  |
+| `dist_uniform(min, max)`                                                 | A uniform distribution family                                                                                  |
+| `dist_weibull(shape, scale)`                                             | A Weibull distribution family                                                                                  |
+
+| Transformation function                          | Description                                                                                                               |
+|--------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| `dist_blended(dists, probs, breaks, bandwidths)` | A Blended mixture distribution family, see Section&nbsp;\ref{dist-blended}                                                |
+| `dist_mixture(dists, probs)`                     | A general Mixture distribution family, see Section&nbsp;\ref{dist-mixture}                                                |
+| `dist_translate(dist, offset, multiplier)`       | An affine transformation family $\{a \cdot X + b\}$ for $X \in \mathcal{F}$ from the underlying family                    |
+| `dist_trunc(dist, min, max)`                     | A truncated distribution, $\{X \mid \text{min} \le X \le \text{max}\}$ for $X \in \mathcal{F}$ from the underlying family |
 
 ### Parameters
 
@@ -289,6 +302,37 @@ Parameters of distribution families can either be fixed to a set value, or free.
 Free parameters (_placeholders_) are those that should be estimated from data whereas fixed parameters are held fixed.
 Most distribution methods have an argument `with_params` to provide values for the free parameters and need fully specified parameters to work.
 For example, generating samples from a distribution is only possible if it is fully parameterized using fixed parameters and the `with_params` argument of `Distribution$sample()`.
+
+```{r}
+dist <- dist_normal(sd = 1.0)
+```
+
+We have now defined `dist` to be a normal distribution family with standard deviation $1$ and free mean.
+Since not all parameters required for a normal distribution are fixed, `dist$sample()` will error if not provided with a `mean` parameter.
+
+```{r, error = TRUE}
+dist$sample(1L)
+```
+
+The `with_params` argument can be used both to provide free parameters and to override fixed parameters, if necessary.
+
+```{r}
+set.seed(10L)
+dist$sample(1L, with_params = list(mean = 0.0))
+set.seed(10L)
+dist$sample(1L, with_params = list(mean = 0.0, sd = 2.0))
+```
+
+The two samples were drawn from a standard normal and a normal distribution with mean zero and standard deviation $2$ respectively.
+Since the chosen seed was identical, the second sample is exactly double the first sample.
+Whenever the output length is greater than one, such as when taking more than one sample, `with_params` can optionally contain individual parameters for each entry.
+
+```{r}
+set.seed(10L)
+dist$sample(3L, with_params = list(mean = 0.0:2.0, sd = 0.5))
+```
+
+The three samples were drawn from $\mathcal{N}(0, 0.5)$, $\mathcal{N}(1, 0.5)$ and $\mathcal{N}(2, 0.5)$ respectively.
 
 Distributions have a set of fields and methods related to managing parameters
 
@@ -320,7 +364,7 @@ mix$get_components()
 
 ### Basic distribution functions
 
-The basic distribution functions (density, probability, hazard, quantile, sample) are provided by each distribution with signatures.
+The basic distribution functions (density, probability, hazard, quantile, sample) are provided by each distribution family.
 In general, the argument `with_params` can be used to both specify missing parameters (placeholders) and to override fixed distribution parameters.
 If the provided parameters are vectors of length greater than 1, they must conform to the input dimension (e.g. `x` for `density`).
 In this case, the parameters are "vectorized" in the sense that the $i$th output element will be computed using the $i$th entry from the parameter list.
@@ -334,10 +378,10 @@ In this case, the parameters are "vectorized" in the sense that the $i$th output
 ### Additional functions
 
 In addition to the basic functions, there are several supporting functions useful for faster or more accurate estimation of parameters.
-These functions are not necessarily implemented for all distribution classes, but will be automatically used by, e.g., `fit_dist()` if useful.
+These functions are not necessarily implemented for all `Distribution` classes, but will be automatically used by, e.g., `fit_dist()` if useful.
 
  * `export_functions(name, with_params = list())` exports `{d,p,q,r}<name>` functions adhering to the common R convention for distribution functions.
- * `get_type()` returns one of `"continuous"`, `"discrete"`, or `"mixed"` depending on whether the distribution has a density with respect to the Lebesgue measure, the counting measure, or their sum.
+ * `get_type()` returns one of `"continuous"`, `"discrete"`, or `"mixed"` depending on whether the distribution has a density with respect to the Lebesgue measure, the counting measure, or the sum of the Lebesgue measure with one or many point measures.
  * `is_continuous()` and `is_discrete()` testing for the particular type.
  * `has_capability(caps)` gives information on whether a specific implementation provides some or all of the features described.
    Possible capabilities are `"sample"`, `"density"`, `"probability"`, `"quantile"`, `"diff_density"`, `"diff_probability"`, `"tf_logdensity"`, `"tf_logprobability"`.
