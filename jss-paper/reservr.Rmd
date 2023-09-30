@@ -259,7 +259,8 @@ is_censored <- rbinom(N, size = 1L, prob = 0.8) == 1L
 x_lower <- x
 x_lower[is_censored] <- runif(sum(is_censored), min = -2.0, max = 0.0)
 x_upper <- x
-x_upper[is_censored] <- x_lower[is_censored] + runif(sum(is_censored), min = 0, max = 1.0)
+x_upper[is_censored] <- x_lower[is_censored] +
+  runif(sum(is_censored), min = 0, max = 1.0)
 
 x_upper[x < x_lower] <- x_lower[x < x_lower]
 x_lower[x < x_lower] <- -Inf
