@@ -88,12 +88,12 @@ Define new random variables $(M, V)$ by
     -\infty & D = 0 \\
     M_0 & D = 1 \\
     V_0 & D = 2
-  \end{cases} \nonumber \\
+  \end{cases}\text{, and} \nonumber \\
   V & := \begin{cases}
     M_0 & D = 0 \\
     V_0 & D = 1 \\
     \infty & D = 2
-  \end{cases} \label{eq:int-cens}
+  \end{cases}. \label{eq:int-cens}
 \end{align}
 
 Then we can simplify \eqref{eq:lik-cens0} to
@@ -111,9 +111,9 @@ Note that $D$ can be reconstructed given $(M, V)$ via
   \end{cases}.
 \end{align*}
 
-This leads to the conditional log-likelihood of $\theta$
+This leads to the conditional log-likelihood for $\theta$
 \[
-\ell(\theta | M_0, V_0) = \log F_\theta([M, V]).
+\ell(\theta | M = m, V = v) = \log F_\theta((m, v]).
 \]
 
 A sample of \textit{non-informatively interval censored observations} from $(M, V)$ consists of independent observations $(m_i, v_i)$ that are sampled according to \eqref{eq:int-cens}.
@@ -142,6 +142,11 @@ In our case, we rely on considering the density of $Y^{(t)}$ conditional on the 
   f_{Y^{(t)} | L^{(t)} = l, U^{(t)} = u}(y) & = \frac{f_{(Y^{(t)}, L^{(t)}, U^{(t)})}(y, l, u)}{f_{(L^{(t)}, U^{(t)})}(l, u)} \\
     & = \frac{f_{(Y, L, U) | L \le Y \le U}(y, l, u)}{\int_{[l, u]} f_{(Y, L, U) | L \le Y \le U}(z, l, u) \,\mathrm{d}\mu(z)} = \frac{f_\theta(y)}{\int_{[l, u]} f_\theta(z) \,\mathrm{d}\mu(z)}.
 \end{align*}
+
+For truncated observations, the conditional log-likelihood for $\theta$ given $(L, U)$ is
+\begin{align}
+  \ell(\theta | Y^{(t)} = y, L^{(t)} = l, U^{(t)} = u) & = \log f_\theta(y) - \log F_\theta((l, u]) . \label{eq:llik-trunc}
+\end{align}
 
 Truncation and censoring can occur at the same time, leading to a random vector $(Y, L, U, M_0, V_0)$, in which case we assume $L \le M_0 \le V_0 \le U$ with probability one.
 Observations are only seen if $L \le Y \le U$, and we let $D = \mathbf{1}(Y > M_0) + \mathbf{1}(Y > V_0)$ leading to
@@ -176,7 +181,7 @@ we obtain
 This leads to, using the superscript $(t)$ to denote truncation to $L \le Y \le U$, a conditional log-likelihood
 
 \begin{align}
-  \ell(\theta | M^{(t)} = m, V^{(t)} = v, L^{(t)} = l, U^{(t)} = u) & = \log F_\theta([m, v]) - \log F_\theta([l, u]).
+  \ell(\theta | M^{(t)} = m, V^{(t)} = v, L^{(t)} = l, U^{(t)} = u) & = \log F_\theta((m, v]) - \log F_\theta((l, u]). \label{eq:llik-trunccens}
 \end{align}
 
 A practical example of random truncation and interval censorship arises in the presence of inaccurate accident date specifications when reporting claims in general insurance.
@@ -186,13 +191,13 @@ Technically, $U$ is not (fully) observable in this situation, but can be approxi
 
 For later purposes, it is helpful to attach a weight $w_i$ to each observation $(m_i, v_i, l_i, u_i)$ (one might think of $w_i = 1$ for the moment).
 Denote the resulting sample by $\mathfrak{I} = \{(m_i, v_i, l_i, u_i, w_i)\}$ where the case $m_i = v_i$ denotes a non-censored observation and we have $l_i \le m_i \le v_i \le u_i$ for all observations.
-We aim at maximizing
+We aim at maximizing the weighted sum of the relevant conditional log-likelihoods for each observation, \eqref{eq:llik-trunc} for uncensored observations and \eqref{eq:llik-trunccens} for censored observations.
 
 \begin{align}
   \ell(\theta | \mathfrak{I}) & = \sum_{(m, v, l, u) \in \mathfrak{I}} w \cdot \begin{cases}
-    \log f_\theta(m) - \log F_\theta ([l, u]) & m = v \\
-    \log F_\theta([m, v]) - \log F_\theta([l, u]) & m < v
-  \end{cases} \label{eq:cml-likelihood}
+    \log f_\theta(m) - \log F_\theta ((l, u]) & m = v \\
+    \log F_\theta((m, v]) - \log F_\theta((l, u]) & m < v
+  \end{cases}. \label{eq:cml-likelihood}
 \end{align}
 
 ## Related packages
