@@ -198,8 +198,16 @@ We aim at maximizing
 ## Related packages
 
 For the less general cases of censoring without truncation and truncation without censoring, as well as for estimation of distribution parameters in the absence of any censoring or truncation mechanism, there are a number of \proglang{R} packages that can fit distributions, some of them also supporting weights.
-Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}, \pkg{evmix} \citep{evmix}, \pkg{ExtDist} \citep{ExtDist}, \pkg{flexsurv} \citep{flexsurv}.
+Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}, \pkg{flexsurv} \citep{flexsurv}.
+See the following table for details.
 Another R6-based interface is provided by \pkg{ROOPSD} \citep{ROOPSD}.
+
+| Package            | sample weights | censoring     | random truncation |
+|--------------------|----------------|---------------|-------------------|
+| \pkg{MASS}         | not supported  | not supported | not supported     |
+| \pkg{fitdistrplus} | only integer   | supported     | not supported     |
+| \pkg{flexsurv}     | supported      | supported     | not supported     |
+| \pkg{reservr}      | supported      | supported     | supported         |
 
 The remaining parts of this paper are structured as follows: Section&nbsp;\ref{pkg-overview} details the core functionality of the corresponding \proglang{R} package \pkg{reservr}.
 It is split into definition of samples $\mathfrak{I}$ (Section&nbsp;\ref{trunc-obs}), definition of distribution families (Section&nbsp;\ref{distributions}), mathematical definitions of some available distribution families (Section&nbsp;\ref{dist-definitions}), estimation of distribution parameters (Section&nbsp;\ref{fit-dist}) and distributional regression using \pkg{tensorflow} (Section&nbsp;\ref{tensorflow}).
