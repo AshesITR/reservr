@@ -312,7 +312,7 @@ They inherit from the class `Distribution` and feature a common interface to
 * and provide \pkg{tensorflow}-specific implementations to support (deep) distributional regression.
 
 A `Distribution` object represents a family $\mathcal{F}$ parameterized by a fixed-dimensional parameter space $\Theta$.
-This implies that, e.g., for mixture distributions, the total number of component distributions and their families needs to be fixed.
+This implies that, e.g., for mixture distribution families, the total number of component distribution families, and the component families themselves need to be fixed.
 
 \pkg{reservr} provides a set of basic distribution families with fixed parameters as well as some transformations of distribution families that take one or more underlying distribution family.
 At the time of writing, these are:
@@ -337,18 +337,18 @@ At the time of writing, these are:
 | `dist_uniform(min, max)`                                                 | A uniform distribution family                                                                                  |
 | `dist_weibull(shape, scale)`                                             | A Weibull distribution family                                                                                  |
 
-| Transformation function                          | Description                                                                                                               |
-|--------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|
-| `dist_blended(dists, probs, breaks, bandwidths)` | A Blended mixture distribution family, see Section&nbsp;\ref{dist-blended}                                                |
-| `dist_mixture(dists, probs)`                     | A general Mixture distribution family, see Section&nbsp;\ref{dist-mixture}                                                |
-| `dist_translate(dist, offset, multiplier)`       | An affine transformation family $\{a \cdot X + b\}$ for $X \in \mathcal{F}$ from the underlying family                    |
-| `dist_trunc(dist, min, max)`                     | A truncated distribution, $\{X \mid \text{min} \le X \le \text{max}\}$ for $X \in \mathcal{F}$ from the underlying family |
+| Transformation function                          | Description                                                                                                                      |
+|--------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| `dist_blended(dists, probs, breaks, bandwidths)` | A Blended mixture distribution family, see Section&nbsp;\ref{dist-blended}                                                       |
+| `dist_mixture(dists, probs)`                     | A general Mixture distribution family, see Section&nbsp;\ref{dist-mixture}                                                       |
+| `dist_translate(dist, offset, multiplier)`       | An affine transformation family $\{a \cdot X + b\}$ for $X \in \mathcal{F}$ from the underlying family                           |
+| `dist_trunc(dist, min, max)`                     | A truncated distribution family, $\{X \mid \text{min} \le X \le \text{max}\}$ for $X \in \mathcal{F}$ from the underlying family |
 
 ### Parameters
 
 Parameters of distribution families can either be fixed to a set value, or free.
 Free parameters (_placeholders_) are those that should be estimated from data whereas fixed parameters are held fixed.
-Most distribution methods have an argument `with_params` to provide values for the free parameters and need fully specified parameters to work.
+Most `Distribution` methods have an argument `with_params` to provide values for the free parameters and need fully specified parameters to work.
 For example, generating samples from a distribution is only possible if it is fully parameterized using fixed parameters and the `with_params` argument of `Distribution$sample()`.
 
 ```{r}
@@ -382,15 +382,15 @@ dist$sample(3L, with_params = list(mean = 0.0:2.0, sd = 0.5))
 
 The three samples were drawn from $\mathcal{N}(0, 0.5)$, $\mathcal{N}(1, 0.5)$ and $\mathcal{N}(2, 0.5)$ respectively.
 
-Distributions have a set of fields and methods related to managing parameters
+`Distribution`s have a set of fields and methods related to managing parameters
 
-* `default_params`, `get_params()` gets or sets the list of all parameters and their fixed values, `NULL` represents a free parameter. `get_params()` traverses component distribution parameters while `default_params` contains the `Distribution` objects for the respective parameters.
+* `default_params`, `get_params()` gets or sets the list of all parameters and their fixed values, `NULL` represents a free parameter. `get_params()` traverses component family parameters while `default_params` contains the `Distribution` objects for the respective parameters.
 * `get_placeholders()` gets the list of free parameters with `NULL` as values.
-* `param_bounds`, `get_param_bounds()` gets or sets the domain of each parameter as an `Interval` object. Setting a bound via the `param_bounds` active binding allows restricting the natural parameter space of a distribution. `get_param_bounds()` only returns the bounds of free parameters while `param_bounds` includes all parameters.
-* `get_param_constraint()` returns `NULL` or a function that evaluates non-box constraints on the parameter set. The function must return a list with elements `constraints` and `jacobian` or just a vector of constraint values (that need to be equal to $0$ for valid parameters), optionally together with the jacobian of the constraint function. Used in `nloptr::slsqp(heq=)` for estimation. An example is that mixture distributions require the `probs` parameters to sum to $1$ in addition to the box constraint that each parameter is in $[0, 1]$.
-* `get_components()` returns a list of component distributions for transformations or mixtures. The list is empty for basic families.
+* `param_bounds`, `get_param_bounds()` gets or sets the domain of each parameter as an `Interval` object. Setting a bound via the `param_bounds` active binding allows restricting the natural parameter space of a family. `get_param_bounds()` only returns the bounds of free parameters while `param_bounds` includes all parameters.
+* `get_param_constraint()` returns `NULL` or a function that evaluates non-box constraints on the parameter set. The function must return a list with elements `constraints` and `jacobian` or just a vector of constraint values (that need to be equal to $0$ for valid parameters), optionally together with the jacobian of the constraint function. Used in `nloptr::slsqp(heq=)` for estimation. An example is that mixture families require the `probs` parameters to sum to $1$ in addition to the box constraint that each parameter is in $[0, 1]$.
+* `get_components()` returns a list of component families for transformations or mixtures. The list is empty for basic families.
 
-Here is an example for a normal family with fixed standard deviation $\sigma = 1$ and a mixture distribution with two components, one of which is specified as a normal distribution:
+Here is an example for a normal family with fixed standard deviation $\sigma = 1$ and a mixture distribution family with two components, one of which is specified as a normal distribution family:
 
 ```{r}
 dist <- dist_normal(sd = 1.0)
@@ -429,36 +429,36 @@ In addition to the basic functions, there are several supporting functions usefu
 These functions are not necessarily implemented for all `Distribution` classes, but will be automatically used by, e.g., `fit_dist()` if useful.
 
  * `export_functions(name, with_params = list())` exports `{d,p,q,r}<name>` functions adhering to the common R convention for distribution functions.
- * `get_type()` returns one of `"continuous"`, `"discrete"`, or `"mixed"` depending on whether the distribution has a density with respect to the Lebesgue measure, the counting measure, or the sum of the Lebesgue measure with one or many point measures.
+ * `get_type()` returns one of `"continuous"`, `"discrete"`, or `"mixed"` depending on whether the distribution family has a density with respect to the Lebesgue measure, the counting measure, or the sum of the Lebesgue measure with one or many point measures.
  * `is_continuous()` and `is_discrete()` testing for the particular type.
  * `has_capability(caps)` gives information on whether a specific implementation provides some or all of the features described.
    Possible capabilities are `"sample"`, `"density"`, `"probability"`, `"quantile"`, `"diff_density"`, `"diff_probability"`, `"tf_logdensity"`, `"tf_logprobability"`.
- * `require_capability(caps)` errors if the specified capabilities are not implemented for the distribution at hand.
+ * `require_capability(caps)` errors if the specified capabilities are not implemented for the family at hand.
  * `is_discrete_at(x, with_params = list())` returns a logical vector indicating whether the distribution has a point mass at `x`.
  * `is_in_support(x, with_params = list())` returns a logical vector indicating whether the distribution has any mass at `x`.
 
 ### Performance enhancements
 
 When working with larger data or many calls to distribution functions, such as when performing a fit, it can be beneficial to just-in-time compile specialized functions that avoid overhead for dealing with the generic structure of distributions and their parametrization.
-Distributions offer a set of "compiler" functions that return simplified, faster, versions of the basic distribution functions, or that avoid having to numerically compute gradients where possible.
+`Distribution`s offer a set of "compiler" functions that return simplified, faster, versions of the basic distribution functions, or that avoid having to numerically compute gradients where possible.
 
  * `compile_density()` compiles a fast function with signature `(x, param_matrix, log = FALSE)` that will compute the density with fixed parameters hard-coded and taking the free parameters as a matrix with defined layout instead of a nested list.
  * `compile_probability()` compiles a fast replacement for `probability` with signature `(q, param_matrix, lower.tail = TRUE, log.p = FALSE)`.
  * `compile_probability_interval()` compiles a fast function with signature `(qmin, qmax, param_matrix, log.p = FALSE)` computing $P(X \in [\mathtt{qmin}, \mathtt{qmax}])$ or its logarithm efficiently. This expression is necessary for computing truncation probabilities.
  * `compile_sample()` compiles a fast replacement for `sample` with signature `(n, param_matrix)`.
- * `diff_density(x, log = FALSE, with_params = list())` computes the (log-)gradients of the density function with respect to free distribution parameters, useful for maximum likelihood optimization.
- * `diff_probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list())` computes the (log-)gradients of the cumulative density function with respect to free distribution parameters
+ * `diff_density(x, log = FALSE, with_params = list())` computes the (log-)gradients of the density function with respect to free distribution family parameters, useful for maximum likelihood estimation.
+ * `diff_probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list())` computes the (log-)gradients of the cumulative density function with respect to free distribution family parameters
 
 ### \pkg{tensorflow} interface {short-title="tensorflow interface"}
 
-Use of distributions from within \pkg{tensorflow} networks requires specialized implementations using the \pkg{tensorflow} APIs instead of regular \proglang{R} functions.
+Use of distribution families from within \pkg{tensorflow} networks requires specialized implementations using the \pkg{tensorflow} APIs instead of regular \proglang{R} functions.
 These are tailored to the needs of maximizing (conditional) likelihoods of weighted, censored and randomly truncated data.
 
- * `tf_compile_params(input, name_prefix = "")` creates \pkg{keras} layers that take an `input` layer and transform it into a valid parametrization of the distribution.
+ * `tf_compile_params(input, name_prefix = "")` creates \pkg{keras} layers that take an `input` layer and transform it into a valid parametrization of the distribution family.
  * `tf_is_discrete_at()` returns a \pkg{tensorflow}-ready version of `is_discrete_at()`.
  * `tf_logdensity()` returns a \pkg{tensorflow}-ready version of  `compile_density()` with implied `log = TRUE`.
  * `tf_logprobability()` returns a \pkg{tensorflow}-ready version pf `compile_probability_interval()` with implied `log.p = TRUE`.
- * `tf_make_constants()` creates a list of constant tensors for all fixed distribution parameters.
+ * `tf_make_constants()` creates a list of constant tensors for all fixed distribution family parameters.
 
 ## Special families {#dist-definitions}
 
@@ -470,7 +470,7 @@ This section contains mathematical definitions of those function families.
 A mixture distribution family is defined by a fixed number $k$ of component families via the set of distributions
 
 \begin{align*}
-  \mathop{\mathrm{Mixture}}(\mathcal{F}_1, \ldots, \mathcal{F}_k) & := \{ F \mid F((-\infty, x]) = \sum_{i = 1}^k p_i F_i((-\infty, x]), F_i \in \mathcal{F}_i, p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \}
+  \mathop{\mathrm{Mixture}}(\mathcal{F}_1, \ldots, \mathcal{F}_k) & := \Bigl\{ F \Bigm| F((-\infty, x]) = \sum_{i = 1}^k p_i F_i((-\infty, x]), F_i \in \mathcal{F}_i, p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}
 \end{align*}
 
 ### Erlang mixture distribution families {#dist-erlangmix}
@@ -479,7 +479,7 @@ An Erlang mixture distribution family is defined by its number of components $k$
 If $\Gamma_{\alpha, \theta}$ denotes a Gamma distribution with shape $\alpha$ and scale $\theta$, the erlang mixture family with $k$ components can be defined as follows:
 
 \begin{align*}
-  \mathop{\mathrm{ErlangMixture}}(k) := \Bigl\{ F \mid & F((-\infty, x]) = \sum_{i = 1}^k p_i \Gamma_{\alpha_i, \theta}((-\infty, x]), \\
+  \mathop{\mathrm{ErlangMixture}}(k) := \Bigl\{ F \Bigm| & F((-\infty, x]) = \sum_{i = 1}^k p_i \Gamma_{\alpha_i, \theta}((-\infty, x]), \\
   & \alpha_i \in \mathbb{N}, \theta \in (0, \infty), p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
 \end{align*}
 
@@ -531,13 +531,14 @@ Given parameters $n \in \mathbb{N}, m \in \mathbb{N}, \kappa \in \mathbb{R}$ and
     & \qquad \{\delta_0\}, \{\delta_1\}, \ldots, \{\delta_{n-1}\}, \\
     & \qquad \mathop{\mathrm{Blended}}( \\
       & \qquad\qquad \mathop{\mathrm{ErlangMixture}}(m), \\
-      & \qquad\qquad \{ \mathop{\mathrm{GPD}}(\kappa, \sigma, \xi) \mid \sigma \in (0, \infty), \xi \in [0, 1]) \}; \\
+      & \qquad\qquad \{ \mathop{\mathrm{GPD}}(\kappa, \sigma, \xi) \mid \sigma \in (0, \infty), \xi \in [0, 1)) \}; \\
       & \qquad\qquad \kappa, \varepsilon \\
     & \qquad) \\
   &)
 \end{align*}
 
-Where $\delta_k$ is the dirac distribution with $P(X = k) = 1$ and $\mathrm{GPD}$ is the generalized Pareto distribution. Note the constraint on the tail index $\xi \in [0, 1]$.
+Where $\delta_k$ is the dirac distribution with $P(X = k) = 1$ and $\mathrm{GPD}$ is the generalized Pareto distribution.
+Note the constraint on the tail index $\xi \in [0, 1)$, guaranteeing finite expectation.
 
 This distribution family has three features making it useful in modelling very general heavy-tailed distributions on $(0, \infty)$:
 
@@ -550,11 +551,11 @@ This distribution family has three features making it useful in modelling very g
 This section describes the functions for the problem of estimating a parameter $\theta \in \Theta$ given a sample $\mathfrak{I}$ and a parameterized family $\mathcal{F} = \{F_\theta \mid \theta \in \Theta\}$.
 Sometimes, the conditional likelihood in \eqref{eq:cml-likelihood} can be directly maximized, yielding an estimate for $\theta$.
 This is the default behavior in \pkg{reservr} if no specialized estimation routine for the provided family $\mathcal{F}_\theta$ is found.
-Depending on whether there are box constraints, nonlinear constraints or no constraints on the parameter space $\Theta$, different implementations of nonlinear optimization algorithms from \pkg{nloptr} \citep{nloptr,nloptr-tnewton,nloptr-lbfgs,nloptr-slsqp} are employed.
+Depending on whether there are box constraints, nonlinear constraints or no constraints on the parameter space $\Theta$, different implementations of nonlinear optimization algorithms from \pkg{nloptr} \citep{nloptr}, in particular truncated Newton \citep{nloptr-tnewton}, L-BFGS \citep{nloptr-lbfgs} and SLSQP \citep{nloptr-slsqp} are employed.
 
 In addition to the naive direct optimization approach, some families lend themselves to specialized estimation algorithms which usually show faster convergence due to making use of special structures in the parameter space $\Theta$.
 
-Fitting distributions to truncated observations is handled using the generic `fit()` method.
+Estimating distribution parameters from truncated observations is handled using the generic `fit()` method.
 It delegates to `fit_dist()`, which is also generic with signature:
 
 * `dist`: The distribution family to be fit
@@ -563,16 +564,16 @@ It delegates to `fit_dist()`, which is also generic with signature:
 
 At the time of writing there are specialized algorithms for three types of families:
 
-1. Blended distributions \citep[Algorithm 2]{Rosenstock2022}
-2. Erlang mixture distributions (GEM-CMM algorithm from \citet{Gui2018}, with a fixed number of components $M$)
-3. Generalized pareto distributions with free lower bound `u`
-4. Mixture distributions \citep[Algorithm 1]{Rosenstock2022}
-5. Translated distributions with fixed `offset` and `multiplier` (transform the sample to the space of the component distribution family before fitting)
-6. Uniform distributions (match free parameters to the range of the sample directly)
+1. Blended distribution families \citep[Algorithm 2]{Rosenstock2022}
+2. Erlang mixture distribution families (GEM-CMM algorithm from \citet{Gui2018}, with a fixed number of components $M$)
+3. Generalized pareto distribution families with free lower bound `u`
+4. Mixture distribution families \citep[Algorithm 1]{Rosenstock2022}
+5. Translated distribution families with fixed `offset` and `multiplier` (transform the sample to the space of the component distribution family before fitting)
+6. Uniform distribution families (match free parameters to the range of the sample directly)
 
 If not present, the `start` parameter is obtained via the `fit_dist_start()` generic.
 This generic implements a family specific method of generating valid starting values for all placeholder parameters.
-A notable implementation is `fit_dist_start.ErlangMixtureDistribution()` for Erlang mixture distributions.
+A notable implementation is `fit_dist_start.ErlangMixtureDistribution()` for Erlang mixture distribution families.
 If the shape parameters are free, there are different initialization strategies that can be chosen using additional arguments to `fit_dist_start()`:
 
 * `init = "shapes"` paired with `shapes = c(...)` manually specifies starting shape parameters $\alpha$
@@ -636,8 +637,8 @@ fit(dist, x, init = "kmeans")$logLik
 fit(dist, x, init = "cmm")$logLik
 ```
 
-It should be noted that the different initialization methods had a considerable impact on the outcome due to the discrete nature of Erlang mixture distributions and thus the combinatorial difficulty of picking optimal shapes $\alpha$.
-The `fit()` result for Erlang mixture distributions contains an element named `"params_hist"`.
+It should be noted that the different initialization methods had a considerable impact on the outcome due to the discrete nature of Erlang mixture distribution shape parameters and thus the combinatorial difficulty of picking optimal shapes $\alpha$.
+The `fit()` result for Erlang mixture distribution families contains an element named `"params_hist"`.
 This can be populated by passing `trace = TRUE` to `fit()` and will record parameters after all ECME steps.
 The element `"iter"` contains the number of full ECME-Iterations that were performed.
 
@@ -764,6 +765,6 @@ str(coef_lm)
 
 # Conclusion {#conclusion}
 
-We presented \pkg{reservr}, a package that supports distribution estimation and distribution regression using \proglang{R}.
+We presented \pkg{reservr}, a package that supports distribution parameter estimation and distributional regression using \proglang{R}.
 Both tasks are supported for samples with or without interval censoring and with or without random truncation, a more general form of truncation than what typical packages support.
 The package includes facilities for (1) definition of randomly truncated and interval censored samples, (2) definition of distribution families to consider, (3) global distribution parameter estimation under an i.i.d. assumption on the sample and (4) distributional regression - employing the \pkg{tensorflow} package for flexibility and speed.
