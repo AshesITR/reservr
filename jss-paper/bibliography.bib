@@ -11,12 +11,18 @@
     OPTDOI = {10.1007/s13385-022-00314-4}
 }
 
+@misc{Rosenstock2022supp,
+    author = {Axel Bücher and Alexander Rosenstock},
+    title = {Supplementary Material: Micro-level prediction of outstanding claim counts based on novel mixture models and neural networks.},
+    year = {2022},
+    url = {https://link.springer.com/article/10.1007/s13385-022-00314-4#Sec27}
+}
+
 @article{fitdistrplus,
     title = {fitdistrplus: An R Package for Fitting Distributions},
     volume = {64},
     url = {https://www.jstatsoft.org/index.php/jss/article/view/v064i04},
     doi = {10.18637/jss.v064.i04},
-    abstract = {The package fitdistrplus provides functions for fitting univariate distributions to different types of data (continuous censored or non-censored data and discrete data) and allowing different estimation methods (maximum likelihood, moment matching, quantile matching and maximum goodness-of-fit estimation). Outputs of fitdist and fitdistcens functions are S3 objects, for which specific methods are provided, including summary, plot and quantile. This package also provides various functions to compare the fit of several distributions to the same data set and can handle to bootstrap parameter estimates. Detailed examples are given in food risk assessment, ecotoxicology and insurance contexts.},
     number = {4},
     journal = {Journal of Statistical Software},
     author = {Delignette-Muller, Marie Laure and Dutang, Christophe},
@@ -29,7 +35,6 @@
     volume = {84},
     url = {https://www.jstatsoft.org/index.php/jss/article/view/v084i05},
     doi = {10.18637/jss.v084.i05},
-    abstract = {evmix is an R package (R Core Team 2017) with two interlinked toolsets: i) for extreme value modeling and ii) kernel density estimation. A key issue in univariate extreme value modeling is the choice of threshold beyond which the asymptotically motivated extreme value models provide a suitable tail approximation. The package implements almost all existing extreme value mixture models, which permit objective threshold estimation and uncertainty quantification. Some traditional diagnostic plots for threshold choice are provided. Kernel density estimation with a range of kernels is provided, including cross-validation maximum likelihood inference for the bandwidth. A key contribution over existing kernel smoothing packages in R is that a wide range of boundary corrected kernel density estimators are implemented, which are designed for populations with bounded support. These non-parametric density estimators are also incorporated into the extreme value mixture model framework to describe the density below the threshold. The quartet of density, distribution, quantile and random number generation functions is provided along with parameter estimation by likelihood inference and standard model fit diagnostics, for both the mixture models and kernel density estimators. The key features of the mixture models and (boundary corrected) kernel density estimators are described and their implementation using the package demonstrated.},
     number = {5},
     journal = {Journal of Statistical Software},
     author = {Hu, Yang and Scarrott, Carl},
@@ -75,12 +80,20 @@
     doi = {10.18637/jss.v070.i08},
 }
 
-@Manual{tensorflow,
+@Manual{tensorflowR,
     title = {tensorflow: R Interface to 'TensorFlow'},
     author = {JJ Allaire and Yuan Tang},
     year = {2022},
     note = {R package version 2.11.0},
     url = {https://CRAN.R-project.org/package=tensorflow},
+}
+
+@Manual{kerasR,
+    title = {keras: R Interface to 'Keras'},
+    author = {Chollet, Fran\c{c}ois and Allaire, JJ and others},
+    year = {2017},
+    publisher = {GitHub},
+    url = {https://github.com/rstudio/keras}
 }
 
 @article{Gui2018,
@@ -93,7 +106,6 @@
     doi = {https://doi.org/10.1016/j.cam.2018.04.032},
     author = {Wenyong Gui and Rongtan Huang and X. Sheldon Lin},
     keywords = {Erlang mixture model, Insurance loss data, Generalized EM algorithm, Clusterized method of moments, Local search method},
-    abstract = {The Erlang mixture model with common scale parameter is flexible and analytically tractable. As such, it is a useful model to fit insurance loss data and to calculate quantities of interest for insurance risk management. In this paper, we propose a generalized expectation–maximization (GEM) algorithm along with a clusterized method of moments (CMM) to estimate the model parameters. The GEM algorithm not only estimates the mixing weights and scale parameter of the model but also estimates the shape parameters of the model using a local search method. The CMM method enables to produce quality initial estimates for the GEM algorithm. As a result, the proposed approach provides an efficient algorithm that can fit the model to the body and the tail of truncated and censored loss data well and converges fast. We examine the performance of the proposed approach through several simulation studies and apply it to fit the Erlang mixture model to two real loss data sets.}
 }
 
 @article{deepregression,
@@ -163,4 +175,74 @@
     series = {Oberwolfach Seminars},
     issn = {1661-237X},
     isbn = {978-3-0348-8621-5}
+}
+
+@Article{ll2012,
+    title = {Modeling Dependent Risks with Multivariate Erlang Mixtures},
+    journal = {ASTIN Bulletin},
+    author = {Lee, Simon C.K. and Lin, X. Sheldon},
+    year = {2012},
+    volume = {42},
+    number = {1},
+    pages = {153–180},
+    OPTDOI = {10.2143/AST.42.1.2160739},
+    publisher = {Cambridge University Press}
+}
+
+@InProceedings{Kingma2015,
+    title = {Adam: A Method for Stochastic Optimization},
+    booktitle = {Proceedings of the Third International Conference on Learning Representations},
+    author = {Diederik P. Kingma and Jimmy Ba},
+    journal = {CoRR},
+    year = {2015},
+    series = {ICLR'15}
+}
+
+@misc{tensorflow,
+    title = { {TensorFlow}: Large-Scale Machine Learning on Heterogeneous Systems},
+    url = {https://www.tensorflow.org/},
+    note = {Software available from tensorflow.org},
+    author = {
+    Mart\'{i}n Abadi and
+ Ashish Agarwal and
+ Paul Barham and
+ Eugene Brevdo and
+ Zhifeng Chen and
+ Craig Citro and
+ Greg S. Corrado and
+ Andy Davis and
+ Jeffrey Dean and
+ Matthieu Devin and
+ Sanjay Ghemawat and
+ Ian Goodfellow and
+ Andrew Harp and
+ Geoffrey Irving and
+ Michael Isard and
+ Yangqing Jia and
+ Rafal Jozefowicz and
+ Lukasz Kaiser and
+ Manjunath Kudlur and
+ Josh Levenberg and
+ Dandelion Man\'{e} and
+ Rajat Monga and
+ Sherry Moore and
+ Derek Murray and
+ Chris Olah and
+ Mike Schuster and
+ Jonathon Shlens and
+ Benoit Steiner and
+ Ilya Sutskever and
+ Kunal Talwar and
+ Paul Tucker and
+ Vincent Vanhoucke and
+ Vijay Vasudevan and
+ Fernanda Vi\'{e}gas and
+ Oriol Vinyals and
+ Pete Warden and
+ Martin Wattenberg and
+ Martin Wicke and
+ Yuan Yu and
+ Xiaoqiang Zheng
+    },
+    year = {2015}
 }
