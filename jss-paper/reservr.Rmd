@@ -42,7 +42,7 @@ options(prompt = 'R> ', continue = '+ ')
 Most statistical analyses are concerned with modelling and estimation of the distribution of some measured variable of interest, called the outcome, possibly conditional on the value of one or several endogenous variables, called predictors.
 In the absence of endogenous variables, this process is usually called distribution fitting, and in the presence of endogenous variables it is called regression.
 Classical regression, such as via generalized linear models, is usually concerned with the influence of endogenous variables on the mean of the outcome, i.e., $\E(Y|X) = f(X)$ for some random variable $Y$ and vector of associated endogenous variables $X$ paired with an assumption linking the other parameters of the outcome distribution to its mean.
-Some models also allow specification of additional parameters of the distribution of the outcome variable, such as GAMLSS, which also allows for the scale parameter to depend on endogeneous variables.
+Some models also allow specification of additional parameters of the distribution of the outcome variable, such as Generalized Additive Models for Location Scale and Shape \citep{GAMLSS}, which also allows for the shape parameter to depend on endogenous variables.
 More recently, deep distributional regression allows for flexible specification of individual outcome distribution parameters.
 An example implementation of the latter for complete data can be found in \citet{deepregression}.
 
