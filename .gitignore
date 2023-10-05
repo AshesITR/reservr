@@ -10,3 +10,5 @@ inst/doc
 # JRE Error logs
 hs_err_pid*
 docs
+
+.DS_Store
