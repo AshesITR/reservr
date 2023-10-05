@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2023)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: reservr.aux
+The style file: jss.bst
+Database file #1: bibliography.bib
+Warning--I'm ignoring Rosenstock2022's extra "year" field
+--line 7 of file bibliography.bib
+Warning--I didn't find a database entry for "???"
+Warning--I didn't find a database entry for "Sun2005"
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+You've used 20 entries,
+            3215 wiz_defined-function locations,
+            786 strings with 9611 characters,
+and the built_in function-call counts, 24947 in all, are:
+= -- 2512
+> -- 752
+< -- 16
++ -- 284
+- -- 262
+* -- 1874
+:= -- 2958
+add.period$ -- 91
+call.type$ -- 20
+change.case$ -- 175
+chr.to.int$ -- 21
+cite$ -- 20
+duplicate$ -- 2583
+empty$ -- 1842
+format.name$ -- 333
+if$ -- 5030
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 236
+newline$ -- 126
+num.names$ -- 80
+pop$ -- 1291
+preamble$ -- 1
+purify$ -- 167
+quote$ -- 0
+skip$ -- 394
+stack$ -- 0
+substring$ -- 2708
+swap$ -- 537
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 174
+warning$ -- 0
+while$ -- 160
+width$ -- 0
+write$ -- 297
+(There were 3 warnings)
