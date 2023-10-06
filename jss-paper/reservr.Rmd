@@ -84,7 +84,7 @@ It should be noted that the type of censoring described in this example is not n
 
 \paragraph{Motivation of \eqref{eq:cml-likelihood-nw}.}
 
-It is instructive to start by considering an untruncated, censored observation where $l = -\infty, u = +\infty$ and $m < v$.
+It is instructive to start by considering an untruncated, censored observation where $l = -\infty, u = \infty$ and $m < v$.
 The only information we obtain from the observation $(m, v, l, u)$ is then that $Y \in (m, v].
 For deriving the relevant likelihood contribution, we may follow the stochastic approach to interval censored observations described in \citet[Case 2]{GroeneboomWellner1992}: let $(C_1, C_2)$ denote a random vector in $\mathbb R^2$ that is independent of the target variable $Y$ and which satisfies $\Prob(C_1 < C_2) = 1$.
 Let
@@ -125,7 +125,7 @@ A similar argumentation can be used in the non-discrete case.
 Overall, noting that that $F_\infty((-\infty, \infty]) = 1$, we have motivated the likelihood contribution $F_\theta((m, v]) \cdot 1(m < v)$ for a censored, untruncated observation in \eqref{eq:cml-likelihood-nw}.
 
 Next, consider an uncensored, truncated observation $(m, v, l, u)$ where $y = m = v$; we may hence identify such an observation with $(y, l, u)$.
-We may then proceed as in \citet{Rosenstock2022} and assume that $(L, U)$ is independent of $Y$ and satisfies $L \le U$, with $L$ possibly equal to $-\infty$ and $U$ possibly equal to $+\infty$.
+We may then proceed as in \citet{Rosenstock2022} and assume that $(L, U)$ is independent of $Y$ and satisfies $L \le U$, with $L$ possibly equal to $-\infty$ and $U$ possibly equal to $\infty$.
 Further, $(L, U)$ shall have a density $f_{(L, U)}$ with respect to some dominating sigma-finite measure $\nu$.
 Truncation means that we only happen to observe $(Y, L, U)$ if $L < Y \le U$. As a consequence, any observed value with $M = V$ can be regarded as being drawn from the $(\mu \otimes \nu)$-density
 \begin{align}
