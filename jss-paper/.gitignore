@@ -2,3 +2,7 @@
 *.pdf
 *.log
 reservr_files
+*.bbl
+*.aux
+*.out
+*.blg

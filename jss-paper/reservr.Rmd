@@ -52,134 +52,168 @@ Data with _interval censoring_ applied to the outcome $Y$ only consists of lower
 Truncated data misses observations for which the outcome $Y$ falls out of a certain lower and upper truncation bound.
 We consider the case of _random truncation_, where these truncation bounds are also random variables that vary for each observation.
 Finally, we consider a combination of the two, _randomly truncated interval censoring_.
+More precisely, instead of observing the real-valued target variable $Y$ (with $\mu$-density $f_\theta$ and c.d.f. $F_\theta$), we observe the vector $(M,V,L,U)$, which satisfies
+$L \le M \le V \le U$ and $L<U$.
+Its coordinates have the following interpretation: the last two coordinates, which satisfy $-\infty \le L < U \le \infty$, encode truncation: we only happen to observe $(M,V,L,U)$ if $L < Y \le U$; in particular, a non-truncated observations means that $L=-\infty$ and $U=\infty$.
+The first two coordinates, which satisfy $L \le M \le V \le U$ and which may be $\mp \infty$, encode censoring: the observation $(M,V)=(m,v)$ means that the target variable $Y$ satisfies $Y \in (m,v]$ if $m<v$ and $Y=m$ if $m=v$; the latter corresponds to an uncensored observation of $Y$.
 
-Interval censored observations were described in \citet[Case 2]{GroeneboomWellner1992}: let $(Y, M_0, V_0)$ denote a random vector on $\mathbb{R}^3$, where $Y$ is the variable of interest, with c.d.f. $F_\theta$ depending on a parameter $\theta \in \Theta$.
-The pair $(M_0, V_0)$ shall satisfy $M_0 \le V_0$ with probability one.
-Further, assume $Y$ to be independent of $(M_0, V_0)$.
-Let
-\begin{align*}
-  D & := \mathbf{1}(Y > M_0) + \mathbf{1}(Y > V_0),
-\end{align*}
-and consider the conditional likelihood of $D$ given $(M_0, V_0)$:
-
+Suppose we observe an independent sample $\mathcal J = \{(m_i, v_i, l_i, u_i): i=1, \ldots, n\}$ of $(M,V,L,U)$.
+Suggested by standard maximum (conditional) likelihood approaches for truncated \citep{DoerreEmura2019} and censored observations \citep{Zhang2005}, we suggest to estimate $\theta$ by maximizing the objective function
+<!-- -->
 \begin{align}
-  \Prob(D = d | M_0, V_0) & = \begin{cases}
-    \Prob(Y \le M_0 | M_0, V_0) & d = 0 \\
-    \Prob(M_0 < Y \le V_0 | M_0, V_0) & d = 1 \\
-    \Prob(V_0 < Y | M_0, V_0) & d = 2
-  \end{cases} \nonumber \\
-  & = \begin{cases}
-    F_\theta((-\infty, M_0]) & d = 0 \\
-    F_\theta((M_0, V_0]) & d = 1 \\
-    F_\theta((V_0, \infty)) & d = 2
-  \end{cases}. \label{eq:lik-cens0}
+  \ell(\theta) = \sum_{(m, v, l, u) \in \mathcal J} \Big\{ \log f_\theta(m)  \mathbf{1}(m=v) + \log F_\theta((m,v]) \mathbf{1}(m<v) \Big\} - \log F_\theta((l,u]), \label{eq:cml-likelihood-nw}
 \end{align}
 
-Define new random variables $(M, V)$ by
+where we use the notation $F_\theta((l,u])=F_\theta(u) - F_\theta(l)$.
+A detailed motivation for this approach under suitable conditions ensuring that the censoring is non-informative is given in Section \ref{motivation-cml-likelihood} below.
+For later purposes, it is helpful to attach a weight $w_i$ to each observation $(m_i, v_i, l_i, u_i)$.
+Denoting the resulting sample by $\mathfrak{I} = \{(m_i, v_i, l_i, u_i, w_i)\}$, we aim at maximizing the weighted sum of the (conditional) log-likelihoods
+<!-- -->
+\begin{align}
+  \ell(\theta) = \sum_{(m, v, l, u, w) \in \mathfrak{I}} w \cdot \Big[ \Big\{ \log f_\theta(m) \mathbf{1}(m=v) + \log F_\theta((m, v]) \mathbf{1}(m<v) \Big\} - \log F_\theta((l, u]) \Big]. \label{eq:cml-likelihood}
+\end{align}
 
+A practical example of random truncation arises when modelling the reporting delay of claims in general insurance.
+The target variable $Y$ is the reporting delay of an accident happening at accident time $T_0$, which is hence reported to the insurer at calendar time $Y+T_0$.
+The truncation bounds $(L, U)$ for $Y$ will be equal to $(0, \tau - T_0)$ with $\tau$ the current calendar time.
+
+Combined random truncation with interval censoring can occur when modelling failure times when only survival data at two (or more) maintenance appointments some time after purchase is captured, and only for items that are sold.
+The target variable $Y$ is the failure time of an item.
+Item condition (failed / functional) can be observed at maintenance times $M_0$ and $M_1$, which may vary for each item.
+For each maintained item, the production time $P_0$ and the purchase time $P_1$ is also known.
+Only items that are functional at purchase time $P_1$ are observed at the maintenance times.
+This gives rise to truncation bounds $(L, U) = (P_1 - P_0, \infty)$ and censoring interval bounds $(M, V) \in \{ (P_1 - P_0, M_0 - P_0), (M_0 - P_0, M_1 - P_0), (M_1 - P_0, \infty) \}$, depending on the item condition at times $M_0$ and $M_1$.
+
+## Motivation of Equation \ref{eq:cml-likelihood-nw}. {short-title="Motivation of the conditional likelihood" #motivation-cml-likelihood}
+
+It is instructive to start by considering an untruncated, censored observation where $l = -\infty, u = \infty$ and $m < v$.
+The only information we obtain from the observation $(m, v, l, u)$ is then that $Y \in (m, v]$.
+For deriving the relevant likelihood contribution, we may follow the stochastic approach to interval censored observations described in \citet[Case 2]{GroeneboomWellner1992}: let $(C_1, C_2)$ denote a random vector in $\mathbb R^2$ that is independent of the target variable $Y$ and which satisfies $\Prob(C_1 < C_2) = 1$.
+Let
+<!-- -->
+\begin{align*}
+  D & := \mathbf{1}(Y > C_1) + \mathbf{1}(Y > C_2),
+\end{align*}
+
+and define new random variables $(M, V) = f(Y,C_1,C_2)$ by
+<!-- -->
 \begin{align*}
   (M, V) & := \begin{cases}
-    (L, M_0) & D = 0 \\
-    (M_0, V_0) & D = 1 \\
-    (V_0, U) & D = 2
-  \end{cases}.
+    (-\infty, C_1), & D = 0, \\
+    (C_1, C_2), & D = 1, \\
+    (C_2, \infty), & D = 2.
+  \end{cases}
 \end{align*}
 
-Then we can simplify \eqref{eq:lik-cens0} to
+Note that $D$ can be reconstructed from $(M, V)$: we have $D=0$ if $M=-\infty$, $D=1$ if $-\infty<M<V<\infty$ and $D=2$ if $V=\infty$.
 
-\begin{align}
-  \Prob(D = d | M_0, V_0) & = F_\theta((M, V]) \label{eq:lik-cens}.
-\end{align}
-
-Note that $D$ can be reconstructed given $(M, V)$ via
+It is instructive to proceed with the case where $(C_1, C_2)$ and hence $(M, V)$ is discrete.
+Then, for $(m,v) \in \mathrm{supp}(M,V) \cap \mathbb R^2$, we have
+<!-- -->
 \begin{align*}
-  D & = \begin{cases}
-    0 & M = -\infty \\
-    1 & M > -\infty, V < \infty \\
-    2 & V = \infty
-  \end{cases}.
+  \Prob(M = m, V = v) & = \Prob(M = m, V = v, D = 1) \\
+  & = \Prob(C_1 = m, C_2 = v, Y \in (m,  v]) \\
+  & = F_\theta((m, v]) \cdot \Prob(C_1 = m, C_2 = v).
 \end{align*}
-Therefor, $(M, V)$ contains all information necessary to compute the conditional likelihood of $\theta$ for $D$ given $(M_0, V_0)$.
 
-\begin{align}
-\ell(\theta | M = m, V = v) & := \log F_\theta((m, v]). \label{eq:llik-cens}
-\end{align}
+Likewise, for $(m,v) \in \mathrm{supp}(M, V) \cap (\{-\infty\} \times \mathbb R)$, we obtain
+<!-- -->
+\begin{align*}
+  \Prob(M = -\infty, V = v) & = \Prob(M = -\infty, V = v, D = 0) \\
+  & = \Prob(C_1 = v, Y \le v) \\
+  & = F_\theta((-\infty, v]) \cdot \Prob(C_1 = v) 
+\end{align*}
 
-A sample of _non-informatively interval censored observations_ from $(M, V)$ consists of independent observations $(m_i, v_i)$.
-Estimation of $\theta$ can can be performed using conditional maximum likelihood estimation with \eqref{eq:llik-cens}.
+and finally, for $(m,v) \in \mathrm{supp}(M,V) \cap (\mathbb R \times \{\infty\})$,
+<!-- -->
+\begin{align*}
+  \Prob(M = m, V = \infty) & = \Prob(M=m, V=\infty, D=2) \\
+  & = \Prob(C_2 = m, Y > m) \\
+  & = F_\theta((m, \infty]) \cdot \Prob(C_2 = m).
+\end{align*}
 
-The random truncation problem is formulated as follows in \citet{Rosenstock2022}: let $(Y, L, U)$ denote a random vector on $\mathbb{R}^3$, where $Y$ is the variable of interest that is supposed to have a density $f_\theta$ with respect to some dominating sigma-finite measure $\mu$.
-The pair $(L, U)$ is assumed to be independent of $Y$ and shall satisfy $L \le U$, with $L$ possibly equal to $-\infty$ and $U$ possibly equal to $+\infty$.
-Further, $(L, U)$ shall have density $f_{(L, U)}$ with respect to some dominating sigma-finite measure $\nu$.
-A sample of _randomly truncated observations_ from $(Y, L, U)$ consists of independent observations $(y_i, l_i, u_i)$ that we only happen to see if $l_i < y_i \le u_i$.
-As a consequence, any observed value can be regarded as being drawn from the $(\mu \otimes \nu)$-density
+If we assume that the distribution of the censoring variable $(C_1,C_2)$ is non-informative, i.e., its distribution does not depend on $\theta$, the likelihood of observing $(M, V) = (m, v)$ is equal to $F_\theta((m, v])$, up to a factor that does not depend on $\theta$.
+A similar argumentation can be used in the non-discrete case.
+Overall, noting that $F_\infty((-\infty, \infty]) = 1$, we have motivated the likelihood contribution $F_\theta((m, v]) \cdot \mathbf{1}(m < v)$ for a censored, untruncated observation in \eqref{eq:cml-likelihood-nw}.
 
+Next, consider an uncensored, truncated observation $(m, v, l, u)$ where $y = m = v$; we may hence identify such an observation with $(y, l, u)$.
+We may then proceed as in \citet{Rosenstock2022} and assume that $(L, U)$ is independent of $Y$ and satisfies $L \le U$, with $L$ possibly equal to $-\infty$ and $U$ possibly equal to $\infty$.
+Further, $(L, U)$ shall have a density $f_{(L, U)}$ with respect to some dominating sigma-finite measure $\nu$.
+Truncation means that we only happen to observe $(Y, L, U)$ if $L < Y \le U$. As a consequence, any observed value with $M = V$ can be regarded as being drawn from the $(\mu \otimes \nu)$-density
+<!-- -->
 \begin{align}
   f_{(Y, L, U) | L < Y \le U}(y, l, u) = \frac{f_{(L, U)}(l, u) f_\theta(y)}{\Prob(L < Y \le U)} \mathbf{1}(l < y \le u). \label{eq:trunc-dens}
 \end{align}
 
 Subsequently, we write $(Y^{(t)}, L^{(t)}, U^{(t)})$ for a random vector following the above density, i.e.,
-
-\[
+<!-- -->
+\begin{align*}
   f_{(Y^{(t)}, L^{(t)}, U^{(t)})}(y, l, u) = f_{(Y, L, U) | L < Y \le U}(y, l, u).
-\]
+\end{align*}
 
-Estimating $\theta$ based on maximum likelihood requires specifying a distribution for $(L, U)$ (which can be regarded as a nuisance parameter) and calculating the denominator in \eqref{eq:trunc-dens}.
-This (major) nuisance can be avoided by instead considering conditional maximum likelihood, which is known to produce consistent estimators as well.
-In our case, we rely on considering the density of $Y^{(t)}$ conditional on the value of $(L^{(t)}, U^{(t)}) = (l, u)$, which is given by
+Conditioning this density on $(L^{(t)}, U^{(t)}) = (l, u)$, we arrive at an expression that does not involve the nuisance density $f_{(L,U)}$:
 
 \begin{align*}
   f_{Y^{(t)} | L^{(t)} = l, U^{(t)} = u}(y) & = \frac{f_{(Y^{(t)}, L^{(t)}, U^{(t)})}(y, l, u)}{f_{(L^{(t)}, U^{(t)})}(l, u)} \\
     & = \frac{f_{(Y, L, U) | L < Y \le U}(y, l, u)}{\int_{(l, u]} f_{(Y, L, U) | L < Y \le U}(z, l, u) \,\mathrm{d}\mu(z)} = \frac{f_\theta(y)}{\int_{(l, u]} f_\theta(z) \,\mathrm{d}\mu(z)}.
 \end{align*}
 
-For truncated observations, the conditional log-likelihood for $\theta$ given $(L, U)$ is
-\begin{align}
-  \ell(\theta | Y^{(t)} = y, L^{(t)} = l, U^{(t)} = u) & = \log f_\theta(y) - \log F_\theta((l, u]) . \label{eq:llik-trunc}
-\end{align}
+Overall, we arrive at the (conditional) log-likelihood contribution $\log f_\theta(y) - \log F_\theta((l, u])$ for an uncensored, truncated observation in \eqref{eq:cml-likelihood-nw}.
 
-Truncation and censoring can occur at the same time, which can be described by a random vector $(Y, L, U, M_0, V_0)$, where $L \le M_0 \le V_0 \le U$ with probability one.
-We let $D = \mathbf{1}(Y > M_0) + \mathbf{1}(Y > V_0)$, such that
+Finally, truncation and censoring can occur at the same time, i.e., we have $l \le m < v \le u$ with either $l \ne -\infty$ or $u \ne \infty$.
+In accordance with the previous two cases, we make the assumption that $Y, (C_1, C_2)$ and $(L, U)$ are mutually independent and satisfy $C_1 < C_2$ and $L < U$.
+Define
+<!-- -->
+\begin{align*}
+  D = \mathbf{1}(Y > C_1) + \mathbf{1}(Y > C_2)
+\end{align*}
+<!-- -->
+and
+<!-- -->
+\begin{align*}
+  (M, V) := \begin{cases}
+    (L, \min(U, C_1)), & D = 0, \\
+    (\max(L, C_1), \min(C_2, U)), & D = 1, \\
+    (\max(L,C_2), U), & D = 2.
+  \end{cases}
+\end{align*}
 
-\begin{align}
-  \Prob(D = d | L, U, M_0, V_0, L < Y \le U) & = \begin{cases}
-    \Prob(Y \le M_0 | M_0, V_0, L < Y \le U) & d = 0 \\
-    \Prob(M_0 < Y \le V_0 | M_0, V_0, L < Y \le U) & d = 1 \\
-    \Prob(V_0 < Y | M_0, V_0, L < Y \le U) & d = 2
-  \end{cases} \nonumber \\
-  & = \frac{1}{F_\theta((L, U])} \begin{cases}
-    F_\theta((L, M_0]) & d = 0 \\
-    F_\theta((M_0, V_0]) & d = 1 \\
-    F_\theta((V_0, U]) & d = 2
-  \end{cases} \\
-  & = \frac{F_\theta((M, V])}{F_\theta((L, U])}, \label{eq:lik-trunc-cens0}
-\end{align}
-where $(M, V)$ is defined as above.
+For simplicity, assume that all random variables are discrete.
+For any observation $(m, v, l, u)$, one of the following four cases is met
+<!-- -->
+\begin{align*}
+  l < m < v < u, \quad l = m < v < u, \quad l < m < v = u, \quad l = m < v = u.
+\end{align*}
 
-A sample of _randomly truncated non-informatively interval censored observations_ from $(Y, L, U, M, V)$ consists of independent observations $(l_i, u_i, m_i, v_i)$ that we only happen to see if $l_i < y_i \le u_i$.
-The conditional log-likelihood for $\theta$ given $(L, U, M, V)$ is
-\begin{align}
-  \ell(\theta | M^{(t)} = m, V^{(t)} = v, L^{(t)} = l, U^{(t)} = u) & = \log F_\theta((m, v]) - \log F_\theta((l, u]). \label{eq:llik-trunccens}
-\end{align}
+In case $l < m < v < u$, we have
+\begin{align*}
+  \Prob(M = m, V = v | L = l, U = u, L < Y \le U) & = \frac{\Prob(C_1 = m, C_2 = v, Y \in (m, v], L = l, U = u)}{\Prob(L = l, U = u, l < Y \le u)} \\
+  & = \frac{\Prob(C_1 = m, C_2 = v) F_\theta((m, v])}{F_\theta((l, u])}
+\end{align*}
 
-A practical example of random truncation and interval censorship arises in the presence of inaccurate accident date specifications when reporting claims in general insurance.
-The truncation bounds $(L, U)$ in this case will be equal to $(0, \tau - t_0)$ where $t_0$ is the actual accident time and $\tau$ is the calendar time.
-Censoring bounds could, for example, be $(M, V) = (t_1 - \lceil t_0 \rceil, t_1 - \lfloor t_0 \rfloor)$ representing an inaccurate observation of $t_0$ at reporting time $t_1$.
-Technically, $U$ is not (fully) observable in this situation, but can be approximated by $\tau - \lfloor t_0 \rfloor$.
-It should be noted that the type of censoring described in this example is not non-informative because $(M, V)$ is not independent of $Y$.
+by the independence assumption.
+The factor in front does not depend on $\theta$ and is irrelevant for the (conditional) likelihood contribution.
+Likewise, in case $l = m < v < u$, we have
+<!-- -->
+\begin{align*}
+  \Prob(M = l, V = v | L = l, U = u, L < Y \le U) & = \frac{\Prob(M = l, V = v, L = l, U = u, l < Y \le u)}{\Prob(L = l, U = u, l < Y \le u)}.
+\end{align*}
 
-For later purposes, it is helpful to attach a weight $w_i$ to each observation $(m_i, v_i, l_i, u_i)$ (one might think of $w_i = 1$ for the moment).
-Denote the resulting sample by $\mathfrak{I} = \{(m_i, v_i, l_i, u_i, w_i)\}$ where the case $m_i = v_i$ denotes a non-censored observation and we have $l_i \le m_i \le v_i \le u_i$ for all observations.
-We aim at maximizing the weighted sum of the relevant conditional log-likelihoods for each observation, \eqref{eq:llik-trunc} for uncensored observations and \eqref{eq:llik-trunccens} for censored observations.
+Bv definition of $(M,V)$, the event in the numerator  is the disjoint union of the following two sets:
 
-\begin{align}
-  \ell(\theta | \mathfrak{I}) & = \sum_{(m, v, l, u) \in \mathfrak{I}} w \cdot \begin{cases}
-    \log f_\theta(m) - \log F_\theta ((l, u]) & m = v \\
-    \log F_\theta((m, v]) - \log F_\theta((l, u]) & m < v
-  \end{cases}. \label{eq:cml-likelihood}
-\end{align}
+\begin{align*}
+  & \{D = 0, C_1 = v, L = l, U = u, l < Y \le u\} = \{C_1 = v, L = l, U = u, Y \in (l, v]\} \\
+  & \{D = 1, C_1 \le l, C_2 = v, L = l, U = u, l < Y \le u\} = \{C_1 \le l, C_2 = v, L = l, U = u, Y \in (l, v]\}.
+\end{align*}
 
-Note that this subsumes untruncated observations by allowing $l = -\infty$ and $u = \infty$.
+By independence, we obtain that
+<!-- -->
+\begin{align*}
+  \Prob(M = l, V = v | L = l, U = u, L < Y \le U) = \{\Prob(C_1 = v) + \Prob(C_1 \le l, C_2 = v)\} \frac{F_\theta((l, v])}{F_\theta((l, u])}. 
+\end{align*}
+
+Again, the factor in front of the fraction is independent of $\theta$ and is irrelevant for the likelihood.
+The two cases $l < m < v = u$ and $l = m < v = u$ can be treated similarly; in all cases, the likelihood contribution is equal to $F_\theta((m, v]) /F_\theta((l, u])$ times a factor that does not depend on $\theta$.
 
 ## Related packages
 
@@ -286,7 +320,7 @@ The total number of censored observations is roughly $0.8 \cdot \mathtt{nrow(obs
 sum(is.na(obs$x))
 ```
 
-In addition to the `trunc_obs()` constructor function, there are `as_trunc_obs()` for coercion, `truncate_obs()` for artifically changing truncation bounds, and `repdel_obs()` for computing randomly truncated reporting delay observations from general insurance claims data containing accident date, reporting delay and evaluation date information.
+In addition to the `trunc_obs()` constructor function, there are `as_trunc_obs()` for coercion, `truncate_obs()` for artificially changing truncation bounds, and `repdel_obs()` for computing randomly truncated reporting delay observations from general insurance claims data containing accident date, reporting delay and evaluation date information.
 The latter takes inputs of the form $(T_\text{acc}, D, \tau)$ where $T_{\text{acc}} < \tau$ are accident dates with corresponding reporting delays $D \ge 0$ and $\tau$ is the calendar date of observation.
 It returns the sample $(\mathtt{xmin} = \mathtt{xmax} = D, \mathtt{tmin} = 0, \mathtt{tmax} = \tau - T_{\text{acc}}, \mathtt{w} = 1)$ suitable for estimating the reporting delay distribution where a claim is only observed if it has been reported by the evaluation date, i.e., $T_{\text{acc}} + D \le \tau$.
 
@@ -492,6 +526,7 @@ Note that for $k \to \infty$, Erlang mixtures are dense in the space of distribu
 
 A Blended distribution is defined in \citet{Rosenstock2022} as follows: Given two underlying distributions $P, Q$ on $\mathbb{R}$ with cdfs $F(\cdot)=P((-\infty, \cdot])$ and $G(\cdot)=Q((-\infty, \cdot])$, respectively, and parameters $\kappa \in \mathbb{R}, \varepsilon \in (0, \infty), p_1, p_2 \in [0, 1], p_1 + p_2 = 1$ such that $F(\kappa) > 0$ and $G(\kappa) < 1$, we define the _Blended Distribution_ $B = \mathop{\mathrm{Blended}}(P, Q; p, \kappa, \varepsilon)$ of $P$ and $Q$ with blending interval $[\kappa - \varepsilon, \kappa + \varepsilon]$ and mixture probabilities $p$ via its cdf
 $F_B$:
+
 \begin{align*}
     p_{\kappa, \varepsilon}(x) &=
     \begin{cases}
@@ -514,6 +549,7 @@ $F_B$:
 This leads to the definition of a blended distribution family:
 
 Given two families $\mathcal{F}, \mathcal{G}$ of distributions on $\mathbb{R}$, and parameters $\kappa \in \mathbb{R}, \varepsilon \in (0, \infty)$, we define the _Blended Distribution family_ as the family of Distributions
+<!-- -->
 \begin{align*}
     \mathop{\mathrm{Blended}}(\mathcal{F}, \mathcal{G}; \kappa, \varepsilon) & := \{ \mathop{\mathrm{Blended}}(P, Q ; p, \kappa, \varepsilon) \mid P \in \mathcal{F}, Q \in \mathcal{G}, p_1, p_2 \in [0, 1], p_1 + p_2 = 1 \}.
 \end{align*}
