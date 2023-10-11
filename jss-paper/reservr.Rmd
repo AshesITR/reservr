@@ -16,7 +16,7 @@ title:
   short:     "\\pkg{reservr}: Fitting Distributions and Neural Networks to Censored and Truncated Data"
 abstract: >
   \textcolor{red}{[AB: CENSORING KOMMT IM ABSTRACT GAR NICHT VOR. INSGESAMT FEHLT MIR ETWAS DER ROTE FADEN. DER ABSTRACT MUSS MÖGLICHST PERFEKT SEIN.]}
-  
+
   While the problem of estimating distribution parameters from truncated data with fixed truncation points has readily available implementations in \proglang{R}, this is not the case for randomly truncated data, i.e. observations where the point of truncation varies by observation.
   In practice, it is often of interest to also consider the influence of other parameters (predictors) on the distribution of an outcome variable.
   We present the features and implementation of the \proglang{R} package \pkg{reservr}.
@@ -60,7 +60,7 @@ Its coordinates have the following interpretation: the last two coordinates, whi
 The first two coordinates, which satisfy $L \le M \le V \le U$ and which may be $\mp \infty$, encode censoring: the observation $(M,V)=(m,v)$ means that the target variable $Y$ satisfies $Y \in (m,v]$ if $m<v$ and $Y=m$ if $m=v$; the latter corresponds to an uncensored observation of $Y$.
 
 Suppose we observe an independent sample $\mathcal J = \{(m_i, v_i, l_i, u_i): i=1, \ldots, n\}$ of $(M,V,L,U)$.
-Suggested by standard maximum (conditional) likelihood approaches for truncated \citep{???} and censored observations \citep{Zhang2005, Sun2005}, we suggest to estimate $\theta$ by maximizing the objective function
+Suggested by standard maximum (conditional) likelihood approaches for truncated \citep{DoerreEmura2019} and censored observations \citep{Zhang2005, Sun2005}, we suggest to estimate $\theta$ by maximizing the objective function
 <!-- -->
 \begin{align}
   \ell(\theta) = \sum_{(m, v, l, u) \in \mathcal J} \Big\{ \log f_\theta(m)  \mathbf{1}(m=v) + \log F_\theta((m,v]) \mathbf{1}(m<v) \Big\} - \log F_\theta((l,u]), \label{eq:cml-likelihood-nw}
@@ -75,18 +75,20 @@ Denoting the resulting sample by $\mathfrak{I} = \{(m_i, v_i, l_i, u_i, w_i)\}$,
   \ell(\theta) = \sum_{(m, v, l, u, w) \in \mathfrak{I}} w \cdot \Big[ \Big\{ \log f_\theta(m) \mathbf{1}(m=v) + \log F_\theta((m, v]) \mathbf{1}(m<v) \Big\} - \log F_\theta((l, u]) \Big]. \label{eq:cml-likelihood}
 \end{align}
 
-A practical example of random truncation and interval censorship arises in the presence of inaccurate accident date specifications when reporting claims in general insurance. 
-
+A practical example of random truncation arises when modelling the reporting delay of claims in general insurance.
 The target variable $Y$ is the reporting delay of an accident happening at accident time $T_0$, which is hence reported to the insurer at calendar time $Y+T_0$.
 The truncation bounds $(L, U)$ for $Y$ will be equal to $(0, \tau - T_0)$ with $\tau$ the current calendar time.
-Censoring bounds could, for example, be $(M, V) = (Y+T_0 - \lceil T_0 \rceil, Y + T_0 - \lfloor T_0 \rfloor)$ representing an inaccurate observation of $T_0$ at reporting time $Y+T_0$.
-Technically, $U$ is not (fully) observable in this situation, but can be approximated by $\tau - \lfloor T_0 \rfloor$.
-It should be noted that the type of censoring described in this example is not non-informative because $(M, V)$ is not independent of $Y$.
-\textcolor{red}{[AB: Ein Beispiel, bei dem beide Unabhängigkeits-Annahmen sinnvoll sind, wäre super.]}
-  
-\textcolor{red}{[AB: Der Regression-Aspekt von reservr fehlt bislang und sollte auf jeden Fall hier etwas ausgeführt werden. Bei dem Vorangegagenen sollte vorab dazu gesagt werden, dass aus didaktischen Gründen zunächst nur der Nicht-Regression-Fall beschrieben wird.]}  
 
-## Motivation of Equation (\ref{eq:cml-likelihood-nw}). {short-title="Motivation of the conditional likelihood" #motivation-cml-likelihood}
+Combined random truncation with interval censoring can occur when modelling failure times when only survival data at two (or more) maintenance appointments some time after purchase is captured, and only for items that are sold.
+The target variable $Y$ is the failure time of an item.
+Item condition (failed / functional) can be observed at maintenance times $M_0$ and $M_1$, which may vary for each item.
+For each maintained item, the production time $P_0$ and the purchase time $P_1$ is also known.
+Only items that are functional at purchase time $P_1$ are observed at the maintenance times.
+This gives rise to truncation bounds $(L, U) = (P_1 - P_0, \infty)$ and censoring interval bounds $(M, V) \in \{ (P_1 - P_0, M_0 - P_0), (M_0 - P_0, M_1 - P_0), (M_1 - P_0, \infty) \}$, depending on the item condition at times $M_0$ and $M_1$.
+
+\textcolor{red}{[AB: Der Regression-Aspekt von reservr fehlt bislang und sollte auf jeden Fall hier etwas ausgeführt werden. Bei dem Vorangegagenen sollte vorab dazu gesagt werden, dass aus didaktischen Gründen zunächst nur der Nicht-Regression-Fall beschrieben wird.]}
+
+## Motivation of Equation \eqref{eq:cml-likelihood-nw}. {short-title="Motivation of the conditional likelihood" #motivation-cml-likelihood}
 
 It is instructive to start by considering an untruncated, censored observation where $l = -\infty, u = \infty$ and $m < v$.
 The only information we obtain from the observation $(m, v, l, u)$ is then that $Y \in (m, v]$.
@@ -528,7 +530,7 @@ An Erlang mixture distribution family is defined by its number of components $k$
 If $\Gamma_{\alpha, \theta}$ denotes a Gamma distribution with shape $\alpha$ and scale $\theta$, the erlang mixture family with $k$ components can be defined as follows:
 
 \begin{align*}
-  \mathop{\mathrm{ErlangMixture}}(k) := \Bigl\{ F = \sum_{i = 1}^k p_i \Gamma_{\alpha_i, \theta} \Bigm| 
+  \mathop{\mathrm{ErlangMixture}}(k) := \Bigl\{ F = \sum_{i = 1}^k p_i \Gamma_{\alpha_i, \theta} \Bigm|
    \alpha_i \in \mathbb{N}, \theta \in (0, \infty), p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
 \end{align*}
 
