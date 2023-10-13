@@ -43,7 +43,9 @@ options(prompt = 'R> ', continue = '+ ')
 
 Statistical analyses are typically concerned with modelling and estimating the distribution of some measured variable of interest $Y$, called the outcome, possibly conditional on the value of one or several endogenous variables $X$, called predictors.
 In the absence of endogenous variables, this process is usually called distribution fitting, and in the presence of endogenous variables it is called regression.
-Classical regression, such as via generalized linear models, is concerned with the influence of endogenous variables on the mean of the outcome, i.e., $\E(Y|X) = f(X)$, and often links other parameters of the conditional outcome distribution to its mean \textcolor{red}{[AB: Hier auch eine Referenz? Ggfs. Hinweis auf Base-R?]}.
+Classical regression, such as via generalized linear models (GLMs), is concerned with the influence of endogenous variables on the mean of the outcome, i.e., $\E(Y|X) = f(X)$, and often links other parameters of the conditional outcome distribution to its mean.
+A gentle introduction to generalized linear models can be found in \cite{???}.
+An implementation of GLMs is available in the \pkg{stats} \proglang{R} package, which is part of \proglang{R} itself \citep{baseR}.
 Some models also allow specification of additional parameters of the conditional outcome distribution, such as Generalized Additive Models for Location, Scale and Shape \citep{GAMLSS}.
 More recently, deep distributional regression has been proposed, which allows for flexible specification of individual outcome distribution parameters \citep{deepregression}.
 
@@ -251,7 +253,7 @@ A conclusion is given in Section&nbsp;\ref{conclusion}.
 
 # Usage of \pkg{reservr} {short-title="Usage of reservr" #pkg-overview}
 
-The package serves two main goals: fitting distributions to randomly truncated non-informatively \textcolor{red}{[Das Stcihwort non-informative wurde zuvor bislang nicht definiert]} interval censored data and performing (deep) distributional regression with randomly truncated non-informatively interval censored data.
+The package serves two main goals: fitting distributions to randomly truncated non-informatively \textcolor{red}{[Das Stcihwort non-informative wurde zuvor bislang nicht definiert]}\textcolor{orange}{[AR: Können wir auch weglassen, da wir interval censoring geeignet definiert haben.]} interval censored data and performing (deep) distributional regression with randomly truncated non-informatively interval censored data.
 Four main components are integrated with each other to facilitate the analysis goals
 
 1. Methods for representing a randomly truncated non-informatively interval censored sample $\mathfrak{I}$.
@@ -285,7 +287,7 @@ The following code defines a sample of size 1 without truncation and censoring, 
 trunc_obs(1.3)
 ```
 
-Simulating randomly truncated and interval censored data from a standard normal distribution with $80\%$ of the observations randomly interval censored and random uniform truncation $L \sim U[-2, 0]$ and $U \sim U[0, 2]$ \textcolor{red}{[Vielleicht ein anderes $U$ für die Gleichverteilung? Etwa $\mathrm{Unif}$ oder $\mathcal U$?]} can be simulated as follows
+Simulating randomly truncated and interval censored data from a standard normal distribution with $80\%$ of the observations randomly interval censored and random uniform truncation $L \sim \mathrm{Unif}[-2, 0]$ and $U \sim \mathrm{Unif}[0, 2]$ can be simulated as follows
 
 \textcolor{red}{[Ich würde wie in der Introduction einen anderen Variablennamen für die 'zwei' Versionen von $x_{lower}$ verwenden (dort heißt das $C_1$).]}
 
@@ -625,8 +627,8 @@ At the time of writing there are specialized algorithms for six types of familie
 2. Erlang mixture distribution families \citep[Algorithm S.2]{Rosenstock2022supp}
 3. Generalized pareto distribution families with free lower bound `u` (estimated by the minimum over the sample)
 4. Mixture distribution families \citep[Algorithm 1]{Rosenstock2022}
-5. Translated distribution families with fixed `offset` and `multiplier` (transform the sample to the space of the component distribution family before fitting)
-6. Uniform distribution families (match free parameters to the range of the sample directly)
+5. Translated distribution families with fixed `offset` and `multiplier` (transform the sample via $\tfrac{\cdot-\text{offset}}{\text{multiplier}}$ and fit the component distribution family to the transformed sample)
+6. Uniform distribution families with free lower bound `min` or upper bound `max` (estimated by the minimum, for `min`, and the maximum, for `max`, over the sample)
 
 \textcolor{red}{[AB: bei 5 und 6 verstehe ich nicht genau, was getan wird.]}
 \textcolor{orange}{[AR: 5.: $(m, v, l, u)$ werden durch $(m-b)/a$ etc. ersetzt und dann die zugrundeliegende Familie angepasst. 6.: $\min(m)$ wird as Schätzer für den linken Randpunkt genommen und $\max(v)$ für den Rechten - jeweils falls diese frei sind.]}
@@ -670,7 +672,7 @@ Note that both, `"kmeans"` and `"cmm"` use the random number generator for inter
 This necessitates setting a constant seed before running `fit_dist_start()` and `fit()` to ensure the chosen starting parameters are the same for both calls.
 
 \textcolor{red}{[AB: Was genau macht flattenparams? Evtl. hilft eiom Beispiel an geeigneter Stelle.]}
-\textcolor{orange}{[AR: Das macht die Listenstruktur "platt". Der `str(fit(...))` call zwei zeilen weiter unten zeigt unter `$params` die klobige Version.]}
+\textcolor{orange}{[AR: Das macht die Listenstruktur platt. Der \texttt{str(fit(...))} call zwei zeilen weiter unten zeigt unter \texttt{params} die klobige Version.]}
 
 ```{r}
 dist <- dist_erlangmix(list(NULL, NULL, NULL))
