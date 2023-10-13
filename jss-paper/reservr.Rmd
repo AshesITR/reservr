@@ -343,7 +343,8 @@ sum(is.na(obs$x))
 
 In addition to the `trunc_obs()` constructor function, there are functions `as_trunc_obs()` for coercion, `truncate_obs()` for artificially changing truncation bounds, and `repdel_obs()` for computing randomly truncated reporting delay observations from general insurance claims data containing accident date, reporting delay and evaluation date information.
 The latter takes inputs of the form $(T_\text{acc}, D, \tau)$ where $T_{\text{acc}} < \tau$ are accident dates with corresponding reporting delays $D \ge 0$ and $\tau$ is the calendar date of observation.
-It returns the sample $(\mathtt{xmin} = \mathtt{xmax} = D, \mathtt{tmin} = 0, \mathtt{tmax} = \tau - T_{\text{acc}}, \mathtt{w} = 1)$ suitable for estimating the reporting delay distribution where a claim is only observed if it has been reported by the evaluation date, i.e., $T_{\text{acc}} + D \le \tau$. \textcolor{red}{[AB: Referenz zu unserem Paper ergänzen]}
+It returns the sample $(\mathtt{xmin} = \mathtt{xmax} = D, \mathtt{tmin} = 0, \mathtt{tmax} = \tau - T_{\text{acc}}, \mathtt{w} = 1)$ suitable for estimating the reporting delay distribution where a claim is only observed if it has been reported by the evaluation date, i.e., $T_{\text{acc}} + D \le \tau$.
+Such an analysis was performed using \pkg{reservr} in \citet{Rosenstock2022,Rosenstock2023}.
 
 ## Definition of distribution families {#distributions}
 
@@ -352,7 +353,7 @@ They inherit from the class `Distribution` and feature a common interface to
 
 * manage fixed and free parameters of the underlying familiy,
 * use basic distribution functions for random number generation and computation of the density, cumulative distribution, hazard and quantile function,
-* use additional functions supporting parameter estimation procedures such as computing support and discreteness \textcolor{red}{[AB:Was heißt 'Computing discreteness'?]},
+* use additional functions supporting parameter estimation procedures such as computing support and discreteness \textcolor{red}{[AB:Was heißt 'Computing discreteness'?]}\textcolor{orange}{[AR: Siehe \texttt{is\_discrete\_at()} unten. Bestimmt, ob die Familie an einer bestimmten stelle eine Punktmasse liegt.]},
 * compile performance enhanced functions to speed up basic functions for repeated evaluation,
 * provide \pkg{tensorflow}-specific implementations to support (deep) distributional regression.
 
@@ -497,7 +498,7 @@ In addition to the basic functions, there are several supporting functions usefu
 When working with larger data or many calls to distribution functions, such as when performing a fit, it can be beneficial to just-in-time compile specialized functions that avoid overhead for dealing with the generic structure of distributions and their parametrization.
 `Distribution`s offer a set of "compiler" functions that return simplified, faster, versions of the basic distribution functions, or that analytically compute gradients.
 Those functions are not necessarily implemented for all `Distribution` classes, but will be automatically used by, e.g., `fit_dist()` if useful.
-The input structure for `param_matrix` can be obtained by `flatten_params_matrix(dist$get_placeholders())` where `dist` is the `Distribution` object in question. \textcolor{red}{[Ich verstehe das nicht, aber vielleicht bin auch an dieser Stelle nicht die Zielgruppe. ;-) Könnte ein Beispiel helfen?]}
+The input structure for `param_matrix` can be obtained by `flatten_params_matrix(dist$get_placeholders())` where `dist` is the `Distribution` object in question.
 
  * `compile_density()` compiles a fast function with signature `(x, param_matrix, log = FALSE)` that will compute the density with fixed parameters hard-coded and taking the free parameters as a matrix with defined layout instead of a nested list.
  * `compile_probability()` compiles a fast replacement for `probability` with signature `(q, param_matrix, lower.tail = TRUE, log.p = FALSE)`.
@@ -506,6 +507,20 @@ The input structure for `param_matrix` can be obtained by `flatten_params_matrix
  * `diff_density(x, log = FALSE, with_params = list())` computes the (log-)gradients of the density function with respect to free distribution family parameters, useful for maximum likelihood estimation.
  * `diff_probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list())` computes the (log-)gradients of the cumulative density function with respect to free distribution family parameters.
    This is useful for conditional maximum likelihood estimation in the presence of random truncation or non-informative interval censoring.
+
+```{r}
+dist <- dist_normal()
+flatten_params_matrix(dist$get_placeholders())
+denscmp <- dist$compile_density()
+
+if (requireNamespace("bench", quietly = TRUE)) {
+  bench::mark(
+    dist$density(-2:2, with_params = list(mean = 0.0, sd = 1.0)),
+    denscmp(-2:2, matrix(c(0.0, 1.0), nrow = 5L, ncol = 2L, byrow = TRUE)),
+    dnorm(-2:2, mean = rep(0.0, 5L), sd = rep(1.0, 5L))
+  )
+}
+```
 
 ### \pkg{tensorflow} interface {short-title="tensorflow interface"}
 
