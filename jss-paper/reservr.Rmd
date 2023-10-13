@@ -61,6 +61,9 @@ $L \le M \le V \le U$ and $L<U$.
 Its coordinates have the following interpretation: the last two coordinates, which satisfy $-\infty \le L < U \le \infty$, encode truncation: we only happen to observe $(M,V,L,U)$ if $L < Y \le U$; in particular, a non-truncated observations means that $L=-\infty$ and $U=\infty$.
 The first two coordinates, which satisfy $L \le M \le V \le U$ and which may be $\mp \infty$, encode censoring: the observation $(M,V)=(m,v)$ means that the target variable $Y$ satisfies $Y \in (m,v]$ if $m<v$ and $Y=m$ if $m=v$; the latter corresponds to an uncensored observation of $Y$.
 
+\textcolor{orange}{[AR: Hier 'annotated' sample mit Prädiktoren definieren]}
+
+It is instructive to focus on the simpler problem of distribution parameter estimation before proceeding with distributional regression.
 Suppose we observe an independent sample $\mathcal J = \{(m_i, v_i, l_i, u_i): i=1, \ldots, n\}$ of $(M,V,L,U)$.
 Suggested by standard maximum (conditional) likelihood approaches for truncated \citep{DoerreEmura2019} and censored observations \citep{Zhang2005, Sun2005}, we suggest to estimate $\theta$ by maximizing the objective function
 \textcolor{orange}{[AR: Sun2005 bitte in bibliography.bib ergänzen, ich finde das nicht.]}
@@ -90,6 +93,7 @@ Only items that are functional at purchase time $P_1$ are observed at the mainte
 This gives rise to truncation bounds $(L, U) = (P_1 - P_0, \infty)$ and censoring interval bounds $(M, V) \in \{ (P_1 - P_0, M_0 - P_0), (M_0 - P_0, M_1 - P_0), (M_1 - P_0, \infty) \}$, depending on the item condition at times $M_0$ and $M_1$.
 
 \textcolor{red}{[AB: Der Regression-Aspekt von reservr fehlt bislang und sollte auf jeden Fall hier etwas ausgeführt werden. Bei dem Vorangegagenen sollte vorab dazu gesagt werden, dass aus didaktischen Gründen zunächst nur der Nicht-Regression-Fall beschrieben wird.]}
+\textcolor{orange}{[AR: Hier distributional regression beschreiben (aktuell siehe weiter unten)]}
 
 ## Motivation of Equation \eqref{eq:cml-likelihood-nw}. {short-title="Motivation of the conditional likelihood" #motivation-cml-likelihood}
 
@@ -226,20 +230,21 @@ The two cases $l < m < v = u$ and $l = m < v = u$ can be treated similarly; in a
 ## Related packages
 
 For the less general cases of non-informative censoring without random truncation and fixed truncation, i.e., $(L, U)$ constant for all observations, as well as for estimation of distribution parameters in the absence of censoring or random truncation, there are a number of \proglang{R} packages that can fit distributions, some of them also supporting weights.
-Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}, \pkg{flexsurv} \citep{flexsurv}.
-Note that fixed truncation is an operation that can be baked into the distribution familiy whose parameters are to be estimated, allowing for classical maximum likelihood estimation.
-See the following table for details.
+Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}, \pkg{survival} \citep{survival}, \pkg{flexsurv} \citep{flexsurv}.
+Note that fixed truncation is an operation that can be baked into the distribution family whose parameters are to be estimated, allowing for classical maximum likelihood estimation.
+Many of the packages also support classic regression of expected values given predictors.
+Distributional regression packages, such as \pkg{gamlss} \citep{GAMLSS} and \pkg{deepregression} \citep{deepregression} currently do not support interval censoring or random truncation.
+See the following table for an overview of available features for each package.
 
-\textcolor{red}{[AB: Geht es in den Paketen dieser Tabelle wieder nur um den Nicht-Regressions-Fall? Was ließe sich über den Regressionsfall sagen?]}
-\textcolor{orange}{[AR: Jein. flexsurv kann z.B. auch regression. Ich denke, es ergibt Sinn, das in einem separaten Absatz zu diskutieren.]}
-
-
-| Package            | sample weights | censoring     | random truncation |
-|--------------------|----------------|---------------|-------------------|
-| \pkg{MASS}         | not supported  | not supported | not supported     |
-| \pkg{fitdistrplus} | only integer   | supported     | not supported     |
-| \pkg{flexsurv}     | supported      | supported     | not supported     |
-| \pkg{reservr}      | supported      | supported     | supported         |
+| Package              | sample weights | censoring | random truncation | regression     |
+|----------------------|----------------|-----------|-------------------|----------------|
+| \pkg{MASS}           | no             | no        | no                | classic        |
+| \pkg{fitdistrplus}   | only integer   | supported | no                | no             |
+| \pkg{survival}       | supported      | supported | no                | classic        |
+| \pkg{flexsurv}       | supported      | supported | no                | classic        |
+| \pkg{gamlss}         | supported      | no        | no                | distributional |
+| \pkg{deepregression} | supported      | no        | no                | distributional |
+| \pkg{reservr}        | supported      | supported | supported         | distributional |
 
 Another R6-based interface is provided by \pkg{ROOPSD} \citep{ROOPSD}.
 
