@@ -61,6 +61,7 @@ The first two coordinates, which satisfy $L \le M \le V \le U$ and which may be 
 
 Suppose we observe an independent sample $\mathcal J = \{(m_i, v_i, l_i, u_i): i=1, \ldots, n\}$ of $(M,V,L,U)$.
 Suggested by standard maximum (conditional) likelihood approaches for truncated \citep{DoerreEmura2019} and censored observations \citep{Zhang2005, Sun2005}, we suggest to estimate $\theta$ by maximizing the objective function
+\textcolor{orange}{[AR: Sun2005 bitte in bibliography.bib ergänzen, ich finde das nicht.]}
 <!-- -->
 \begin{align}
   \ell(\theta) = \sum_{(m, v, l, u) \in \mathcal J} \Big\{ \log f_\theta(m)  \mathbf{1}(m=v) + \log F_\theta((m,v]) \mathbf{1}(m<v) \Big\} - \log F_\theta((l,u]), \label{eq:cml-likelihood-nw}
@@ -222,12 +223,13 @@ The two cases $l < m < v = u$ and $l = m < v = u$ can be treated similarly; in a
 
 ## Related packages
 
-For the less general cases of non-informative censoring without random truncation and fixed truncation, i.e.\ , $(L, U)$ constant for all observations, as well as for estimation of distribution parameters in the absence of censoring or random truncation, there are a number of \proglang{R} packages that can fit distributions, some of them also supporting weights.
+For the less general cases of non-informative censoring without random truncation and fixed truncation, i.e., $(L, U)$ constant for all observations, as well as for estimation of distribution parameters in the absence of censoring or random truncation, there are a number of \proglang{R} packages that can fit distributions, some of them also supporting weights.
 Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}, \pkg{flexsurv} \citep{flexsurv}.
 Note that fixed truncation is an operation that can be baked into the distribution familiy whose parameters are to be estimated, allowing for classical maximum likelihood estimation.
 See the following table for details.
 
 \textcolor{red}{[AB: Geht es in den Paketen dieser Tabelle wieder nur um den Nicht-Regressions-Fall? Was ließe sich über den Regressionsfall sagen?]}
+\textcolor{orange}{[AR: Jein. flexsurv kann z.B. auch regression. Ich denke, es ergibt Sinn, das in einem separaten Absatz zu diskutieren.]}
 
 
 | Package            | sample weights | censoring     | random truncation |
@@ -252,7 +254,7 @@ A conclusion is given in Section&nbsp;\ref{conclusion}.
 The package serves two main goals: fitting distributions to randomly truncated non-informatively \textcolor{red}{[Das Stcihwort non-informative wurde zuvor bislang nicht definiert]} interval censored data and performing (deep) distributional regression with randomly truncated non-informatively interval censored data.
 Four main components are integrated with each other to facilitate the analysis goals
 
-1. Methods for describing a randomly truncated non-informatively interval censored sample $\mathfrak{I}$. \textcolor{red}{[Was bedeutet 'describing'? Gibt es ein besseres Stichwort?]}
+1. Methods for representing a randomly truncated non-informatively interval censored sample $\mathfrak{I}$.
 2. Methods for specifying a parametrized distribution family $\mathcal{F} = \{F_\theta | \theta \in \Theta\}$ to be fitted.
 3. Methods for estimating distribution parameters $\theta$ given a sample $\mathfrak{I}$.
 4. Methods for regression of distribution parameters given a sample $\mathfrak{I}$ with associated predictors $X \in \mathfrak{X}$ \textcolor{red}{[Eine eignene Notation für Regression-Samples einführen, etwa $\mathfrak I_x$ oder $\mathfrak I_{\mathrm{reg}}$? Könnte man auch schon geeignet in der Introduction machen.]}, a parametrized family $\mathcal{F}$ and a general \pkg{tensorflow} network $\mathcal{G} : \mathfrak{X} \to \Theta$ that processes $X$ to estimate the conditional distribution of $Y | X=x$ by $F_{g(x)}$ with $g \in \mathcal G$.
@@ -374,12 +376,12 @@ At the time of writing, these are:
 
 \newcommand{\restr}{|} <!-- Markdown tables hack -->
 
-| Transformation function                          | Description                                                                                                                             |
-|--------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| `dist_blended(dists, probs, breaks, bandwidths)` | A Blended mixture distribution family, see Section&nbsp;\ref{dist-blended}                                                              |
-| `dist_mixture(dists, probs)`                     | A general Mixture distribution family, see Section&nbsp;\ref{dist-mixture}                                                              |
-| `dist_translate(dist, offset, multiplier)`       | The affine transformation family $\{F((\cdot - b)/a) : F \in \mathcal{F}, b \in \mathbb R, a >0\}$ from the underlying family $\mathcal{F}$                                  |
-| `dist_trunc(dist, min, max)`                     | The truncated distribution family consisting of all distributions of $X \restr (\text{min} \le X  \le \text{max})$ with  $X \sim F \in \mathcal{F}$   |
+| Transformation function                          | Description                                                                                                                                         |
+|--------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `dist_blended(dists, probs, breaks, bandwidths)` | A Blended mixture distribution family, see Section&nbsp;\ref{dist-blended}                                                                          |
+| `dist_mixture(dists, probs)`                     | A general Mixture distribution family, see Section&nbsp;\ref{dist-mixture}                                                                          |
+| `dist_translate(dist, offset, multiplier)`       | The affine transformation family $\{F((\cdot - b)/a) : F \in \mathcal{F}, b \in \mathbb R, a >0\}$ from the underlying family $\mathcal{F}$         |
+| `dist_trunc(dist, min, max)`                     | The truncated distribution family consisting of all distributions of $X \restr (\text{min} \le X  \le \text{max})$ with  $X \sim F \in \mathcal{F}$ |
 
 ### Parameters
 
@@ -417,7 +419,7 @@ set.seed(10L)
 dist$sample(3L, with_params = list(mean = 0.0:2.0, sd = 0.5))
 ```
 
-The three observations were drawn from $\mathcal{N}(0, 0.5)$, $\mathcal{N}(1, 0.5)$ and $\mathcal{N}(2, 0.5)$, respectively.
+The three observations were drawn from $\mathcal{N}(\mu = 0, \sigma = 0.5)$, $\mathcal{N}(\mu = 1, \sigma = 0.5)$ and $\mathcal{N}(\mu = 2, \sigma = 0.5)$, respectively.
 
 `Distribution`s have a set of fields and methods related to managing parameters:
 
@@ -627,6 +629,7 @@ At the time of writing there are specialized algorithms for six types of familie
 6. Uniform distribution families (match free parameters to the range of the sample directly)
 
 \textcolor{red}{[AB: bei 5 und 6 verstehe ich nicht genau, was getan wird.]}
+\textcolor{orange}{[AR: 5.: $(m, v, l, u)$ werden durch $(m-b)/a$ etc. ersetzt und dann die zugrundeliegende Familie angepasst. 6.: $\min(m)$ wird as Schätzer für den linken Randpunkt genommen und $\max(v)$ für den Rechten - jeweils falls diese frei sind.]}
 
 If not present, the `start` parameter is obtained via the `fit_dist_start()` generic.
 This generic implements a family specific method of generating valid starting values for all placeholder parameters.
@@ -660,13 +663,14 @@ plot_distributions(
   )
 )
 ```
-Here, the density labelled `empirical` cooresponds to a kernel density estimate with automatic bandwidth selection.
+Here, the density labelled `empirical` corresponds to a kernel density estimate with automatic bandwidth selection.
 
 We follow with an example of fitting an $\mathrm{ErlangMixture}(3)$ distribution family using various initialization strategies.
 Note that both, `"kmeans"` and `"cmm"` use the random number generator for internal K-means clustering.
 This necessitates setting a constant seed before running `fit_dist_start()` and `fit()` to ensure the chosen starting parameters are the same for both calls.
 
-\textcolor{red}{Was genau macht flattenparams? Evtl. hilft eiom Beispiel an geeigneter Stelle.}
+\textcolor{red}{[AB: Was genau macht flattenparams? Evtl. hilft eiom Beispiel an geeigneter Stelle.]}
+\textcolor{orange}{[AR: Das macht die Listenstruktur "platt". Der `str(fit(...))` call zwei zeilen weiter unten zeigt unter `$params` die klobige Version.]}
 
 ```{r}
 dist <- dist_erlangmix(list(NULL, NULL, NULL))
@@ -745,7 +749,7 @@ dataset <- tibble::tibble(
 )
 ```
 
-Next, we specify the distribution family $\mathcal{F} = \mathcal{N}_{\sigma = 1}$ \textcolor{red}{Es werden verschiedene Notationen für die Normalverteilung benutzt, bitte vereinheitlichen.}, incorporating the homoskedasticity assumption.
+Next, we specify the distribution family $\mathcal{F} = \{\mathcal{N}(\mu, \sigma = 1) | \mu\in\mathbb R\}$, incorporating the homoskedasticity assumption.
 
 ```{r}
 dist <- dist_normal(sd = 1.0)
@@ -759,14 +763,15 @@ nnet_output <- nnet_input
 ```
 
 Then, `tf_compile_model()` adapts the input layer to the free parameter space $\Theta = \mathbb{R}$.
-This introduces two parameters to the function family $\mathcal{G}$ and implies the functional relationship $\mu = g(x) := \theta_1 \cdot x + \theta_0$. \textcolor{red}{Ich verstehe nicht, wieso hier eine lineare Funktion auftaucht; sollte nciht $g$ ein ggf. kompliziertes neuronales Netz sein?}
+This introduces two parameters to the function family $\mathcal{G}$ and implies the functional relationship $\mu = g(x) := \theta_1 \cdot x + \theta_0$. \textcolor{red}{[AB: Ich verstehe nicht, wieso hier eine lineare Funktion auftaucht; sollte nciht $g$ ein ggf. kompliziertes neuronales Netz sein?]}
+\textcolor{orange}{[AR: Die Flexibilität besteht, aber das Beispiel hier ist ja lineare regression.]}
 Since our sample is fully observed, we disable censoring and truncation, leading to the simplified loss
 
 \begin{align*}
   l(g) = -\tfrac{1}{100} \sum_{x, y} \log f_{g(x)}(y),
 \end{align*}
 
-where $f_\mu(y)$ is the density of $\mathcal{N}_{\mu=\mu, \sigma=1}$ evaluated at $y$.
+where $f_\mu(y)$ is the density of $\mathcal{N}(\mu=\mu, \sigma=1)$ evaluated at $y$.
 
 ```{r}
 nnet <- tf_compile_model(
@@ -796,10 +801,13 @@ nnet_fit <- fit(
   shuffle = FALSE,
   verbose = FALSE
 )
-plot(nnet_fit)
 ```
 
-\textcolor{red}{Hier und an allen anderen Stellen sollten doe Grafiken erklärt werden; was ist bspw. die blaue Kurve und was sind die schwarzen Punkte?}
+The training history can be plotted, displaying the loss by epoch (black circles), and a blue smoothing line.
+
+```{r}
+plot(nnet_fit)
+```
 
 The `predict()` method of `reservr_keras_model` takes input tensors and returns the predicted distribution parameters as a list compatible with `dist$get_placeholders()`.
 We can thus extract the only parameter `mean` and compare it to an OLS fit for the same dataset:
