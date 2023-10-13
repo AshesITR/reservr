@@ -557,7 +557,7 @@ $F_B$:
     \end{cases} \\
     F_B(x) & = p_1 \frac{F(p_{\kappa, \varepsilon}(x))}{F(\kappa)} + p_2 \frac{G(q_{\kappa, \varepsilon}(x)) - G(\kappa)}{1 - G(\kappa)}.
 \end{align*}
-\textcolor{red}{[Evtl. hier ein kurzer Satz zur Anschauung? Etwa, dass im Fall stetiger Dichten für $x \le \kappa -\eps$ die Dichte von $P$ verwendet wird etc.]}
+\textcolor{red}{[Evtl. hier ein kurzer Satz zur Anschauung? Etwa, dass im Fall stetiger Dichten für $x \le \kappa -\varepsilon$ die Dichte von $P$ verwendet wird etc.]}
 
 This leads to the definition of a blended distribution family:
 
@@ -624,6 +624,8 @@ At the time of writing there are specialized algorithms for six types of familie
 5. Translated distribution families with fixed `offset` and `multiplier` (transform the sample to the space of the component distribution family before fitting)
 6. Uniform distribution families (match free parameters to the range of the sample directly)
 
+\textcolor{red}{[AB: bei 5 und 6 verstehe ich nicht genau, was getan wird.]}
+
 If not present, the `start` parameter is obtained via the `fit_dist_start()` generic.
 This generic implements a family specific method of generating valid starting values for all placeholder parameters.
 A notable implementation is `fit_dist_start.ErlangMixtureDistribution()` for Erlang mixture distribution families.
@@ -634,7 +636,7 @@ If the shape parameters are free, there are different initialization strategies 
 * `init = "kmeans"` uses 1-dimensional K-means based clustering of the sample observations such that each cluster corresponds to a unique shape
 * `init = "cmm"` uses the centralized method of moments procedure described in \citet{Gui2018}
 
-Re-using `dist` $= \mathcal{N}_{\sigma = 1}$ from above and the generated sample `obs`, we can fit the free parameter `mean`:
+Re-using `dist <- dist_normal(sd = 1.0)`  from above and the generated sample `obs`, we can fit the free parameter `mean`:
 
 ```{r}
 the_fit <- fit(dist, obs)
@@ -656,10 +658,13 @@ plot_distributions(
   )
 )
 ```
+Here, the density labelled `empirical` cooresponds to a kernel density estimate with automatic bandwidth selection.
 
 We follow with an example of fitting an $\mathrm{ErlangMixture}(3)$ distribution family using various initialization strategies.
 Note that both, `"kmeans"` and `"cmm"` use the random number generator for internal K-means clustering.
 This necessitates setting a constant seed before running `fit_dist_start()` and `fit()` to ensure the chosen starting parameters are the same for both calls.
+
+\textcolor{red}{Was genau macht flattenparams? Evtl. hilft eiom Beispiel an geeigneter Stelle.}
 
 ```{r}
 dist <- dist_erlangmix(list(NULL, NULL, NULL))
@@ -694,10 +699,12 @@ fit(dist, x, init = "cmm")$logLik
 
 It should be noted that the different initialization methods had a considerable impact on the outcome in the example due to the discrete nature of Erlang mixture distribution shape parameters and thus the combinatorial difficulty of picking optimal shapes $\alpha$.
 The `fit()` result for Erlang mixture distribution families contains an element named `"params_hist"`.
-This can be populated by passing `trace = TRUE` to `fit()` and will record parameters after all ECME steps in the ECME-based estimation algorithms \citet[Algorithms 1 and 2]{Rosenstock2022} and \citet[Algorithm S.2]{Rosenstock2022supp}.
+This can be populated by passing `trace = TRUE` to `fit()` and will record parameters after all ECME steps in the ECME-based estimation algorithms from \citet[Algorithms 1 and 2]{Rosenstock2022} and \citet[Algorithm S.2]{Rosenstock2022supp}.
 The element `"iter"` contains the number of full ECME-Iterations that were performed.
 
 ## Distributional regression using \pkg{tensorflow} integration {short-title="distributional regression using tensorflow integration" #tensorflow}
+
+\textcolor{red}{Die generelle Beschreibung sollte meines Erachtens in die Introduction.}
 
 This section describes the functions for the problem of estimating a regression function $g : \mathfrak{X} \to \Theta$ given a sample $\mathfrak{I}$ with associated covariates $X \in \mathfrak{X}$, a parameterized family $\mathcal{F} = \{F_\theta \mid \theta \in \Theta\}$ and a family $\mathcal{G}$ of functions from $\mathfrak{X}$ to $\Theta$.
 Distributional regression can be formulated as the maximization problem
@@ -710,10 +717,10 @@ Distributional regression can be formulated as the maximization problem
   \end{cases}.
 \end{align}
 
-Compared to Equation \ref{eq:cml-likelihood}, the global parameter $\theta$ is replaced by the regression function $g$ evaluated at the associated covariates.
+Compared to Equation \eqref{eq:cml-likelihood}, the global parameter $\theta$ is replaced by the regression function $g$ evaluated at the associated covariates.
 
 The maximization problem is delegated to \pkg{tensorflow}, which supplies ample stochastic optimization algorithms.
-Functions in \pkg{reservr} are necessary to create a suitable output layer for \pkg{tensorflow} that maps onto $\Theta$ and to provide an implementation of the (negative) log-likelihood \eqref{eq:cml-regression-likelihood} as a loss function.
+Functions in \pkg{reservr} are necessary to create a suitable output layer for \pkg{tensorflow} that maps onto $\Theta$ and to provide an implementation of the (negative) log-likelihood in \eqref{eq:cml-regression-likelihood} as a loss function.
 These two tasks are combined in `tf_compile_model()`.
 The function returns an object of class `reservr_keras_model`, which can be used for the estimation procedure.
 
@@ -724,7 +731,7 @@ Given input layers `inputs` and an intermediate output layer `intermediate_outpu
 * Runs `keras::compile()` on the underlying `keras.engine.training.Model`.
 
 The following example defines a linear model with homoskedasticity assumption and fits it using $100$ iterations of the Adam optimization algorithm \citep{Kingma2015}.
-First, we simulate data from the model $Y | X = \mathcal{N}(\mu = 2 \cdot X, \sigma = 1)$.
+First, we simulate data $(Y,X)$ from the model defined by $X \sim \mathrm{Unif}(10,20)$ and $Y | X =x \sim \mathcal{N}(\mu = 2x, \sigma = 1)$.
 
 ```{r}
 set.seed(1431L)
@@ -736,13 +743,13 @@ dataset <- tibble::tibble(
 )
 ```
 
-Next, we specify the distribution family $\mathcal{F} = \mathcal{N}_{\sigma = 1}$, incorporating the homoskedasticity assumption.
+Next, we specify the distribution family $\mathcal{F} = \mathcal{N}_{\sigma = 1}$ \textcolor{red}{Es werden verschiedene Notationen für die Normalverteilung benutzt, bitte vereinheitlichen.}, incorporating the homoskedasticity assumption.
 
 ```{r}
 dist <- dist_normal(sd = 1.0)
 ```
 
-Using \pkg{keras}, we define an empty neural network, just taking $X$ as an input and performing no transformation.
+Using \pkg{keras}, we define an empty neural network, just taking $x$ as an input and performing no transformation.
 
 ```{r}
 nnet_input <- keras::layer_input(shape = 1L, name = "x_input")
@@ -750,7 +757,7 @@ nnet_output <- nnet_input
 ```
 
 Then, `tf_compile_model()` adapts the input layer to the free parameter space $\Theta = \mathbb{R}$.
-This introduces two parameters to the function family $\mathcal{G}$ and implies the functional relationship $\mu = \theta_1 \cdot x + \theta_0$.
+This introduces two parameters to the function family $\mathcal{G}$ and implies the functional relationship $\mu = g(x) := \theta_1 \cdot x + \theta_0$. \textcolor{red}{Ich verstehe nicht, wieso hier eine lineare Funktion auftaucht; sollte nciht $g$ ein ggf. kompliziertes neuronales Netz sein?}
 Since our sample is fully observed, we disable censoring and truncation, leading to the simplified loss
 
 \begin{align*}
@@ -790,6 +797,8 @@ nnet_fit <- fit(
 plot(nnet_fit)
 ```
 
+\textcolor{red}{Hier und an allen anderen Stellen sollten doe Grafiken erklärt werden; was ist bspw. die blaue Kurve und was sind die schwarzen Punkte?}
+
 The `predict()` method of `reservr_keras_model` takes input tensors and returns the predicted distribution parameters as a list compatible with `dist$get_placeholders()`.
 We can thus extract the only parameter `mean` and compare it to an OLS fit for the same dataset:
 
@@ -817,6 +826,8 @@ coef_lm <- unname(coef(lm_fit))
 str(coef_nnet)
 str(coef_lm)
 ```
+
+\textcolor{red}{Evtl. zusätzlich ein Beispiel mit einem komplizierteren Network-Modell und höher dimensoinalen Loss ergänzen? Auf einem Datensatz, den es in R gibt?}
 
 # Conclusion {#conclusion}
 
