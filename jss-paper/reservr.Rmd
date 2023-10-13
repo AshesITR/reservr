@@ -247,13 +247,13 @@ A conclusion is given in Section&nbsp;\ref{conclusion}.
 
 # Usage of \pkg{reservr} {short-title="Usage of reservr" #pkg-overview}
 
-The package serves two main goals: fitting distributions to randomly truncated non-informatively interval censored data and performing (deep) distributional regression with randomly truncated non-informatively interval censored data.
+The package serves two main goals: fitting distributions to randomly truncated non-informatively \textcolor{red}{[Das Stcihwort non-informative wurde zuvor bislang nicht definiert]} interval censored data and performing (deep) distributional regression with randomly truncated non-informatively interval censored data.
 Four main components are integrated with each other to facilitate the analysis goals
 
-1. Methods for describing a randomly truncated non-informatively interval censored sample $\mathfrak{I}$.
-2. Methods for specifying distribution families $\mathcal{F}$ to be fitted.
-3. Methods for estimating distribution parameters $\theta$ given a sample $\mathfrak{I}$ and a parametrized family $\mathcal{F} = \{F_\theta | \theta \in \Theta\}$.
-4. Methods for regression of distribution parameters given a sample $\mathfrak{I}$ with associated predictors $X \in \mathfrak{X}$, a parametrized family $\mathcal{F}$ and a general \pkg{tensorflow} network $\mathcal{G} : \mathfrak{X} \to \Theta$ that processes $X$ to estimate $Y | X = F_{g(X)}$.
+1. Methods for describing a randomly truncated non-informatively interval censored sample $\mathfrak{I}$. \textcolor{red}{[Was bedeutet 'describing'? Gibt es ein besseres Stichwort?]}
+2. Methods for specifying a parametrized distribution family $\mathcal{F} = \{F_\theta | \theta \in \Theta\}$ to be fitted.
+3. Methods for estimating distribution parameters $\theta$ given a sample $\mathfrak{I}$.
+4. Methods for regression of distribution parameters given a sample $\mathfrak{I}$ with associated predictors $X \in \mathfrak{X}$ \textcolor{red}{[Eine eignene Notation für Regression-Samples einführen, etwa $\mathfrak I_x$ oder $\mathfrak I_{\mathrm{reg}}$? Könnte man auch schon geeignet in der Introduction machen.]}, a parametrized family $\mathcal{F}$ and a general \pkg{tensorflow} network $\mathcal{G} : \mathfrak{X} \to \Theta$ that processes $X$ to estimate the conditional distribution of $Y | X=x$ by $F_{g(x)}$ with $g \in \mathcal G$.
 
 Each of these components is described one by one in the following sections.
 
@@ -263,23 +263,27 @@ A sample $\mathfrak{I} = \{(m, v, l, u, w)_i\}$ is represented as a tibble (from
 The core function to create this tibble is `trunc_obs()`.
 A tibble created by `trunc_obs()` consists of five columns:
 
+\textcolor{red}{[Didaktisch ist es nicht klug, nun die Notation von $Y$ zu $X$ wechseln, da $X$ ja schon 'verbraucht' ist. Mindestens sollte man das kommentieren und begründen; besser wäre es, das grundlegend zu ändern.]}.
+
  * `x`: If observed, the exact value of the random variable, referred to as $Y$ in \ref{introduction}. Otherwise `NA`.
- * `xmin`: Lower interval censoring bound ($M$ in \ref{introduction}) for the observation. If the observation is not censored, `xmin` is equal to `x`.
- * `xmax`: Upper interval censoring bound ($V$ in \ref{introduction}) for the observation. If the observation is not censored, `xmax` is equal to `x`.
- * `tmin`: Lower truncation bound ($L$ in \ref{introduction}). Only observations with $x \ge t_{\text{min}}$ are observed. Can be $-\infty$ to indicate no lower truncation.
- * `tmax`: Upper truncation bound ($U$ in \ref{introduction}). Only observations with $x \le t_{\text{max}}$ are observed. Can be $\infty$ to indicate no upper truncation.
+ * `xmin`: Lower interval censoring bound ($M$ in Section \ref{introduction}) for the observation. If the observation is not censored, `xmin` is equal to `x`.
+ * `xmax`: Upper interval censoring bound ($V$ in Section \ref{introduction}) for the observation. If the observation is not censored, `xmax` is equal to `x`.
+ * `tmin`: Lower truncation bound ($L$ in Section \ref{introduction}). Only observations with $x \ge t_{\text{min}}$ are observed. Can be $-\infty$ to indicate no lower truncation.
+ * `tmax`: Upper truncation bound ($U$ in Section \ref{introduction}). Only observations with $x \le t_{\text{max}}$ are observed. Can be $\infty$ to indicate no upper truncation.
  * `w`: The weight associated with the observation. Defaults to $1$.
 
-Note that, unlike \ref{introduction}, the lower bounds of intervals in `trunc_obs` are included.
-For continuous random variables, the formulas are equivalent to the half-open formulation (since $\Prob(Y \in \{M, V\} | M, V) = 0$).
-For discrete random variables, $M$ and $L$ may have to be appropriately shifted.
+Note that, unlike in Section \ref{introduction}, the lower bounds of intervals in `trunc_obs` are included, that is, we allow for  $x \ge t_{\text{min}}$ rather than  $x > t_{\text{min}}$.
+For continuous random variables, the formulas are equivalent to the half-open formulation (since $\Prob(Y \in \{M, V\} | M, V) = 0$ \textcolor{red}{[Hier wird wieder kommentarlos von $X$ zu $Y$ zurückgewechselt]}).
+For discrete random variables, $M$ and $L$ may have to be appropriately shifted, e.g., by replacing $M$ by $M-0.5$ for integer valued variables.
 The following code defines a sample of size 1 without truncation and censoring, with the realized value of $1.3$.
 
 ```{r}
 trunc_obs(1.3)
 ```
 
-Simulating randomly truncated and interval censored data from a standard normal distribution with $80\%$ of the observations randomly interval censored and random uniform truncation $L \sim U[-2, 0]$ and $U \sim U[0, 2]$ can be simulated as follows
+Simulating randomly truncated and interval censored data from a standard normal distribution with $80\%$ of the observations randomly interval censored and random uniform truncation $L \sim U[-2, 0]$ and $U \sim U[0, 2]$ \textcolor{red}{[Vielleicht ein anderes $U$ für die Gleichverteilung? Etwa $\mathrm{Unif}$ oder $\mathcal U$?]} can be simulated as follows
+
+\textcolor{red}{[Ich würde wie in der Introduction einen anderen Variablennamen für die 'zwei' Versionen von $x_{lower}$ verwenden (dort heißt das $C_1$).]}
 
 ```{r}
 set.seed(123)
@@ -326,9 +330,9 @@ The total number of censored observations is roughly $0.8 \cdot \mathtt{nrow(obs
 sum(is.na(obs$x))
 ```
 
-In addition to the `trunc_obs()` constructor function, there are `as_trunc_obs()` for coercion, `truncate_obs()` for artificially changing truncation bounds, and `repdel_obs()` for computing randomly truncated reporting delay observations from general insurance claims data containing accident date, reporting delay and evaluation date information.
+In addition to the `trunc_obs()` constructor function, there are functions `as_trunc_obs()` for coercion, `truncate_obs()` for artificially changing truncation bounds, and `repdel_obs()` for computing randomly truncated reporting delay observations from general insurance claims data containing accident date, reporting delay and evaluation date information.
 The latter takes inputs of the form $(T_\text{acc}, D, \tau)$ where $T_{\text{acc}} < \tau$ are accident dates with corresponding reporting delays $D \ge 0$ and $\tau$ is the calendar date of observation.
-It returns the sample $(\mathtt{xmin} = \mathtt{xmax} = D, \mathtt{tmin} = 0, \mathtt{tmax} = \tau - T_{\text{acc}}, \mathtt{w} = 1)$ suitable for estimating the reporting delay distribution where a claim is only observed if it has been reported by the evaluation date, i.e., $T_{\text{acc}} + D \le \tau$.
+It returns the sample $(\mathtt{xmin} = \mathtt{xmax} = D, \mathtt{tmin} = 0, \mathtt{tmax} = \tau - T_{\text{acc}}, \mathtt{w} = 1)$ suitable for estimating the reporting delay distribution where a claim is only observed if it has been reported by the evaluation date, i.e., $T_{\text{acc}} + D \le \tau$. \textcolor{red}{[AB: Referenz zu unserem Paper ergänzen]}
 
 ## Definition of distribution families {#distributions}
 
@@ -336,12 +340,12 @@ Distribution families are implemented using the \pkg{R6} class system \citep{R6}
 They inherit from the class `Distribution` and feature a common interface to
 
 * manage fixed and free parameters of the underlying familiy,
-* use basic distribution functions for random number generation, computation of density, cumulative density, hazard and quantile,
-* use additional functions supporting parameter estimation procedures such as computing support and discreteness,
+* use basic distribution functions for random number generation and computation of the density, cumulative distribution, hazard and quantile function,
+* use additional functions supporting parameter estimation procedures such as computing support and discreteness \textcolor{red}{[AB:Was heißt 'Computing discreteness'?]},
 * compile performance enhanced functions to speed up basic functions for repeated evaluation,
-* and provide \pkg{tensorflow}-specific implementations to support (deep) distributional regression.
+* provide \pkg{tensorflow}-specific implementations to support (deep) distributional regression.
 
-A `Distribution` object represents a family $\mathcal{F}$ parameterized by a fixed-dimensional parameter space $\Theta$.
+A `Distribution` object represents a distribution family $\mathcal{F}$ supported on a subset of the real line and parameterized by a fixed finite-dimensional parameter space $\Theta$. The family may be a singleton, in which case it is rather a distribution than a distribution family.
 
 \pkg{reservr} provides a set of basic distribution families, optionally with some fixed parameters, as well as transformations of distribution families that take one or more underlying distribution families.
 At the time of writing, these are:
@@ -372,8 +376,8 @@ At the time of writing, these are:
 |--------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
 | `dist_blended(dists, probs, breaks, bandwidths)` | A Blended mixture distribution family, see Section&nbsp;\ref{dist-blended}                                                              |
 | `dist_mixture(dists, probs)`                     | A general Mixture distribution family, see Section&nbsp;\ref{dist-mixture}                                                              |
-| `dist_translate(dist, offset, multiplier)`       | An affine transformation family $\{a \cdot F + b\}$ for $F \in \mathcal{F}$ from the underlying family                                  |
-| `dist_trunc(dist, min, max)`                     | A truncated distribution family, $\{F\restr_{\text{min} \le \cdot \le \text{max}}\}$ for $F \in \mathcal{F}$ from the underlying family |
+| `dist_translate(dist, offset, multiplier)`       | The affine transformation family $\{F((\cdot - b)/a) : F \in \mathcal{F}, b \in \mathbb R, a >0\}$ from the underlying family $\mathcal{F}$                                  |
+| `dist_trunc(dist, min, max)`                     | The truncated distribution family consisting of all distributions of $X \restr (\text{min} \le X  \le \text{max})$ with  $X \sim F \in \mathcal{F}$   |
 
 ### Parameters
 
@@ -402,7 +406,7 @@ set.seed(10L)
 dist$sample(1L, with_params = list(mean = 0.0, sd = 2.0))
 ```
 
-The two samples were drawn from a standard normal and a normal distribution with mean zero and standard deviation $2$ respectively.
+The two observations were drawn from a standard normal and a normal distribution with mean zero and standard deviation $2$, respectively.
 Since the chosen seed was identical, the second sample is exactly double the first sample.
 Whenever the output length is greater than one, such as when taking more than one sample, `with_params` can optionally contain individual parameters for each entry.
 
@@ -411,9 +415,9 @@ set.seed(10L)
 dist$sample(3L, with_params = list(mean = 0.0:2.0, sd = 0.5))
 ```
 
-The three samples were drawn from $\mathcal{N}(0, 0.5)$, $\mathcal{N}(1, 0.5)$ and $\mathcal{N}(2, 0.5)$ respectively.
+The three observations were drawn from $\mathcal{N}(0, 0.5)$, $\mathcal{N}(1, 0.5)$ and $\mathcal{N}(2, 0.5)$, respectively.
 
-`Distribution`s have a set of fields and methods related to managing parameters
+`Distribution`s have a set of fields and methods related to managing parameters:
 
 * The active binding `default_params` gets or sets the list of all parameters and their fixed values, `NULL` represents a free parameter.
   Component families are included as `Distribution` objects.
@@ -453,14 +457,14 @@ mix$get_components()
 
 ### Basic distribution functions
 
-The basic distribution functions (density, probability, hazard, quantile, random number generation) are provided by each distribution family.
+The basic distribution functions (density, probability, hazard and quantile function, as well as random number generation) are provided by each distribution family.
 In general, the argument `with_params` can be used to both specify missing parameters (placeholders) and to override fixed distribution parameters.
 If the provided parameters are vectors of length greater than 1, they must conform to the input dimension (e.g. `length(x)` for `density`).
 In this case, the parameters are "vectorized" in the sense that the $i$th output element will be computed using the $i$th entry from the parameter list.
 
  * `density(x, log = FALSE, with_params = list())` computes the (log-)density.
- * `probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list()` computes the (log-)cumulative density or (log-)survival.
- * `hazard(x, log = FALSE. with_params = list())` computes the (log-)hazard.
+ * `probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list()` computes the (log-)cumulative distribution function or (log-)survival function.
+ * `hazard(x, log = FALSE. with_params = list())` computes the (log-)hazard function.
  * `quantile(p, lower.tail = TRUE, log.p = FALSE, with_params = list())` computes upper or lower quantiles.
  * `sample(n, with_params = list())` generates a random sample of size `n`. (`with_params` can contain length `n` vectors in this case).
 
@@ -482,7 +486,7 @@ In addition to the basic functions, there are several supporting functions usefu
 When working with larger data or many calls to distribution functions, such as when performing a fit, it can be beneficial to just-in-time compile specialized functions that avoid overhead for dealing with the generic structure of distributions and their parametrization.
 `Distribution`s offer a set of "compiler" functions that return simplified, faster, versions of the basic distribution functions, or that analytically compute gradients.
 Those functions are not necessarily implemented for all `Distribution` classes, but will be automatically used by, e.g., `fit_dist()` if useful.
-The input structure for `param_matrix` can be obtained by `flatten_params_matrix(dist$get_placeholders())` where `dist` is the `Distribution` object in question.
+The input structure for `param_matrix` can be obtained by `flatten_params_matrix(dist$get_placeholders())` where `dist` is the `Distribution` object in question. \textcolor{red}{[Ich verstehe das nicht, aber vielleicht bin auch an dieser Stelle nicht die Zielgruppe. ;-) Könnte ein Beispiel helfen?]}
 
  * `compile_density()` compiles a fast function with signature `(x, param_matrix, log = FALSE)` that will compute the density with fixed parameters hard-coded and taking the free parameters as a matrix with defined layout instead of a nested list.
  * `compile_probability()` compiles a fast replacement for `probability` with signature `(q, param_matrix, lower.tail = TRUE, log.p = FALSE)`.
@@ -493,6 +497,8 @@ The input structure for `param_matrix` can be obtained by `flatten_params_matrix
    This is useful for conditional maximum likelihood estimation in the presence of random truncation or non-informative interval censoring.
 
 ### \pkg{tensorflow} interface {short-title="tensorflow interface"}
+
+\textcolor{red}{[Das hier vielleicht erst später, nachdem der Regression-Aspekt genauer erklärt wurde? Oder ist es auch für den Nicht-Regressions-Fall relevant?]}
 
 Use of distribution families from within \pkg{tensorflow} networks requires specialized implementations using the \pkg{tensorflow} APIs instead of regular \proglang{R} functions.
 These are tailored to the needs of maximizing (conditional) likelihoods of weighted, censored and randomly truncated data.
@@ -513,7 +519,7 @@ This section contains mathematical definitions of those function families.
 A mixture distribution family is defined by a fixed number $k$ of component families $\{\mathcal{F}_i\}_{i = 1}^k$ via the set of distributions
 
 \begin{align*}
-  \mathop{\mathrm{Mixture}}(\mathcal{F}_1, \ldots, \mathcal{F}_k) & := \Bigl\{ F \Bigm| F((-\infty, x]) = \sum_{i = 1}^k p_i F_i((-\infty, x]), F_i \in \mathcal{F}_i, p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
+  \mathop{\mathrm{Mixture}}(\mathcal{F}_1, \ldots, \mathcal{F}_k) & := \Bigl\{ F = \sum_{i = 1}^k p_i F_i \Bigm| F_i \in \mathcal{F}_i, p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
 \end{align*}
 
 ### Erlang mixture distribution families {#dist-erlangmix}
@@ -522,8 +528,8 @@ An Erlang mixture distribution family is defined by its number of components $k$
 If $\Gamma_{\alpha, \theta}$ denotes a Gamma distribution with shape $\alpha$ and scale $\theta$, the erlang mixture family with $k$ components can be defined as follows:
 
 \begin{align*}
-  \mathop{\mathrm{ErlangMixture}}(k) := \Bigl\{ F \Bigm| & F((-\infty, x]) = \sum_{i = 1}^k p_i \Gamma_{\alpha_i, \theta}((-\infty, x]), \\
-  & \alpha_i \in \mathbb{N}, \theta \in (0, \infty), p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
+  \mathop{\mathrm{ErlangMixture}}(k) := \Bigl\{ F = \sum_{i = 1}^k p_i \Gamma_{\alpha_i, \theta} \Bigm| 
+   \alpha_i \in \mathbb{N}, \theta \in (0, \infty), p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
 \end{align*}
 
 Note that for $k \to \infty$, Erlang mixtures are dense in the space of distributions on $(0, \infty)$ with respect to weak convergence \citep{ll2012}, making them a useful modeling choice for general positive continuous distributions. However, the tail index of all Erlang mixture distributions is always zero due to the exponential decay of Gamma densities.
@@ -551,6 +557,7 @@ $F_B$:
     \end{cases} \\
     F_B(x) & = p_1 \frac{F(p_{\kappa, \varepsilon}(x))}{F(\kappa)} + p_2 \frac{G(q_{\kappa, \varepsilon}(x)) - G(\kappa)}{1 - G(\kappa)}.
 \end{align*}
+\textcolor{red}{[Evtl. hier ein kurzer Satz zur Anschauung? Etwa, dass im Fall stetiger Dichten für $x \le \kappa -\eps$ die Dichte von $P$ verwendet wird etc.]}
 
 This leads to the definition of a blended distribution family:
 
@@ -567,8 +574,8 @@ Compared to piecewise distribution families obtained by mixture of truncated dis
 
 ### The Blended Dirac Erlang Generalized Pareto distribution family {#dist-bdegp}
 
-Using the construction of a Blended distribution family, we can define the Blended Dirac Erlang Generalized Pareto (BDEGP) family as follows.
-See \citet[Definition 2]{Rosenstock2022}.
+Using the construction of a Blended distribution family, we can define the Blended Dirac Erlang Generalized Pareto (BDEGP) family as follows,
+see \citet[Definition 2]{Rosenstock2022}.
 
 Given parameters $n \in \mathbb{N}, m \in \mathbb{N}, \kappa \in \mathbb{R}$ and $\varepsilon \in (0, \infty)$, we define the _Blended Dirac Erlang Generalized Pareto family_ as the family of distributions
 
@@ -580,10 +587,10 @@ Given parameters $n \in \mathbb{N}, m \in \mathbb{N}, \kappa \in \mathbb{R}$ and
       & \qquad\qquad \{ \mathop{\mathrm{GPD}}(\kappa, \sigma, \xi) \mid \sigma \in (0, \infty), \xi \in [0, 1)) \}; \\
       & \qquad\qquad \kappa, \varepsilon \\
     & \qquad) \\
-  &)
+  &),
 \end{align*}
 
-Where $\delta_k$ is the dirac distribution with $P(X = k) = 1$ and $\mathrm{GPD}$ is the generalized Pareto distribution.
+where $\delta_k$ is the dirac distribution at $k$ and $\mathrm{GPD}$ is the generalized Pareto distribution.
 Note the constraint on the tail index $\xi \in [0, 1)$, guaranteeing finite expectation.
 
 This distribution family has three features making it useful in modelling very general heavy-tailed distributions on $(0, \infty)$:
