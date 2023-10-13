@@ -44,7 +44,7 @@ options(prompt = 'R> ', continue = '+ ')
 Statistical analyses are typically concerned with modelling and estimating the distribution of some measured variable of interest $Y$, called the outcome, possibly conditional on the value of one or several endogenous variables $X$, called predictors.
 In the absence of endogenous variables, this process is usually called distribution fitting, and in the presence of endogenous variables it is called regression.
 Classical regression, such as via generalized linear models (GLMs), is concerned with the influence of endogenous variables on the mean of the outcome, i.e., $\E(Y|X) = f(X)$, and often links other parameters of the conditional outcome distribution to its mean.
-A gentle introduction to generalized linear models can be found in \cite{???}.
+A gentle introduction to generalized linear models can be found in \cite{DobsonBarnett2018}.
 An implementation of GLMs is available in the \pkg{stats} \proglang{R} package, which is part of \proglang{R} itself \citep{baseR}.
 Some models also allow specification of additional parameters of the conditional outcome distribution, such as Generalized Additive Models for Location, Scale and Shape \citep{GAMLSS}.
 More recently, deep distributional regression has been proposed, which allows for flexible specification of individual outcome distribution parameters \citep{deepregression}.
@@ -930,6 +930,6 @@ We presented \pkg{reservr}, a package that supports distribution parameter estim
 Both tasks are supported for samples with or without interval censoring and with or without random truncation, a more general form of truncation than what typical packages support.
 The package includes facilities for (1) description of randomly truncated non-informatively interval censored samples, (2) definition of distribution families to consider, (3) global distribution parameter estimation under an i.i.d. assumption on the sample and (4) distributional regression - employing the \pkg{tensorflow} package for flexibility and speed.
 
-# Acknowledgements
+# Acknowledgements {-}
 
 The Author would like to thank Prof. Dr. Axel Bücher for proofreading and valuable comments on an earlier version of this article.
