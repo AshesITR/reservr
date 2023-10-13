@@ -56,28 +56,25 @@ Next, truncated data misses observations for which the outcome $Y$ falls out of 
 We consider the case of _random truncation_, where these truncation bounds are also random variables that may vary for each observation.
 Finally, we consider a combination of the two, _randomly truncated interval censoring_.
 
-The three scenarios can be combined into a single general scheme: instead of observing the real-valued target variable $Y$ (with $\mu$-density $f_\theta$ and c.d.f. $F_\theta$, where $\mu$ is a sigma-finite measure on $\mathbb R$ and $\theta$ is a parameter vector in some parameter space $\Theta$), we observe the vector $(M,V,L,U)$, which satisfies
-$L \le M \le V \le U$ and $L<U$.
-Its coordinates have the following interpretation: the last two coordinates, which satisfy $-\infty \le L < U \le \infty$, encode truncation: we only happen to observe $(M,V,L,U)$ if $L < Y \le U$; in particular, a non-truncated observations means that $L=-\infty$ and $U=\infty$.
-The first two coordinates, which satisfy $L \le M \le V \le U$ and which may be $\mp \infty$, encode censoring: the observation $(M,V)=(m,v)$ means that the target variable $Y$ satisfies $Y \in (m,v]$ if $m<v$ and $Y=m$ if $m=v$; the latter corresponds to an uncensored observation of $Y$.
-
-\textcolor{orange}{[AR: Hier 'annotated' sample mit Prädiktoren definieren]}
+The three scenarios can be combined into a single general scheme: instead of observing the real-valued target variable $Y$ (with $\mu$-density $f_\theta$ and c.d.f. $F_\theta$, where $\mu$ is a sigma-finite measure on $\mathbb R$ and $\theta$ is a parameter vector in some parameter space $\Theta$), we observe the vector $(M, V, L, U)$, which satisfies $L \le M \le V \le U$ and $L<U$.
+Its coordinates have the following interpretation: the last two coordinates, which satisfy $-\infty \le L < U \le \infty$, encode truncation: we only happen to observe $(M, V, L, U)$ if $L < Y \le U$; in particular, a non-truncated observations means that $L = -\infty$ and $U = \infty$.
+The first two coordinates, which satisfy $L \le M \le V \le U$ and which may be $\mp \infty$, encode censoring: the observation $(M, V) = (m, v)$ means that the target variable $Y$ satisfies $Y \in (m, v]$ if $m < v$ and $Y = m$ if $m = v$; the latter corresponds to an uncensored observation of $Y$.
 
 It is instructive to focus on the simpler problem of distribution parameter estimation before proceeding with distributional regression.
-Suppose we observe an independent sample $\mathcal J = \{(m_i, v_i, l_i, u_i): i=1, \ldots, n\}$ of $(M,V,L,U)$.
+Suppose we observe an independent sample $\mathcal J = \{(m_i, v_i, l_i, u_i): i=1, \ldots, n\}$ of $(M, V, L, U)$.
 Suggested by standard maximum (conditional) likelihood approaches for truncated \citep{DoerreEmura2019} and censored observations \citep{Sun2006}, we suggest to estimate $\theta$ by maximizing the objective function
 <!-- -->
 \begin{align}
   \ell(\theta) = \sum_{(m, v, l, u) \in \mathcal J} \Big\{ \log f_\theta(m)  \mathbf{1}(m=v) + \log F_\theta((m,v]) \mathbf{1}(m<v) \Big\} - \log F_\theta((l,u]), \label{eq:cml-likelihood-nw}
 \end{align}
 
-where we use the notation $F_\theta((l,u])=F_\theta(u) - F_\theta(l)$.
+where we use the notation $F_\theta((l, u]) = F_\theta(u) - F_\theta(l)$.
 A detailed motivation for this approach under suitable conditions ensuring that the censoring is non-informative is given in Section \ref{motivation-cml-likelihood} below.
 For later purposes, it is helpful to attach a weight $w_i$ to each observation $(m_i, v_i, l_i, u_i)$.
 Denoting the resulting sample by $\mathfrak{I} = \{(m_i, v_i, l_i, u_i, w_i)\}$, we aim at maximizing the weighted sum of the (conditional) log-likelihoods
 <!-- -->
 \begin{align}
-  \ell(\theta) = \sum_{(m, v, l, u, w) \in \mathfrak{I}} w \cdot \Big[ \Big\{ \log f_\theta(m) \mathbf{1}(m=v) + \log F_\theta((m, v]) \mathbf{1}(m<v) \Big\} - \log F_\theta((l, u]) \Big]. \label{eq:cml-likelihood}
+  \ell(\theta) = \sum_{(m, v, l, u, w) \in \mathfrak{I}} w \cdot \Big[ \Big\{ \log f_\theta(m) \mathbf{1}(m = v) + \log F_\theta((m, v]) \mathbf{1}(m < v) \Big\} - \log F_\theta((l, u]) \Big]. \label{eq:cml-likelihood}
 \end{align}
 
 A practical example of random truncation arises when modelling the reporting delay of claims in general insurance.
@@ -91,8 +88,20 @@ For each maintained item, the production time $P_0$ and the purchase time $P_1$ 
 Only items that are functional at purchase time $P_1$ are observed at the maintenance times.
 This gives rise to truncation bounds $(L, U) = (P_1 - P_0, \infty)$ and censoring interval bounds $(M, V) \in \{ (P_1 - P_0, M_0 - P_0), (M_0 - P_0, M_1 - P_0), (M_1 - P_0, \infty) \}$, depending on the item condition at times $M_0$ and $M_1$.
 
-\textcolor{red}{[AB: Der Regression-Aspekt von reservr fehlt bislang und sollte auf jeden Fall hier etwas ausgeführt werden. Bei dem Vorangegagenen sollte vorab dazu gesagt werden, dass aus didaktischen Gründen zunächst nur der Nicht-Regression-Fall beschrieben wird.]}
-\textcolor{orange}{[AR: Hier distributional regression beschreiben (aktuell siehe weiter unten)]}
+In the setting of distributional regression, weighted samples $\mathfrak{I}$ $(M, V, L, U, W)$ have associated predictors $X \in \mathfrak{X}$, resulting in observations of the shape $\mathfrak{I}_{\text{reg}} = \{(m_i, v_i, l_i, u_i, w_i, x_i) : i = 1, \ldots, n\}$.
+We are interested in estimating a regression function $g : \mathfrak{X} \to \Theta$ given a sample $\mathfrak{I}_{\text{reg}}$, a parameterized family $\mathcal{F} = \{F_\theta \mid \theta \in \Theta\}$ and a family $\mathcal{G}$ of functions from $\mathfrak{X}$ to $\Theta$.
+It is assumed that there exists a fuction $g \in \mathcal G$ such that the conditional distribution of $Y | X = x$ is $F_{g(x)}$.
+Distributional regression can be formulated as the maximization problem
+
+\begin{align}\label{eq:cml-regression-likelihood}
+  \hat g & = \mathop{\mathrm{arg\,max}}_{g \in \mathcal{G}} \ell(g | \mathfrak{I}_{\text{reg}}) \text{, where} \nonumber \\
+  \ell(g | \mathfrak{I}_{\text{reg}}) & := \sum_{(m, v, l, u, w, x) \in \mathfrak{I}_{\text{reg}}} w \cdot \begin{cases}
+    \log f_{g(x)}(m) - \log F_{g(x)} ((l, u]) & m = v \\
+    \log F_{g(x)}((m, v]) - \log F_{g(x)}((l, u]) & m < v
+  \end{cases}.
+\end{align}
+
+Compared to Equation \eqref{eq:cml-likelihood}, the global parameter $\theta$ is replaced by the regression function $g$ evaluated at the associated predictors $x$.
 
 ## Motivation of Equation \eqref{eq:cml-likelihood-nw}. {short-title="Motivation of the conditional likelihood" #motivation-cml-likelihood}
 
@@ -263,7 +272,7 @@ Four main components are integrated with each other to facilitate the analysis g
 1. Methods for representing a randomly truncated non-informatively interval censored sample $\mathfrak{I}$.
 2. Methods for specifying a parametrized distribution family $\mathcal{F} = \{F_\theta | \theta \in \Theta\}$ to be fitted.
 3. Methods for estimating distribution parameters $\theta$ given a sample $\mathfrak{I}$.
-4. Methods for regression of distribution parameters given a sample $\mathfrak{I}$ with associated predictors $X \in \mathfrak{X}$ \textcolor{red}{[Eine eignene Notation für Regression-Samples einführen, etwa $\mathfrak I_x$ oder $\mathfrak I_{\mathrm{reg}}$? Könnte man auch schon geeignet in der Introduction machen.]}, a parametrized family $\mathcal{F}$ and a general \pkg{tensorflow} network $\mathcal{G} : \mathfrak{X} \to \Theta$ that processes $X$ to estimate the conditional distribution of $Y | X=x$ by $F_{g(x)}$ with $g \in \mathcal G$.
+4. Methods for regression of distribution parameters given a regression sample $\mathfrak{I}_{\text{reg}}$, a parametrized family $\mathcal{F}$ and a general \pkg{tensorflow} network $\mathcal{G} : \mathfrak{X} \to \Theta$ that processes $X$ to estimate the conditional distribution of $Y | X = x$ by $F_{g(x)}$ with $g \in \mathcal G$.
 
 Each of these components is described one by one in the following sections.
 
@@ -801,22 +810,7 @@ The element `"iter"` contains the number of full ECME-Iterations that were perfo
 
 ## Distributional regression using \pkg{tensorflow} integration {short-title="distributional regression using tensorflow integration" #tensorflow}
 
-\textcolor{red}{Die generelle Beschreibung sollte meines Erachtens in die Introduction.}
-
-This section describes the functions for the problem of estimating a regression function $g : \mathfrak{X} \to \Theta$ given a sample $\mathfrak{I}$ with associated covariates $X \in \mathfrak{X}$, a parameterized family $\mathcal{F} = \{F_\theta \mid \theta \in \Theta\}$ and a family $\mathcal{G}$ of functions from $\mathfrak{X}$ to $\Theta$.
-Distributional regression can be formulated as the maximization problem
-
-\begin{align}\label{eq:cml-regression-likelihood}
-  \hat g & = \mathop{\mathrm{arg\,max}}_{g \in \mathcal{G}} \ell(g | \mathfrak{I}, X) \text{, where} \nonumber \\
-  \ell(g | \mathfrak{I}, X) & := \sum_{(m, v, l, u) \in \mathfrak{I}, x \in X} w \cdot \begin{cases}
-    \log f_{g(x)}(m) - \log F_{g(x)} ((l, u]) & m = v \\
-    \log F_{g(x)}((m, v]) - \log F_{g(x)}((l, u]) & m < v
-  \end{cases}.
-\end{align}
-
-Compared to Equation \eqref{eq:cml-likelihood}, the global parameter $\theta$ is replaced by the regression function $g$ evaluated at the associated covariates.
-
-The maximization problem is delegated to \pkg{tensorflow}, which supplies ample stochastic optimization algorithms.
+The maximization problem \eqref{eq:cml-regression-likelihood} is delegated to \pkg{tensorflow}, which supplies ample stochastic optimization algorithms.
 Functions in \pkg{reservr} are necessary to create a suitable output layer for \pkg{tensorflow} that maps onto $\Theta$ and to provide an implementation of the (negative) log-likelihood in \eqref{eq:cml-regression-likelihood} as a loss function.
 These two tasks are combined in `tf_compile_model()`.
 The function returns an object of class `reservr_keras_model`, which can be used for the estimation procedure.
@@ -825,6 +819,7 @@ Given input layers `inputs` and an intermediate output layer `intermediate_outpu
 
 * Compiles the loss for `dist` defined by \eqref{eq:cml-regression-likelihood} as $l(g) = -\tfrac{1}{\#(\mathfrak{I})} \ell(g|\mathfrak{I}, X)$, optionally disabling `censoring` or `truncation` for efficiency.
 * Creates a list of final output layers mapping `intermediate_output` onto the parameter space $\Theta$ of `dist` using `Distribution$tf_compile_params()`.
+  This step adds additional degrees of freedom to the overall model, and the approach is described in \citet[Section A]{Rosenstock2022supp}
 * Runs `keras::compile()` on the underlying `keras.engine.training.Model`.
 
 The following example defines a linear model with homoskedasticity assumption and fits it using $100$ iterations of the Adam optimization algorithm \citep{Kingma2015}.
