@@ -15,16 +15,15 @@ title:
   plain:     "Fitting Distributions and Neural Networks to Censored and Truncated Data: The R Package reservr"
   short:     "\\pkg{reservr}: Fitting Distributions and Neural Networks to Censored and Truncated Data"
 abstract: >
-  \textcolor{red}{[AB: CENSORING KOMMT IM ABSTRACT GAR NICHT VOR. INSGESAMT FEHLT MIR ETWAS DER ROTE FADEN. DER ABSTRACT MUSS MÖGLICHST PERFEKT SEIN.]}
-
-  While the problem of estimating distribution parameters from truncated data with fixed truncation points has readily available implementations in \proglang{R}, this is not the case for randomly truncated data, i.e. observations where the point of truncation varies by observation.
-  In practice, it is often of interest to also consider the influence of other parameters (predictors) on the distribution of an outcome variable.
-  We present the features and implementation of the \proglang{R} package \pkg{reservr}.
-  The package provides a flexible interface to specify distribution families, provides algorithms to perform parameter estimation for censored and randomly truncated data based on (conditional) maximum likelihood, and exposes an interface to the \proglang{R} package \pkg{tensorflow} for training flexible neural network models on censored and randomly truncated outcomes based on predictors.
-  Additional utilities for application in a general insurance context, as well as the usual random sampling, density, probability and quantile functions are provided.
+  Random truncation, i.e. truncated observations where the point of truncation varies by observation, and interval censoring arise naturally in various fields, such as insurance, operations research or medicine.
+  This article presents the \proglang{R} package \pkg{reservr}, which implements distribution parameter estimation and distributional regression for randomly truncated and interval censored data based on (conditional) maximum likelihood.
+  The package provides a flexible interface to specify (weighted) randomly truncated and interval censored observations, to specify distribution families to be estimated, and to compute (conditional) maximum-likelihood based parameter estimates.
+  Distributional regression is supported via an interface to the \proglang{R} package \pkg{tensorflow} to build neural network models for distributional regression of censored and randomly truncated outcomes with arbitrary distribution families.
+  The interface allows for arbitrary network architectures, including multi-modality and pre-initialization of network weights from a global parameter estimate to improve stability.
+  Additional utilities for application in a general insurance context, as well as the usual random sampling, density, probability and quantile functions for distributions are provided.
 keywords:
-  formatted: [distribution fitting, truncation, random truncation, censoring, "\\proglang{R} packages", distributional regression]
-  plain:     [distribution fitting, truncation, random truncation, censoring, R packages, distributional regression]
+  formatted: [distribution fitting, random truncation, interval censoring, distributional regression, deep learning, "\\proglang{R}"]
+  plain:     [distribution fitting, random truncation, interval censoring, distributional regression, deep learning, R]
 preamble: >
   \usepackage{amsmath}
   \usepackage{amssymb}
