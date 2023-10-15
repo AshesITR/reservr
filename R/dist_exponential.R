@@ -70,7 +70,9 @@ ExponentialDistribution <- distribution_class_simple(
   },
   tf_logdensity = function() function(x, args) { # nolint: brace.
     rate <- tensorflow::tf$squeeze(args[["rate"]])
-    tensorflow::tf$where(x >= 0, log(rate) - tensorflow::tf$maximum(x, K$zero) * rate, K$neg_inf)
+    x_ok <- tf$math$is_finite(x) & x >= 0
+    x_safe <- tf$where(x_ok, x, K$zero)
+    tensorflow::tf$where(x_ok, log(rate) - x_safe * rate, K$neg_inf)
   },
   tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
     tf <- tensorflow::tf
