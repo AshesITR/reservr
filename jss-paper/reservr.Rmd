@@ -93,7 +93,7 @@ It is assumed that there exists a fuction $g \in \mathcal G$ such that the condi
 Distributional regression can be formulated as the maximization problem
 
 \begin{align}\label{eq:cml-regression-likelihood}
-  \hat g & = \mathop{\mathrm{arg\,max}}_{g \in \mathcal{G}} \ell(g | \mathfrak{I}_{\text{reg}}) \text{, where} \nonumber \\
+  \hat g & \in \mathop{\mathrm{arg\,max}}_{g \in \mathcal{G}} \ell(g | \mathfrak{I}_{\text{reg}}) \text{, where} \nonumber \\
   \ell(g | \mathfrak{I}_{\text{reg}}) & := \sum_{(m, v, l, u, w, x) \in \mathfrak{I}_{\text{reg}}} w \cdot \begin{cases}
     \log f_{g(x)}(m) - \log F_{g(x)} ((l, u]) & m = v \\
     \log F_{g(x)}((m, v]) - \log F_{g(x)}((l, u]) & m < v
@@ -217,7 +217,7 @@ Likewise, in case $l = m < v < u$, we have
   \Prob(M = l, V = v | L = l, U = u, L < Y \le U) & = \frac{\Prob(M = l, V = v, L = l, U = u, l < Y \le u)}{\Prob(L = l, U = u, l < Y \le u)}.
 \end{align*}
 
-Bv definition of $(M,V)$, the event in the numerator  is the disjoint union of the following two sets:
+By definition of $(M,V)$, the event in the numerator  is the disjoint union of the following two sets:
 <!-- -->
 \begin{align*}
   & \{D = 0, C_1 = v, L = l, U = u, l < Y \le u\} = \{C_1 = v, L = l, U = u, Y \in (l, v]\} \\
@@ -816,7 +816,7 @@ The function returns an object of class `reservr_keras_model`, which can be used
 
 Given input layers `inputs` and an intermediate output layer `intermediate_output` as well as a family of distributions `dist`, the function
 
-* Compiles the loss for `dist` defined by \eqref{eq:cml-regression-likelihood} as $l(g) = -\tfrac{1}{\#(\mathfrak{I})} \ell(g|\mathfrak{I}, X)$, optionally disabling `censoring` or `truncation` for efficiency.
+* Compiles the loss for `dist` defined by \eqref{eq:cml-regression-likelihood} as $l(g) = -\tfrac{1}{\#(\mathfrak{I}_{\mathrm{reg}})} \ell(g|\mathfrak{I}_{\mathrm{reg}})$, optionally disabling `censoring` or `truncation` for efficiency.
 * Creates a list of final output layers mapping `intermediate_output` onto the parameter space $\Theta$ of `dist` using `Distribution$tf_compile_params()`.
   This step adds additional degrees of freedom to the overall model, and the approach is described in \citet[Section A]{Rosenstock2022supp}
 * Runs `keras::compile()` on the underlying `keras.engine.training.Model`.
@@ -1015,8 +1015,13 @@ plot(nnet_fit)
 ovarian$expected_lifetime <- 1.0 / predict(nnet, dat$x)$rate
 ```
 
+\textcolor{red}{Das Bild beinhaltet nur einen Punkt..?}
+
 A plot of expected lifetime by $(\mathtt{age}, \mathtt{rx})$ shows that the network learned longer expected lifetimes for lower $\mathtt{age}$ and for treatment group ($\mathtt{rx}$) 2.
 The global fit is included as a dashed blue line.
+
+
+\textcolor{red}{Es werden warnings angezeigt (Removed 26 rows containing missing values). Die Linie im folgenden Bild ist konstant.}
 
 ```{r echo = FALSE}
 ggplot(ovarian, aes(x = age, y = expected_lifetime, color = factor(rx))) +
@@ -1048,4 +1053,4 @@ The package includes facilities for (1) description of randomly truncated non-in
 
 # Acknowledgements {-}
 
-The Author would like to thank Prof. Dr. Axel Bücher for proofreading and valuable comments on an earlier version of this article.
+The Author would like to thank Axel Bücher for proofreading and valuable comments on an earlier version of this article.
