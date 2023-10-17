@@ -1015,13 +1015,8 @@ plot(nnet_fit)
 ovarian$expected_lifetime <- 1.0 / predict(nnet, dat$x)$rate
 ```
 
-\textcolor{red}{Das Bild beinhaltet nur einen Punkt..?}
-
 A plot of expected lifetime by $(\mathtt{age}, \mathtt{rx})$ shows that the network learned longer expected lifetimes for lower $\mathtt{age}$ and for treatment group ($\mathtt{rx}$) 2.
 The global fit is included as a dashed blue line.
-
-
-\textcolor{red}{Es werden warnings angezeigt (Removed 26 rows containing missing values). Die Linie im folgenden Bild ist konstant.}
 
 ```{r echo = FALSE}
 ggplot(ovarian, aes(x = age, y = expected_lifetime, color = factor(rx))) +
