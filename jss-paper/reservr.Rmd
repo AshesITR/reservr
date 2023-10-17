@@ -15,14 +15,15 @@ title:
   plain:     "Fitting Distributions and Neural Networks to Censored and Truncated Data: The R Package reservr"
   short:     "\\pkg{reservr}: Fitting Distributions and Neural Networks to Censored and Truncated Data"
 abstract: >
-  While the problem of estimating distribution parameters from truncated data with fixed truncation points has readily available implementations in \proglang{R}, this is not the case for randomly truncated data, i.e. observations where the point of truncation varies by observation.
-  In practice, it is often of interest to also consider the influence of other parameters (predictors) on the distribution of an outcome variable.
-  We present the features and implementation of the \proglang{R} package \pkg{reservr}.
-  The package provides a flexible interface to specify distribution families, provides algorithms to perform parameter estimation for censored and randomly truncated data based on (conditional) maximum likelihood, and exposes an interface to the \proglang{R} package \pkg{tensorflow} for training flexible neural network models on censored and randomly truncated outcomes based on predictors.
-  Additional utilities for application in a general insurance context, as well as the usual random sampling, density, probability and quantile functions are provided.
+  Random truncation, i.e. truncated observations where the point of truncation varies by observation, and interval censoring arise naturally in various fields, such as insurance, operations research or medicine.
+  This article presents the \proglang{R} package \pkg{reservr}, which implements distribution parameter estimation and distributional regression for randomly truncated and interval censored data based on (conditional) maximum likelihood.
+  The package provides a flexible interface to specify (weighted) randomly truncated and interval censored observations, to specify distribution families to be estimated, and to compute (conditional) maximum-likelihood based parameter estimates.
+  Distributional regression is supported via an interface to the \proglang{R} package \pkg{tensorflow} to build neural network models for distributional regression of censored and randomly truncated outcomes with arbitrary distribution families.
+  The interface allows for arbitrary network architectures, including multi-modality and pre-initialization of network weights from a global parameter estimate to improve stability.
+  Additional utilities for application in a general insurance context, as well as the usual random sampling, density, probability and quantile functions for distributions are provided.
 keywords:
-  formatted: [distribution fitting, truncation, random truncation, censoring, "\\proglang{R} packages", distributional regression]
-  plain:     [distribution fitting, truncation, random truncation, censoring, R packages, distributional regression]
+  formatted: [distribution fitting, random truncation, interval censoring, distributional regression, deep learning, "\\proglang{R}"]
+  plain:     [distribution fitting, random truncation, interval censoring, distributional regression, deep learning, R]
 preamble: >
   \usepackage{amsmath}
   \usepackage{amssymb}
@@ -39,38 +40,40 @@ options(prompt = 'R> ', continue = '+ ')
 
 # Introduction
 
-Most statistical analyses are concerned with modelling and estimation of the distribution of some measured variable of interest, called the outcome, possibly conditional on the value of one or several endogenous variables, called predictors.
+Statistical analyses are typically concerned with modelling and estimating the distribution of some measured variable of interest $Y$, called the outcome, possibly conditional on the value of one or several endogenous variables $X$, called predictors.
 In the absence of endogenous variables, this process is usually called distribution fitting, and in the presence of endogenous variables it is called regression.
-Classical regression, such as via generalized linear models, is usually concerned with the influence of endogenous variables on the mean of the outcome, i.e., $\E(Y|X) = f(X)$ for some random variable $Y$ and vector of associated endogenous variables $X$ paired with an assumption linking the other parameters of the outcome distribution to its mean.
-Some models also allow specification of additional parameters of the distribution of the outcome variable, such as Generalized Additive Models for Location Scale and Shape \citep{GAMLSS}, which also allows for the shape parameter to depend on endogenous variables.
-More recently, deep distributional regression allows for flexible specification of individual outcome distribution parameters.
-An example implementation of the latter for complete data can be found in \citet{deepregression}.
+Classical regression, such as via generalized linear models (GLMs), is concerned with the influence of endogenous variables on the mean of the outcome, i.e., $\E(Y|X) = f(X)$, and often links other parameters of the conditional outcome distribution to its mean.
+A gentle introduction to generalized linear models can be found in \cite{DobsonBarnett2018}.
+An implementation of GLMs is available in the \pkg{stats} \proglang{R} package, which is part of \proglang{R} itself \citep{baseR}.
+Some models also allow specification of additional parameters of the conditional outcome distribution, such as Generalized Additive Models for Location, Scale and Shape \citep{GAMLSS}.
+More recently, deep distributional regression has been proposed, which allows for flexible specification of individual outcome distribution parameters \citep{deepregression}.
 
-Usual statistical methods require complete data, that is full information on all observations of interest $(X, Y)$ where $Y$ is some outcome of interest and $X$ representing corresponding predictors.
-In addition to this usual scenario, we study three observation schemes that do not provide all observations.
-Data with _interval censoring_ applied to the outcome $Y$ only consists of lower and upper bounds for $Y$ instead of the actual value.
-Truncated data misses observations for which the outcome $Y$ falls out of a certain lower and upper truncation bound.
-We consider the case of _random truncation_, where these truncation bounds are also random variables that vary for each observation.
+Statistical methods (such as those described and implemented in the previously mentioned papers) often require complete data, that is full information on all observations $(X, Y)$ of interest.
+In this paper, we describe an R-package that allows for distributional regression in three common observation schemes that do not provide complete data.
+First of all, data with _interval censoring_ applied to the outcome $Y$ refers to the case where only lower and upper bounds for $Y$ are observed, instead of the actual value.
+Next, truncated data misses observations for which the outcome $Y$ falls out of a certain lower and upper truncation bound.
+We consider the case of _random truncation_, where these truncation bounds are also random variables that may vary for each observation.
 Finally, we consider a combination of the two, _randomly truncated interval censoring_.
-More precisely, instead of observing the real-valued target variable $Y$ (with $\mu$-density $f_\theta$ and c.d.f. $F_\theta$), we observe the vector $(M,V,L,U)$, which satisfies
-$L \le M \le V \le U$ and $L<U$.
-Its coordinates have the following interpretation: the last two coordinates, which satisfy $-\infty \le L < U \le \infty$, encode truncation: we only happen to observe $(M,V,L,U)$ if $L < Y \le U$; in particular, a non-truncated observations means that $L=-\infty$ and $U=\infty$.
-The first two coordinates, which satisfy $L \le M \le V \le U$ and which may be $\mp \infty$, encode censoring: the observation $(M,V)=(m,v)$ means that the target variable $Y$ satisfies $Y \in (m,v]$ if $m<v$ and $Y=m$ if $m=v$; the latter corresponds to an uncensored observation of $Y$.
 
-Suppose we observe an independent sample $\mathcal J = \{(m_i, v_i, l_i, u_i): i=1, \ldots, n\}$ of $(M,V,L,U)$.
-Suggested by standard maximum (conditional) likelihood approaches for truncated \citep{DoerreEmura2019} and censored observations \citep{Zhang2005}, we suggest to estimate $\theta$ by maximizing the objective function
+The three scenarios can be combined into a single general scheme: instead of observing the real-valued target variable $Y$ (with $\mu$-density $f_\theta$ and c.d.f. $F_\theta$, where $\mu$ is a sigma-finite measure on $\mathbb R$ and $\theta$ is a parameter vector in some parameter space $\Theta$), we observe the vector $(M, V, L, U)$, which satisfies $L \le M \le V \le U$ and $L<U$.
+Its coordinates have the following interpretation: the last two coordinates, which satisfy $-\infty \le L < U \le \infty$, encode truncation: we only happen to observe $(M, V, L, U)$ if $L < Y \le U$; in particular, a non-truncated observations means that $L = -\infty$ and $U = \infty$.
+The first two coordinates, which satisfy $L \le M \le V \le U$ and which may be $\mp \infty$, encode censoring: the observation $(M, V) = (m, v)$ means that the target variable $Y$ satisfies $Y \in (m, v]$ if $m < v$ and $Y = m$ if $m = v$; the latter corresponds to an uncensored observation of $Y$.
+
+It is instructive to focus on the simpler problem of distribution parameter estimation before proceeding with distributional regression.
+Suppose we observe an independent sample $\mathcal J = \{(m_i, v_i, l_i, u_i): i=1, \ldots, n\}$ of $(M, V, L, U)$.
+Suggested by standard maximum (conditional) likelihood approaches for truncated \citep{DoerreEmura2019} and censored observations \citep{Sun2006}, we suggest to estimate $\theta$ by maximizing the objective function
 <!-- -->
 \begin{align}
   \ell(\theta) = \sum_{(m, v, l, u) \in \mathcal J} \Big\{ \log f_\theta(m)  \mathbf{1}(m=v) + \log F_\theta((m,v]) \mathbf{1}(m<v) \Big\} - \log F_\theta((l,u]), \label{eq:cml-likelihood-nw}
 \end{align}
 
-where we use the notation $F_\theta((l,u])=F_\theta(u) - F_\theta(l)$.
+where we use the notation $F_\theta((l, u]) = F_\theta(u) - F_\theta(l)$.
 A detailed motivation for this approach under suitable conditions ensuring that the censoring is non-informative is given in Section \ref{motivation-cml-likelihood} below.
 For later purposes, it is helpful to attach a weight $w_i$ to each observation $(m_i, v_i, l_i, u_i)$.
 Denoting the resulting sample by $\mathfrak{I} = \{(m_i, v_i, l_i, u_i, w_i)\}$, we aim at maximizing the weighted sum of the (conditional) log-likelihoods
 <!-- -->
 \begin{align}
-  \ell(\theta) = \sum_{(m, v, l, u, w) \in \mathfrak{I}} w \cdot \Big[ \Big\{ \log f_\theta(m) \mathbf{1}(m=v) + \log F_\theta((m, v]) \mathbf{1}(m<v) \Big\} - \log F_\theta((l, u]) \Big]. \label{eq:cml-likelihood}
+  \ell(\theta) = \sum_{(m, v, l, u, w) \in \mathfrak{I}} w \cdot \Big[ \Big\{ \log f_\theta(m) \mathbf{1}(m = v) + \log F_\theta((m, v]) \mathbf{1}(m < v) \Big\} - \log F_\theta((l, u]) \Big]. \label{eq:cml-likelihood}
 \end{align}
 
 A practical example of random truncation arises when modelling the reporting delay of claims in general insurance.
@@ -84,7 +87,22 @@ For each maintained item, the production time $P_0$ and the purchase time $P_1$ 
 Only items that are functional at purchase time $P_1$ are observed at the maintenance times.
 This gives rise to truncation bounds $(L, U) = (P_1 - P_0, \infty)$ and censoring interval bounds $(M, V) \in \{ (P_1 - P_0, M_0 - P_0), (M_0 - P_0, M_1 - P_0), (M_1 - P_0, \infty) \}$, depending on the item condition at times $M_0$ and $M_1$.
 
-## Motivation of Equation \ref{eq:cml-likelihood-nw}. {short-title="Motivation of the conditional likelihood" #motivation-cml-likelihood}
+In the setting of distributional regression, weighted samples $\mathfrak{I}$ $(M, V, L, U, W)$ have associated predictors $X \in \mathfrak{X}$, resulting in observations of the shape $\mathfrak{I}_{\text{reg}} = \{(m_i, v_i, l_i, u_i, w_i, x_i) : i = 1, \ldots, n\}$.
+We are interested in estimating a regression function $g : \mathfrak{X} \to \Theta$ given a sample $\mathfrak{I}_{\text{reg}}$, a parameterized family $\mathcal{F} = \{F_\theta \mid \theta \in \Theta\}$ and a family $\mathcal{G}$ of functions from $\mathfrak{X}$ to $\Theta$.
+It is assumed that there exists a fuction $g \in \mathcal G$ such that the conditional distribution of $Y | X = x$ is $F_{g(x)}$.
+Distributional regression can be formulated as the maximization problem
+
+\begin{align}\label{eq:cml-regression-likelihood}
+  \hat g & \in \mathop{\mathrm{arg\,max}}_{g \in \mathcal{G}} \ell(g | \mathfrak{I}_{\text{reg}}) \text{, where} \nonumber \\
+  \ell(g | \mathfrak{I}_{\text{reg}}) & := \sum_{(m, v, l, u, w, x) \in \mathfrak{I}_{\text{reg}}} w \cdot \begin{cases}
+    \log f_{g(x)}(m) - \log F_{g(x)} ((l, u]) & m = v \\
+    \log F_{g(x)}((m, v]) - \log F_{g(x)}((l, u]) & m < v
+  \end{cases}.
+\end{align}
+
+Compared to Equation \eqref{eq:cml-likelihood}, the global parameter $\theta$ is replaced by the regression function $g$ evaluated at the associated predictors $x$.
+
+## Motivation of Equation \eqref{eq:cml-likelihood-nw}. {short-title="Motivation of the conditional likelihood" #motivation-cml-likelihood}
 
 It is instructive to start by considering an untruncated, censored observation where $l = -\infty, u = \infty$ and $m < v$.
 The only information we obtain from the observation $(m, v, l, u)$ is then that $Y \in (m, v]$.
@@ -199,8 +217,8 @@ Likewise, in case $l = m < v < u$, we have
   \Prob(M = l, V = v | L = l, U = u, L < Y \le U) & = \frac{\Prob(M = l, V = v, L = l, U = u, l < Y \le u)}{\Prob(L = l, U = u, l < Y \le u)}.
 \end{align*}
 
-Bv definition of $(M,V)$, the event in the numerator  is the disjoint union of the following two sets:
-
+By definition of $(M,V)$, the event in the numerator  is the disjoint union of the following two sets:
+<!-- -->
 \begin{align*}
   & \{D = 0, C_1 = v, L = l, U = u, l < Y \le u\} = \{C_1 = v, L = l, U = u, Y \in (l, v]\} \\
   & \{D = 1, C_1 \le l, C_2 = v, L = l, U = u, l < Y \le u\} = \{C_1 \le l, C_2 = v, L = l, U = u, Y \in (l, v]\}.
@@ -215,19 +233,25 @@ By independence, we obtain that
 Again, the factor in front of the fraction is independent of $\theta$ and is irrelevant for the likelihood.
 The two cases $l < m < v = u$ and $l = m < v = u$ can be treated similarly; in all cases, the likelihood contribution is equal to $F_\theta((m, v]) /F_\theta((l, u])$ times a factor that does not depend on $\theta$.
 
+
 ## Related packages
 
-For the less general cases of non-informative censoring without random truncation and fixed truncation, i.e.\ , $(L, U)$ constant for all observations, as well as for estimation of distribution parameters in the absence of censoring or random truncation, there are a number of \proglang{R} packages that can fit distributions, some of them also supporting weights.
-Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}, \pkg{flexsurv} \citep{flexsurv}.
-Note that fixed truncation is an operation that can be baked into the distribution familiy whose parameters are to be estimated, allowing for classical maximum likelihood estimation.
-See the following table for details.
+For the less general cases of non-informative censoring without random truncation and fixed truncation, i.e., $(L, U)$ constant for all observations, as well as for estimation of distribution parameters in the absence of censoring or random truncation, there are a number of \proglang{R} packages that can fit distributions, some of them also supporting weights.
+Among these are \pkg{MASS} \citep{MASS}, \pkg{fitdistrplus} \citep{fitdistrplus}, \pkg{survival} \citep{survival}, \pkg{flexsurv} \citep{flexsurv}.
+Note that fixed truncation is an operation that can be baked into the distribution family whose parameters are to be estimated, allowing for classical maximum likelihood estimation.
+Many of the packages also support classic regression of expected values given predictors.
+Distributional regression packages, such as \pkg{gamlss} \citep{GAMLSS} and \pkg{deepregression} \citep{deepregression} currently do not support interval censoring or random truncation.
+See the following table for an overview of available features for each package.
 
-| Package            | sample weights | censoring     | random truncation |
-|--------------------|----------------|---------------|-------------------|
-| \pkg{MASS}         | not supported  | not supported | not supported     |
-| \pkg{fitdistrplus} | only integer   | supported     | not supported     |
-| \pkg{flexsurv}     | supported      | supported     | not supported     |
-| \pkg{reservr}      | supported      | supported     | supported         |
+| Package              | sample weights | censoring | random truncation | regression     |
+|----------------------|----------------|-----------|-------------------|----------------|
+| \pkg{MASS}           | no             | no        | no                | classic        |
+| \pkg{fitdistrplus}   | only integer   | supported | no                | no             |
+| \pkg{survival}       | supported      | supported | no                | classic        |
+| \pkg{flexsurv}       | supported      | supported | no                | classic        |
+| \pkg{gamlss}         | supported      | no        | no                | distributional |
+| \pkg{deepregression} | supported      | no        | no                | distributional |
+| \pkg{reservr}        | supported      | supported | supported         | distributional |
 
 Another R6-based interface is provided by \pkg{ROOPSD} \citep{ROOPSD}.
 
@@ -244,10 +268,10 @@ A conclusion is given in Section&nbsp;\ref{conclusion}.
 The package serves two main goals: fitting distributions to randomly truncated non-informatively interval censored data and performing (deep) distributional regression with randomly truncated non-informatively interval censored data.
 Four main components are integrated with each other to facilitate the analysis goals
 
-1. Methods for describing a randomly truncated non-informatively interval censored sample $\mathfrak{I}$.
-2. Methods for specifying distribution families $\mathcal{F}$ to be fitted.
-3. Methods for estimating distribution parameters $\theta$ given a sample $\mathfrak{I}$ and a parametrized family $\mathcal{F} = \{F_\theta | \theta \in \Theta\}$.
-4. Methods for regression of distribution parameters given a sample $\mathfrak{I}$ with associated predictors $X \in \mathfrak{X}$, a parametrized family $\mathcal{F}$ and a general \pkg{tensorflow} network $\mathcal{G} : \mathfrak{X} \to \Theta$ that processes $X$ to estimate $Y | X = F_{g(X)}$.
+1. Methods for representing a randomly truncated non-informatively interval censored sample $\mathfrak{I}$.
+2. Methods for specifying a parametrized distribution family $\mathcal{F} = \{F_\theta | \theta \in \Theta\}$ to be fitted.
+3. Methods for estimating distribution parameters $\theta$ given a sample $\mathfrak{I}$.
+4. Methods for regression of distribution parameters given a regression sample $\mathfrak{I}_{\text{reg}}$, a parametrized family $\mathcal{F}$ and a general \pkg{tensorflow} network $\mathcal{G} : \mathfrak{X} \to \Theta$ that processes $X$ to estimate the conditional distribution of $Y | X = x$ by $F_{g(x)}$ with $g \in \mathcal G$.
 
 Each of these components is described one by one in the following sections.
 
@@ -257,39 +281,46 @@ A sample $\mathfrak{I} = \{(m, v, l, u, w)_i\}$ is represented as a tibble (from
 The core function to create this tibble is `trunc_obs()`.
 A tibble created by `trunc_obs()` consists of five columns:
 
- * `x`: If observed, the exact value of the random variable, referred to as $Y$ in \ref{introduction}. Otherwise `NA`.
- * `xmin`: Lower interval censoring bound ($M$ in \ref{introduction}) for the observation. If the observation is not censored, `xmin` is equal to `x`.
- * `xmax`: Upper interval censoring bound ($V$ in \ref{introduction}) for the observation. If the observation is not censored, `xmax` is equal to `x`.
- * `tmin`: Lower truncation bound ($L$ in \ref{introduction}). Only observations with $x \ge t_{\text{min}}$ are observed. Can be $-\infty$ to indicate no lower truncation.
- * `tmax`: Upper truncation bound ($U$ in \ref{introduction}). Only observations with $x \le t_{\text{max}}$ are observed. Can be $\infty$ to indicate no upper truncation.
+ * `x`: If observed, the exact value of the random variable, referred to as $Y$ in Section \ref{introduction}. Otherwise `NA`.
+ * `xmin`: Lower interval censoring bound ($M$ in Section \ref{introduction}) for the observation. If the observation is not censored, `xmin` is equal to `x`.
+ * `xmax`: Upper interval censoring bound ($V$ in Section \ref{introduction}) for the observation. If the observation is not censored, `xmax` is equal to `x`.
+ * `tmin`: Lower truncation bound ($L$ in Section \ref{introduction}). Only observations with $\mathtt{x} \ge \mathtt{tmin}$ are observed. Can be $-\infty$ to indicate no lower truncation.
+ * `tmax`: Upper truncation bound ($U$ in Section \ref{introduction}). Only observations with $\mathtt{x} \le \mathtt{tmax}$ are observed. Can be $\infty$ to indicate no upper truncation.
  * `w`: The weight associated with the observation. Defaults to $1$.
 
-Note that, unlike \ref{introduction}, the lower bounds of intervals in `trunc_obs` are included.
-For continuous random variables, the formulas are equivalent to the half-open formulation (since $\Prob(Y \in \{M, V\} | M, V) = 0$).
-For discrete random variables, $M$ and $L$ may have to be appropriately shifted.
+Note that, unlike in Section \ref{introduction}, the lower bounds of intervals in `trunc_obs` are included, that is, we allow for  $\mathtt{x} \ge \mathtt{tmin}$ rather than  $\mathtt{x} > \mathtt{tmin}$, and that the unknown variable of interest is called $\mathtt{x}$ instead of $Y$.
+For continuous random variables, the formulas are equivalent to the half-open formulation.
+For discrete random variables, $\mathtt{xmin}$ and $\mathtt{tmin}$ may have to be appropriately shifted, e.g., by replacing $\mathtt{xmin}$ by $\mathtt{xmin}-0.5$ for integer valued variables.
 The following code defines a sample of size 1 without truncation and censoring, with the realized value of $1.3$.
 
 ```{r}
 trunc_obs(1.3)
 ```
 
-Simulating randomly truncated and interval censored data from a standard normal distribution with $80\%$ of the observations randomly interval censored and random uniform truncation $L \sim U[-2, 0]$ and $U \sim U[0, 2]$ can be simulated as follows
+Simulating randomly truncated and interval censored data from a standard normal distribution with $80\%$ of the observations randomly interval censored and random uniform truncation $L \sim \mathrm{Unif}[-2, 0]$ and $U \sim \mathrm{Unif}[0, 2]$ can be simulated as follows
 
 ```{r}
 set.seed(123)
 N <- 1000L
 x <- rnorm(N)
 is_censored <- rbinom(N, size = 1L, prob = 0.8) == 1L
-x_lower <- x
-x_lower[is_censored] <- runif(sum(is_censored), min = -2.0, max = 0.0)
-x_upper <- x
-x_upper[is_censored] <- x_lower[is_censored] +
-  runif(sum(is_censored), min = 0, max = 1.0)
 
-x_upper[x < x_lower] <- x_lower[x < x_lower]
-x_lower[x < x_lower] <- -Inf
-x_lower[x > x_upper] <- x_upper[x > x_upper]
-x_upper[x > x_upper] <- Inf
+c_lower <- runif(sum(is_censored), min = -2.0, max = 0.0)
+c_upper <- c_lower + runif(sum(is_censored), min = 0, max = 1.0)
+
+x_lower <- x
+x_upper <- x
+
+x_lower[is_censored] <- dplyr::case_when(
+  x[is_censored] <= c_lower ~ -Inf,
+  x[is_censored] <= c_upper ~ c_lower,
+  TRUE ~ c_upper
+)
+x_upper[is_censored] <- dplyr::case_when(
+  x[is_censored] <= c_lower ~ c_lower,
+  x[is_censored] <= c_upper ~ c_upper,
+  TRUE ~ Inf
+)
 
 t_lower <- runif(N, min = -2.0, max = 0.0)
 t_upper <- runif(N, min = 0.0, max = 2.0)
@@ -320,9 +351,10 @@ The total number of censored observations is roughly $0.8 \cdot \mathtt{nrow(obs
 sum(is.na(obs$x))
 ```
 
-In addition to the `trunc_obs()` constructor function, there are `as_trunc_obs()` for coercion, `truncate_obs()` for artificially changing truncation bounds, and `repdel_obs()` for computing randomly truncated reporting delay observations from general insurance claims data containing accident date, reporting delay and evaluation date information.
+In addition to the `trunc_obs()` constructor function, there are functions `as_trunc_obs()` for coercion, `truncate_obs()` for artificially changing truncation bounds, and `repdel_obs()` for computing randomly truncated reporting delay observations from general insurance claims data containing accident date, reporting delay and evaluation date information.
 The latter takes inputs of the form $(T_\text{acc}, D, \tau)$ where $T_{\text{acc}} < \tau$ are accident dates with corresponding reporting delays $D \ge 0$ and $\tau$ is the calendar date of observation.
 It returns the sample $(\mathtt{xmin} = \mathtt{xmax} = D, \mathtt{tmin} = 0, \mathtt{tmax} = \tau - T_{\text{acc}}, \mathtt{w} = 1)$ suitable for estimating the reporting delay distribution where a claim is only observed if it has been reported by the evaluation date, i.e., $T_{\text{acc}} + D \le \tau$.
+Such an analysis was performed using \pkg{reservr} in \citet{Rosenstock2022,Rosenstock2023}.
 
 ## Definition of distribution families {#distributions}
 
@@ -330,12 +362,12 @@ Distribution families are implemented using the \pkg{R6} class system \citep{R6}
 They inherit from the class `Distribution` and feature a common interface to
 
 * manage fixed and free parameters of the underlying familiy,
-* use basic distribution functions for random number generation, computation of density, cumulative density, hazard and quantile,
-* use additional functions supporting parameter estimation procedures such as computing support and discreteness,
+* use basic distribution functions for random number generation and computation of the density, cumulative distribution, hazard and quantile function,
+* use additional functions supporting parameter estimation procedures such as computing support or presence of a point mass,
 * compile performance enhanced functions to speed up basic functions for repeated evaluation,
-* and provide \pkg{tensorflow}-specific implementations to support (deep) distributional regression.
+* provide \pkg{tensorflow}-specific implementations to support (deep) distributional regression.
 
-A `Distribution` object represents a family $\mathcal{F}$ parameterized by a fixed-dimensional parameter space $\Theta$.
+A `Distribution` object represents a distribution family $\mathcal{F}$ supported on a subset of the real line and parameterized by a fixed finite-dimensional parameter space $\Theta$. The family may be a singleton, in which case it is rather a distribution than a distribution family.
 
 \pkg{reservr} provides a set of basic distribution families, optionally with some fixed parameters, as well as transformations of distribution families that take one or more underlying distribution families.
 At the time of writing, these are:
@@ -362,12 +394,12 @@ At the time of writing, these are:
 
 \newcommand{\restr}{|} <!-- Markdown tables hack -->
 
-| Transformation function                          | Description                                                                                                                             |
-|--------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| `dist_blended(dists, probs, breaks, bandwidths)` | A Blended mixture distribution family, see Section&nbsp;\ref{dist-blended}                                                              |
-| `dist_mixture(dists, probs)`                     | A general Mixture distribution family, see Section&nbsp;\ref{dist-mixture}                                                              |
-| `dist_translate(dist, offset, multiplier)`       | An affine transformation family $\{a \cdot F + b\}$ for $F \in \mathcal{F}$ from the underlying family                                  |
-| `dist_trunc(dist, min, max)`                     | A truncated distribution family, $\{F\restr_{\text{min} \le \cdot \le \text{max}}\}$ for $F \in \mathcal{F}$ from the underlying family |
+| Transformation&nbsp;function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description                                                                                                                                               |
+|------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `dist_blended(dists, probs, breaks, bandwidths)`                             | A Blended mixture distribution family, see Section&nbsp;\ref{dist-blended}                                                                                |
+| `dist_mixture(dists, probs)`                                                 | A general Mixture distribution family, see Section&nbsp;\ref{dist-mixture}                                                                                |
+| `dist_translate(dist, offset, multiplier)`                                   | The affine transformation family consisting of all distributions of $\mathtt{multiplier} \cdot X + \mathtt{offset}$ with  $X \sim F \in \mathtt{dist}$    |
+| `dist_trunc(dist, min, max)`                                                 | The truncated distribution family consisting of all distributions of $X \restr (\mathtt{min} \le X  \le \mathtt{max})$ with  $X \sim F \in \mathtt{dist}$ |
 
 ### Parameters
 
@@ -396,7 +428,7 @@ set.seed(10L)
 dist$sample(1L, with_params = list(mean = 0.0, sd = 2.0))
 ```
 
-The two samples were drawn from a standard normal and a normal distribution with mean zero and standard deviation $2$ respectively.
+The two observations were drawn from a standard normal and a normal distribution with mean zero and standard deviation $2$, respectively.
 Since the chosen seed was identical, the second sample is exactly double the first sample.
 Whenever the output length is greater than one, such as when taking more than one sample, `with_params` can optionally contain individual parameters for each entry.
 
@@ -405,9 +437,9 @@ set.seed(10L)
 dist$sample(3L, with_params = list(mean = 0.0:2.0, sd = 0.5))
 ```
 
-The three samples were drawn from $\mathcal{N}(0, 0.5)$, $\mathcal{N}(1, 0.5)$ and $\mathcal{N}(2, 0.5)$ respectively.
+The three observations were drawn from $\mathcal{N}(\mu = 0, \sigma = 0.5)$, $\mathcal{N}(\mu = 1, \sigma = 0.5)$ and $\mathcal{N}(\mu = 2, \sigma = 0.5)$, respectively.
 
-`Distribution`s have a set of fields and methods related to managing parameters
+`Distribution`s have a set of fields and methods related to managing parameters:
 
 * The active binding `default_params` gets or sets the list of all parameters and their fixed values, `NULL` represents a free parameter.
   Component families are included as `Distribution` objects.
@@ -447,14 +479,14 @@ mix$get_components()
 
 ### Basic distribution functions
 
-The basic distribution functions (density, probability, hazard, quantile, random number generation) are provided by each distribution family.
+The basic distribution functions (density, probability, hazard and quantile function, as well as random number generation) are provided by each distribution family.
 In general, the argument `with_params` can be used to both specify missing parameters (placeholders) and to override fixed distribution parameters.
 If the provided parameters are vectors of length greater than 1, they must conform to the input dimension (e.g. `length(x)` for `density`).
 In this case, the parameters are "vectorized" in the sense that the $i$th output element will be computed using the $i$th entry from the parameter list.
 
  * `density(x, log = FALSE, with_params = list())` computes the (log-)density.
- * `probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list()` computes the (log-)cumulative density or (log-)survival.
- * `hazard(x, log = FALSE. with_params = list())` computes the (log-)hazard.
+ * `probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list()` computes the (log-)cumulative distribution function or (log-)survival function.
+ * `hazard(x, log = FALSE. with_params = list())` computes the (log-)hazard function.
  * `quantile(p, lower.tail = TRUE, log.p = FALSE, with_params = list())` computes upper or lower quantiles.
  * `sample(n, with_params = list())` generates a random sample of size `n`. (`with_params` can contain length `n` vectors in this case).
 
@@ -486,10 +518,25 @@ The input structure for `param_matrix` can be obtained by `flatten_params_matrix
  * `diff_probability(q, lower.tail = TRUE, log.p = FALSE, with_params = list())` computes the (log-)gradients of the cumulative density function with respect to free distribution family parameters.
    This is useful for conditional maximum likelihood estimation in the presence of random truncation or non-informative interval censoring.
 
+```{r}
+dist <- dist_normal()
+flatten_params_matrix(dist$get_placeholders())
+denscmp <- dist$compile_density()
+
+if (requireNamespace("bench", quietly = TRUE)) {
+  bench::mark(
+    dist$density(-2:2, with_params = list(mean = 0.0, sd = 1.0)),
+    denscmp(-2:2, matrix(c(0.0, 1.0), nrow = 5L, ncol = 2L, byrow = TRUE)),
+    dnorm(-2:2, mean = rep(0.0, 5L), sd = rep(1.0, 5L))
+  )
+}
+```
+
 ### \pkg{tensorflow} interface {short-title="tensorflow interface"}
 
 Use of distribution families from within \pkg{tensorflow} networks requires specialized implementations using the \pkg{tensorflow} APIs instead of regular \proglang{R} functions.
 These are tailored to the needs of maximizing (conditional) likelihoods of weighted, censored and randomly truncated data.
+Details on working with \pkg{tensorflow} can be found in Section \ref{tensorflow}.
 
  * `tf_compile_params(input, name_prefix = "")` creates \pkg{keras} layers that take an `input` layer and transform it into a valid parametrization of the distribution family.
  * `tf_is_discrete_at()` returns a \pkg{tensorflow}-ready version of `is_discrete_at()`.
@@ -507,7 +554,7 @@ This section contains mathematical definitions of those function families.
 A mixture distribution family is defined by a fixed number $k$ of component families $\{\mathcal{F}_i\}_{i = 1}^k$ via the set of distributions
 
 \begin{align*}
-  \mathop{\mathrm{Mixture}}(\mathcal{F}_1, \ldots, \mathcal{F}_k) & := \Bigl\{ F \Bigm| F((-\infty, x]) = \sum_{i = 1}^k p_i F_i((-\infty, x]), F_i \in \mathcal{F}_i, p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
+  \mathop{\mathrm{Mixture}}(\mathcal{F}_1, \ldots, \mathcal{F}_k) & := \Bigl\{ F = \sum_{i = 1}^k p_i F_i \Bigm| F_i \in \mathcal{F}_i, p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
 \end{align*}
 
 ### Erlang mixture distribution families {#dist-erlangmix}
@@ -516,8 +563,8 @@ An Erlang mixture distribution family is defined by its number of components $k$
 If $\Gamma_{\alpha, \theta}$ denotes a Gamma distribution with shape $\alpha$ and scale $\theta$, the erlang mixture family with $k$ components can be defined as follows:
 
 \begin{align*}
-  \mathop{\mathrm{ErlangMixture}}(k) := \Bigl\{ F \Bigm| & F((-\infty, x]) = \sum_{i = 1}^k p_i \Gamma_{\alpha_i, \theta}((-\infty, x]), \\
-  & \alpha_i \in \mathbb{N}, \theta \in (0, \infty), p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
+  \mathop{\mathrm{ErlangMixture}}(k) := \Bigl\{ F = \sum_{i = 1}^k p_i \Gamma_{\alpha_i, \theta} \Bigm|
+   \alpha_i \in \mathbb{N}, \theta \in (0, \infty), p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
 \end{align*}
 
 Note that for $k \to \infty$, Erlang mixtures are dense in the space of distributions on $(0, \infty)$ with respect to weak convergence \citep{ll2012}, making them a useful modeling choice for general positive continuous distributions. However, the tail index of all Erlang mixture distributions is always zero due to the exponential decay of Gamma densities.
@@ -546,7 +593,81 @@ $F_B$:
     F_B(x) & = p_1 \frac{F(p_{\kappa, \varepsilon}(x))}{F(\kappa)} + p_2 \frac{G(q_{\kappa, \varepsilon}(x)) - G(\kappa)}{1 - G(\kappa)}.
 \end{align*}
 
-This leads to the definition of a blended distribution family:
+The following illustration shows the components of a $\mathrm{Blended}(\mathcal{N}(\mu = -1, \sigma = 1), \mathrm{Exp}(\lambda = 1); p = (0.5, 0.5), \kappa = 0, \varepsilon = 1)$ distribution.
+
+```{r}
+
+dist1 <- dist_normal(mean = -1.0, sd = 1.0)
+dist2 <- dist_exponential(rate = 1.0)
+distb <- dist_blended(
+  dists = list(dist1, dist2),
+  breaks = list(0.0),
+  bandwidths = list(1.0),
+  probs = list(0.5, 0.5)
+)
+```
+
+The transformation of the original component distributions ($\mathcal{N}$ and $\mathrm{Exp}$) can be illustrated by first right- and left-truncating at $\kappa = 0$ respectively, and then applying the blending transformations $p_{\kappa, \varepsilon}$ and $q_{\kappa, \varepsilon}$.
+The latter distributions can be obtained in \pkg{reservr} by setting the probability weights of the blended distribution to $p = (1, 0)$ and $p = (0, 1)$ respectively.
+Intermediate truncated distributions are obtained via `trunc_dist()`, with $\kappa$ as upper or lower bound respectively.
+
+```{r}
+distt1 <- dist_trunc(dist1, min = -Inf, max = 0.0)
+distt2 <- dist_trunc(dist2, min = 0.0, max = Inf)
+
+distb1 <- distb$clone()
+distb1$default_params$probs <- list(1.0, 0.0)
+distb2 <- distb$clone()
+distb2$default_params$probs <- list(0.0, 1.0)
+```
+
+We show the resulting density at each of the steps, and the final blended density obtained by weighting the blended component densities.
+
+```{r echo = FALSE}
+library(ggplot2)
+
+distb_data <- tibble::tibble(
+  dist = list(dist1, dist2, distt1, distt2, distb1, distb2),
+  component = rep(c("Normal", "Exp"), times = 3L),
+  transformation = forcats::fct_inorder(rep(c("original", "truncated", "blended"), each = 2L))
+)
+distb_data$points <- lapply(distb_data$dist, function(d) {
+  xb <- seq(-5, 5, length.out = 101)
+  tibble::tibble(
+    x = xb,
+    density = d$density(xb)
+  )
+})
+distb_data$dist <- NULL
+distb_data <- tidyr::unnest(distb_data, points)
+
+blending_annotation <- geom_vline(
+  xintercept = c(0, -1, 1),
+  linetype = c(1L, 3L, 3L),
+  color = "black"
+)
+
+ggplot(
+  distb_data[distb_data$density > 0, ],
+  aes(x = x, y = density, color = component, linetype = transformation)
+) +
+  geom_line() +
+  blending_annotation +
+  scale_x_continuous(name = NULL)
+
+ggplot(
+  tibble::tibble(
+    x = seq(-5, 5, length.out = 101),
+    density = distb$density(x)
+  ),
+  aes(x = x, y = density)
+) +
+  geom_line() +
+  blending_annotation +
+  scale_x_continuous(name = NULL)
+```
+
+The definition of a blended distribution leads to the definition of a blended distribution family by allowing $P, Q, \kappa$ and $\varepsilon$ to vary:
 
 Given two families $\mathcal{F}, \mathcal{G}$ of distributions on $\mathbb{R}$, and parameters $\kappa \in \mathbb{R}, \varepsilon \in (0, \infty)$, we define the _Blended Distribution family_ as the family of Distributions
 <!-- -->
@@ -561,8 +682,8 @@ Compared to piecewise distribution families obtained by mixture of truncated dis
 
 ### The Blended Dirac Erlang Generalized Pareto distribution family {#dist-bdegp}
 
-Using the construction of a Blended distribution family, we can define the Blended Dirac Erlang Generalized Pareto (BDEGP) family as follows.
-See \citet[Definition 2]{Rosenstock2022}.
+Using the construction of a Blended distribution family, we can define the Blended Dirac Erlang Generalized Pareto (BDEGP) family as follows,
+see \citet[Definition 2]{Rosenstock2022}.
 
 Given parameters $n \in \mathbb{N}, m \in \mathbb{N}, \kappa \in \mathbb{R}$ and $\varepsilon \in (0, \infty)$, we define the _Blended Dirac Erlang Generalized Pareto family_ as the family of distributions
 
@@ -574,10 +695,10 @@ Given parameters $n \in \mathbb{N}, m \in \mathbb{N}, \kappa \in \mathbb{R}$ and
       & \qquad\qquad \{ \mathop{\mathrm{GPD}}(\kappa, \sigma, \xi) \mid \sigma \in (0, \infty), \xi \in [0, 1)) \}; \\
       & \qquad\qquad \kappa, \varepsilon \\
     & \qquad) \\
-  &)
+  &),
 \end{align*}
 
-Where $\delta_k$ is the dirac distribution with $P(X = k) = 1$ and $\mathrm{GPD}$ is the generalized Pareto distribution.
+where $\delta_k$ is the dirac distribution at $k$ and $\mathrm{GPD}$ is the generalized Pareto distribution.
 Note the constraint on the tail index $\xi \in [0, 1)$, guaranteeing finite expectation.
 
 This distribution family has three features making it useful in modelling very general heavy-tailed distributions on $(0, \infty)$:
@@ -606,10 +727,10 @@ At the time of writing there are specialized algorithms for six types of familie
 
 1. Blended distribution families \citep[Algorithm 2]{Rosenstock2022}
 2. Erlang mixture distribution families \citep[Algorithm S.2]{Rosenstock2022supp}
-3. Generalized pareto distribution families with free lower bound `u` (estimated by the minimum over the sample)
+3. Generalized pareto distribution families with free lower bound `u` (estimated by the minimum of `xmin` over the sample)
 4. Mixture distribution families \citep[Algorithm 1]{Rosenstock2022}
-5. Translated distribution families with fixed `offset` and `multiplier` (transform the sample to the space of the component distribution family before fitting)
-6. Uniform distribution families (match free parameters to the range of the sample directly)
+5. Translated distribution families with fixed `offset` and `multiplier` (transform the sample via $\tfrac{\cdot-\text{offset}}{\text{multiplier}}$ and fit the component distribution family to the transformed sample)
+6. Uniform distribution families with free lower bound `min` or upper bound `max` (estimated by the minimum of `xmin`, for `min`, and the maximum of `xmax`, for `max`, over the sample)
 
 If not present, the `start` parameter is obtained via the `fit_dist_start()` generic.
 This generic implements a family specific method of generating valid starting values for all placeholder parameters.
@@ -621,9 +742,10 @@ If the shape parameters are free, there are different initialization strategies 
 * `init = "kmeans"` uses 1-dimensional K-means based clustering of the sample observations such that each cluster corresponds to a unique shape
 * `init = "cmm"` uses the centralized method of moments procedure described in \citet{Gui2018}
 
-Re-using `dist` $= \mathcal{N}_{\sigma = 1}$ from above and the generated sample `obs`, we can fit the free parameter `mean`:
+Re-using `dist <- dist_normal(sd = 1.0)`  from above and the generated sample `obs`, we can fit the free parameter `mean`:
 
 ```{r}
+dist <- dist_normal(sd = 1.0)
 the_fit <- fit(dist, obs)
 str(the_fit)
 ```
@@ -643,6 +765,7 @@ plot_distributions(
   )
 )
 ```
+Here, the density labelled `empirical` corresponds to a kernel density estimate with automatic bandwidth selection.
 
 We follow with an example of fitting an $\mathrm{ErlangMixture}(3)$ distribution family using various initialization strategies.
 Note that both, `"kmeans"` and `"cmm"` use the random number generator for internal K-means clustering.
@@ -661,16 +784,16 @@ x <- dist$sample(100L, with_params = params)
 
 set.seed(32)
 init_true <- fit_dist_start(dist, x, init = "shapes",
-                              shapes = as.numeric(params$shapes))
+                            shapes = as.numeric(params$shapes))
 init_fan <- fit_dist_start(dist, x, init = "fan", spread = 3L)
 init_kmeans <- fit_dist_start(dist, x, init = "kmeans")
 init_cmm <- fit_dist_start(dist, x, init = "cmm")
-do.call(rbind, list(
+rbind(
   flatten_params(init_true),
   flatten_params(init_fan),
   flatten_params(init_kmeans),
   flatten_params(init_cmm)
-))
+)
 
 set.seed(32)
 str(fit(dist, x, init = "shapes", shapes = as.numeric(params$shapes)))
@@ -681,37 +804,25 @@ fit(dist, x, init = "cmm")$logLik
 
 It should be noted that the different initialization methods had a considerable impact on the outcome in the example due to the discrete nature of Erlang mixture distribution shape parameters and thus the combinatorial difficulty of picking optimal shapes $\alpha$.
 The `fit()` result for Erlang mixture distribution families contains an element named `"params_hist"`.
-This can be populated by passing `trace = TRUE` to `fit()` and will record parameters after all ECME steps in the ECME-based estimation algorithms \citet[Algorithms 1 and 2]{Rosenstock2022} and \citet[Algorithm S.2]{Rosenstock2022supp}.
+This can be populated by passing `trace = TRUE` to `fit()` and will record parameters after all ECME steps in the ECME-based estimation algorithms from \citet[Algorithms 1 and 2]{Rosenstock2022} and \citet[Algorithm S.2]{Rosenstock2022supp}.
 The element `"iter"` contains the number of full ECME-Iterations that were performed.
 
 ## Distributional regression using \pkg{tensorflow} integration {short-title="distributional regression using tensorflow integration" #tensorflow}
 
-This section describes the functions for the problem of estimating a regression function $g : \mathfrak{X} \to \Theta$ given a sample $\mathfrak{I}$ with associated covariates $X \in \mathfrak{X}$, a parameterized family $\mathcal{F} = \{F_\theta \mid \theta \in \Theta\}$ and a family $\mathcal{G}$ of functions from $\mathfrak{X}$ to $\Theta$.
-Distributional regression can be formulated as the maximization problem
-
-\begin{align}\label{eq:cml-regression-likelihood}
-  \hat g & = \mathop{\mathrm{arg\,max}}_{g \in \mathcal{G}} \ell(g | \mathfrak{I}, X) \text{, where} \nonumber \\
-  \ell(g | \mathfrak{I}, X) & := \sum_{(m, v, l, u) \in \mathfrak{I}, x \in X} w \cdot \begin{cases}
-    \log f_{g(x)}(m) - \log F_{g(x)} ((l, u]) & m = v \\
-    \log F_{g(x)}((m, v]) - \log F_{g(x)}((l, u]) & m < v
-  \end{cases}.
-\end{align}
-
-Compared to Equation \ref{eq:cml-likelihood}, the global parameter $\theta$ is replaced by the regression function $g$ evaluated at the associated covariates.
-
-The maximization problem is delegated to \pkg{tensorflow}, which supplies ample stochastic optimization algorithms.
-Functions in \pkg{reservr} are necessary to create a suitable output layer for \pkg{tensorflow} that maps onto $\Theta$ and to provide an implementation of the (negative) log-likelihood \eqref{eq:cml-regression-likelihood} as a loss function.
+The maximization problem \eqref{eq:cml-regression-likelihood} is delegated to \pkg{tensorflow}, which supplies ample stochastic optimization algorithms.
+Functions in \pkg{reservr} are necessary to create a suitable output layer for \pkg{tensorflow} that maps onto $\Theta$ and to provide an implementation of the (negative) log-likelihood in \eqref{eq:cml-regression-likelihood} as a loss function.
 These two tasks are combined in `tf_compile_model()`.
 The function returns an object of class `reservr_keras_model`, which can be used for the estimation procedure.
 
 Given input layers `inputs` and an intermediate output layer `intermediate_output` as well as a family of distributions `dist`, the function
 
-* Compiles the loss for `dist` defined by \eqref{eq:cml-regression-likelihood} as $l(g) = -\tfrac{1}{\#(\mathfrak{I})} \ell(g|\mathfrak{I}, X)$, optionally disabling `censoring` or `truncation` for efficiency.
+* Compiles the loss for `dist` defined by \eqref{eq:cml-regression-likelihood} as $l(g) = -\tfrac{1}{\#(\mathfrak{I}_{\mathrm{reg}})} \ell(g|\mathfrak{I}_{\mathrm{reg}})$, optionally disabling `censoring` or `truncation` for efficiency.
 * Creates a list of final output layers mapping `intermediate_output` onto the parameter space $\Theta$ of `dist` using `Distribution$tf_compile_params()`.
+  This step adds additional degrees of freedom to the overall model, and the approach is described in \citet[Section A]{Rosenstock2022supp}
 * Runs `keras::compile()` on the underlying `keras.engine.training.Model`.
 
 The following example defines a linear model with homoskedasticity assumption and fits it using $100$ iterations of the Adam optimization algorithm \citep{Kingma2015}.
-First, we simulate data from the model $Y | X = \mathcal{N}(\mu = 2 \cdot X, \sigma = 1)$.
+First, we simulate data $(Y,X)$ from the model defined by $X \sim \mathrm{Unif}(10,20)$ and $Y | X =x \sim \mathcal{N}(\mu = 2x, \sigma = 1)$.
 
 ```{r}
 set.seed(1431L)
@@ -723,13 +834,13 @@ dataset <- tibble::tibble(
 )
 ```
 
-Next, we specify the distribution family $\mathcal{F} = \mathcal{N}_{\sigma = 1}$, incorporating the homoskedasticity assumption.
+Next, we specify the distribution family $\mathcal{F} = \{\mathcal{N}(\mu, \sigma = 1) | \mu\in\mathbb R\}$, incorporating the homoskedasticity assumption.
 
 ```{r}
 dist <- dist_normal(sd = 1.0)
 ```
 
-Using \pkg{keras}, we define an empty neural network, just taking $X$ as an input and performing no transformation.
+Using \pkg{keras}, we define an empty neural network, just taking $x$ as an input and performing no transformation.
 
 ```{r}
 nnet_input <- keras::layer_input(shape = 1L, name = "x_input")
@@ -737,14 +848,14 @@ nnet_output <- nnet_input
 ```
 
 Then, `tf_compile_model()` adapts the input layer to the free parameter space $\Theta = \mathbb{R}$.
-This introduces two parameters to the function family $\mathcal{G}$ and implies the functional relationship $\mu = \theta_1 \cdot x + \theta_0$.
+This introduces two parameters to the function family $\mathcal{G}$ and implies the functional relationship $\mu = g(x) := \theta_1 \cdot x + \theta_0$.
 Since our sample is fully observed, we disable censoring and truncation, leading to the simplified loss
 
 \begin{align*}
   l(g) = -\tfrac{1}{100} \sum_{x, y} \log f_{g(x)}(y),
 \end{align*}
 
-where $f_\mu(y)$ is the density of $\mathcal{N}_{\mu=\mu, \sigma=1}$ evaluated at $y$.
+where $f_\mu(y)$ is the density of $\mathcal{N}(\mu=\mu, \sigma=1)$ evaluated at $y$.
 
 ```{r}
 nnet <- tf_compile_model(
@@ -774,6 +885,11 @@ nnet_fit <- fit(
   shuffle = FALSE,
   verbose = FALSE
 )
+```
+
+The training history can be plotted, displaying the loss by epoch (black circles), and a blue smoothing line.
+
+```{r}
 plot(nnet_fit)
 ```
 
@@ -805,8 +921,131 @@ str(coef_nnet)
 str(coef_lm)
 ```
 
+We now discuss a more complex example involving censoring, using the right-censored `ovarian` dataset bundled with the \pkg{survival} package \citep{baseR}.
+Our goal is to predict the rate parameter of an exponential survival time distribution in cancer patients given four features $X = (\mathtt{age}, \mathtt{resid.ds}, \mathtt{rx}, \mathtt{ecog.ps})$ collected in the study.
+The variables $\mathtt{resid.ds}, \mathtt{rx}$ and $\mathtt{ecog.ps}$ are indicator variables coded in $\{1, 2\}$.
+$\mathtt{age}$ is a continuous variable with values in $(38, 75)$.
+Due to the different scale of the $\mathtt{age}$ variable, it is useful to separate it from the other variables in order to perform normalization.
+Normalization using `keras::layer_normalization()` transforms its input variables to zero mean and unit variance.
+This step is not necessary for the categorical features.
+
+```{r}
+set.seed(1219L)
+tensorflow::set_random_seed(1219L)
+keras::k_set_floatx("float32")
+
+dist <- dist_exponential()
+ovarian <- survival::ovarian
+dat <- list(
+  y = trunc_obs(
+    xmin = ovarian$futime,
+    xmax = ifelse(ovarian$fustat == 1, ovarian$futime, Inf)
+  ),
+  x = list(
+    age = keras::k_constant(ovarian$age, shape = nrow(ovarian)),
+    flags = k_matrix(ovarian[, c("resid.ds", "rx", "ecog.ps")] - 1.0)
+  )
+)
+```
+
+Next, we define the input layers and shapes, conforming to our input predictor list `dat$x`.
+
+```{r}
+nnet_inputs <- list(
+  keras::layer_input(shape = 1L, name = "age"),
+  keras::layer_input(shape = 3L, name = "flags")
+)
+```
+
+`age` will be normalized and then concatenated to the other features, stored in `flags`, resulting in a 4-dimensional representation.
+We then add two hidden ReLU-layers each with $5$ neurons to the network and compile the result, adapting the 5-dimensional hidden output to the parameter space $\Theta = (0, \infty)$ for the rate parameter of an exponential distribution.
+This is accomplished using a dense layer with $1$ neuron and the $\mathrm{softplus}$ activation function.
+
+```{r}
+hidden1 <- keras::layer_concatenate(
+  keras::layer_normalization(nnet_inputs[[1L]]),
+  nnet_inputs[[2L]]
+)
+hidden2 <- keras::layer_dense(
+  hidden1,
+  units = 5L,
+  activation = keras::activation_relu
+)
+nnet_output <- keras::layer_dense(
+  hidden2,
+  units = 5L,
+  activation = keras::activation_relu
+)
+
+nnet <- tf_compile_model(
+  inputs = nnet_inputs,
+  intermediate_output = nnet_output,
+  dist = dist,
+  optimizer = keras::optimizer_adam(learning_rate = 0.01),
+  censoring = TRUE,
+  truncation = FALSE
+)
+nnet$model
+```
+
+For stability reasons, the default weight initialization is not optimal.
+To circumvent this, we estimate a global exponential distribution fit on the observations and initialize the final layer weights such that the global fit is the initial prediction of the network.
+
+```{r}
+str(predict(nnet, dat$x))
+global_fit <- fit(dist, dat$y)
+tf_initialise_model(nnet, params = global_fit$params, mode = "zero")
+str(predict(nnet, dat$x))
+```
+
+Finally, we can train the network and visualize the predictions.
+
+```{r}
+nnet_fit <- fit(
+  nnet,
+  x = dat$x,
+  y = dat$y,
+  epochs = 100L,
+  batch_size = nrow(dat$y),
+  shuffle = FALSE,
+  verbose = FALSE
+)
+plot(nnet_fit)
+
+ovarian$expected_lifetime <- 1.0 / predict(nnet, dat$x)$rate
+```
+
+A plot of expected lifetime by $(\mathtt{age}, \mathtt{rx})$ shows that the network learned longer expected lifetimes for lower $\mathtt{age}$ and for treatment group ($\mathtt{rx}$) 2.
+The global fit is included as a dashed blue line.
+
+```{r echo = FALSE}
+ggplot(ovarian, aes(x = age, y = expected_lifetime, color = factor(rx))) +
+  geom_point() +
+  geom_hline(yintercept = 1.0 / global_fit$params$rate, color = "blue", linetype = "dotted") +
+  scale_color_discrete(name = "treatment group")
+```
+
+Individual predictions and observations can also be plotted on a subject level.
+
+```{r, echo = FALSE}
+ggplot(ovarian[order(ovarian$futime), ], aes(x = seq_len(nrow(ovarian)))) +
+  geom_linerange(aes(ymin = futime, ymax = ifelse(fustat == 1, futime, Inf)), show.legend = FALSE) +
+  geom_point(aes(y = futime, shape = ifelse(fustat == 1, "observed", "censored"))) +
+  geom_point(aes(y = expected_lifetime, shape = "predicted"), color = "blue") +
+  geom_hline(yintercept = 1.0 / global_fit$params$rate, color = "blue", linetype = "dotted") +
+  coord_flip() +
+  scale_x_continuous(name = "subject", breaks = NULL) +
+  scale_y_continuous(name = "lifetime") +
+  scale_shape_manual(name = NULL, values = c(observed = "circle", censored = "circle open", predicted = "cross")) +
+  guides(shape = guide_legend(override.aes = list(color = c("black", "black", "blue"))))
+```
+
 # Conclusion {#conclusion}
 
 We presented \pkg{reservr}, a package that supports distribution parameter estimation and distributional regression using \proglang{R}.
 Both tasks are supported for samples with or without interval censoring and with or without random truncation, a more general form of truncation than what typical packages support.
 The package includes facilities for (1) description of randomly truncated non-informatively interval censored samples, (2) definition of distribution families to consider, (3) global distribution parameter estimation under an i.i.d. assumption on the sample and (4) distributional regression - employing the \pkg{tensorflow} package for flexibility and speed.
+
+# Acknowledgements {-}
+
+The Author would like to thank Axel Bücher for proofreading and valuable comments on an earlier version of this article.
