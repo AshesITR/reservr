@@ -170,7 +170,7 @@ Interval <- R6Class(
       } else {
         private$check_write()
         assert_that(
-          is_double(value, n = 2L),
+          is_bare_numeric(value, n = 2L),
           value[1] <= value[2],
           msg = "`range` must be a sorted vector of two numbers."
         )

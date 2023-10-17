@@ -45,9 +45,9 @@ BetaDistribution <- distribution_class_simple(
   support = I_UNIT_INTERVAL, # TODO diff_*?
   tf_logdensity = function() function(x, args) { # nolint: brace.
     tf <- tensorflow::tf
-    shape1 <- tf$broadcast_to(args[["shape1"]], x$shape)
-    shape2 <- tf$broadcast_to(args[["shape2"]], x$shape)
-    ncp <- tf$broadcast_to(args[["ncp"]], x$shape)
+    shape1 <- args[["shape1"]]
+    shape2 <- args[["shape2"]]
+    ncp <- args[["ncp"]]
 
     xbad <- x < 0.0 | x > 1.0 | ncp != 0.0
     x0 <- x == 0.0
@@ -60,16 +60,16 @@ BetaDistribution <- distribution_class_simple(
     tf$where(
       xbad,
       K$neg_inf,
-      -tf$math$lbeta(tf$stack(list(shape1, shape2), axis = 1L)) +
+      -tf$math$lbeta(tf$stack(list(shape1, shape2), axis = -1L)) +
         tf$where(x0, lterm, (shape1 - 1.0) * log(x_safe)) +
         tf$where(x1, rterm, (shape2 - 1.0) * log(xs_safe))
     )
   },
   tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
     tf <- tensorflow::tf
-    shape1 <- tf$broadcast_to(args[["shape1"]], qmin$shape)
-    shape2 <- tf$broadcast_to(args[["shape2"]], qmin$shape)
-    ncp <- tf$broadcast_to(args[["ncp"]], qmin$shape)
+    shape1 <- args[["shape1"]]
+    shape2 <- args[["shape2"]]
+    ncp <- args[["ncp"]]
 
     qmin_safe <- tf$where(qmin < 0.0, K$zero, tf$where(qmin > 1.0, K$one, qmin))
     qmax_safe <- tf$where(qmax < 0.0, K$zero, tf$where(qmax > 1.0, K$one, qmax))

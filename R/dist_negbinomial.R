@@ -68,8 +68,8 @@ NegativeBinomialDistribution <- distribution_class_simple(
     res
   },
   tf_logdensity = function() function(x, args) { # nolint: brace.
-    mu <- tf$broadcast_to(args[["mu"]], x$shape)
-    size <- tf$broadcast_to(args[["size"]], x$shape)
+    mu <- args[["mu"]]
+    size <- args[["size"]]
 
     mu0 <- mu == K$zero
     prob <- mu / (size + mu)
@@ -89,8 +89,8 @@ NegativeBinomialDistribution <- distribution_class_simple(
     )
   },
   tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
-    mu <- tf$broadcast_to(args[["mu"]], qmin$shape)
-    size <- tf$broadcast_to(args[["size"]], qmin$shape)
+    mu <- args[["mu"]]
+    size <- args[["size"]]
 
     mu0 <- mu == K$zero
     prob <- mu / (size + mu)
@@ -121,7 +121,7 @@ NegativeBinomialDistribution <- distribution_class_simple(
     )
   },
   tf_is_discrete_at = function() function(x, args) { # nolint: brace.
-    mu <- tf$broadcast_to(args[["mu"]], x$shape)
+    mu <- args[["mu"]]
     tf$where(
       mu == K$zero,
       x == K$zero,

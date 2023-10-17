@@ -16,4 +16,6 @@ test_that("beta distribution works", {
   expect_tf_logdensity(dist, params, x)
   expect_tf_logprobability(dist, params, x, x + 0.1)
   expect_tf_logprobability(dist, params, x - 0.1, x)
+
+  expect_tf_fit(dist, params, I_UNIT_INTERVAL)
 })

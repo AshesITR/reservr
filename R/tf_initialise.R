@@ -86,7 +86,7 @@ tf_initialise_model <- function(model, params, mode = c("scale", "perturb", "zer
           # Leave as-is
         },
         zero = {
-          layer$kernel$assign(tensorflow::tf$fill(layer$kernel$shape, 0.0))
+          layer$kernel$assign(tensorflow::tf$fill(layer$kernel$shape, K$zero))
         }
       )
     }

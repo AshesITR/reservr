@@ -96,16 +96,16 @@ NormalDistribution <- distribution_class_simple(
     res
   },
   tf_logdensity = function() function(x, args) { # nolint: brace.
-    mu <- tf$broadcast_to(tf$squeeze(args[["mean"]]), x$shape)
-    sigma <- tf$broadcast_to(tf$squeeze(args[["sd"]]), x$shape)
+    mu <- args[["mean"]]
+    sigma <- args[["sd"]]
 
     z <- (x - mu) / sigma
 
     -log(sigma) - K$log_sqrt_2pi - K$one_half * z * z
   },
   tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
-    mu <- tf$broadcast_to(tf$squeeze(args[["mean"]]), qmin$shape)
-    sigma <- tf$broadcast_to(tf$squeeze(args[["sd"]]), qmin$shape)
+    mu <- args[["mean"]]
+    sigma <- args[["sd"]]
 
     qmin_finite <- tf$math$is_finite(qmin)
     qmin_safe <- tf$where(qmin_finite, qmin, K$zero)

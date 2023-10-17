@@ -115,6 +115,8 @@ test_that("test dist_blended", {
 
   skip_on_cran()
   expect_silent(fit(dist, x))
+
+  expect_tf_fit(dist, free_params, I_POSITIVE_REALS, global_fit_args = free_params)
 })
 
 test_that("blending works for discrete distributions", {

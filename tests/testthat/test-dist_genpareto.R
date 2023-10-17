@@ -43,7 +43,9 @@ test_that("generalized pareto distribution works", {
     expect_tf_logprobability(genpareto, xparams[[i]], xx, xx + 1.0)
     expect_tf_logprobability(genpareto, xparams[[i]], 0, xx)
     expect_tf_logprobability(genpareto, xparams[[i]], xx, Inf)
+
   }
+  expect_tf_fit(genpareto, list(u = 0, sigmau = 1, xi = 1), I_POSITIVE_REALS)
 
   expect_diff_density(genpareto, x1, xparams[[1L]]) # Test out-of-support
   expect_diff_density(genpareto, x2, xparams[[1L]])
