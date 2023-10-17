@@ -1,7 +1,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom rlang is_string is_null is_integerish eval_tidy enquo
 #' is_installed is_scalar_double is_function is_bool is_scalar_integerish
-#' is_double check_installed %||%
+#' is_bare_numeric check_installed %||%
 #' @importFrom utils head tail modifyList hasName assignInMyNamespace
 #' @importFrom R6 R6Class
 #' @importFrom RcppParallel RcppParallelLibs
