@@ -21,6 +21,6 @@ The R source code is 409,1kB; I am not sure why installed size is almost triple 
 
 This is due to the usage of `RcppParallel`.
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 2 notes
 
 * This is a bugfix release, fixing some problems with the tensorflow integration when trying to train a `reservr_keras_model` from arbitrary distributions and observations. Regression tests were added for all distributions.
