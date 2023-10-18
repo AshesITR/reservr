@@ -64,7 +64,8 @@ PoissonDistribution <- distribution_class_simple(
             q = q, lambda = lambda, lower.tail = lower.tail, log.p = log.p
           ))
         },
-        x = params$lambda
+        x = params$lambda,
+        side = ifelse(params$lambda == 0.0, 1.0, NA_real_)
       )
     }
 
@@ -73,7 +74,7 @@ PoissonDistribution <- distribution_class_simple(
   tf_logdensity = function() function(x, args) { # nolint: brace.
     lambda <- args[["lambda"]]
 
-    ok <- tf_is_integerish(x) & x >= K$zero
+    ok <- tf$math$is_finite(x) & tf_is_integerish(x) & x >= K$zero
     x_safe <- tf$where(ok, x, K$zero)
 
     tf$where(

@@ -70,6 +70,10 @@ NegativeBinomialDistribution <- distribution_class_simple(
   tf_logdensity = function() function(x, args) { # nolint: brace.
     mu <- args[["mu"]]
     size <- args[["size"]]
+    if (tf$rank(size) == 0L) {
+      # tf$stack() doesn't auto-broadcast
+      size <- tf$broadcast_to(size, tf$keras$backend$shape(x))
+    }
 
     mu0 <- mu == K$zero
     prob <- mu / (size + mu)

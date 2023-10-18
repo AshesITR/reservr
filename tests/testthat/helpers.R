@@ -411,6 +411,10 @@ expect_tf_fit <- function(dist, args, support, global_fit_args = NULL) {
   c0 <- support$range[1L]
   c1 <- pmax(x - 1.0, 0.5 * (x + support$range[1L]))
   c2 <- pmin(x + 1.0, 0.5 * (x + support$range[2L]))
+  if (support$integer) {
+    c1 <- floor(c1)
+    c2 <- ceiling(c2)
+  }
   c3 <- support$range[2L]
 
   #                   1     2   3   4  5   6   7

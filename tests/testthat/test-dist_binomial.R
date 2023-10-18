@@ -27,4 +27,7 @@ test_that("binomial distribution works", {
   expect_tf_logprobability(dist, params, x, x + 1.0)
   expect_tf_logprobability(dist, params, 0, x)
   expect_tf_logprobability(dist, params, x, params$size)
+
+  dist$default_params$size <- params$size
+  expect_tf_fit(dist, params["prob"], interval(0L, params$size, integer = TRUE))
 })

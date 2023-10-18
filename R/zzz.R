@@ -137,8 +137,8 @@ xcx_inv <- function(yt) {
   }, numeric(1L))
 }
 
-gradient <- function(func, x) {
-  as.numeric(numDeriv::grad(func, x))
+gradient <- function(func, x, side = NULL) {
+  as.numeric(numDeriv::grad(func, x, side = side))
 }
 
 jacobian <- function(func, x) {

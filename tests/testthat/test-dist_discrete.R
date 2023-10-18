@@ -44,4 +44,6 @@ test_that("discrete distribution works", {
   expect_iprobability(dist, params, x, x + 1.0)
   expect_iprobability(dist, params, 0, x)
   expect_iprobability(dist, params, x, length(params$probs))
+
+  expect_tf_fit(dist, params, interval(1L, length(params$probs), integer = TRUE))
 })

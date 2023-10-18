@@ -86,22 +86,23 @@ DebugDistGradientsCallback <- R6Class(
         private$.logp <- object$dist$tf_logprobability()
       }
       private$.const <- object$dist$tf_make_constants()
+      nobs <- nrow(obs)
       if (!all(is.na(obs$x))) {
-        private$.xd <- keras::k_constant(ifelse(is.na(obs$x), Inf, obs$x), shape = list(length(obs$x)))
+        private$.xd <- keras::k_constant(ifelse(is.na(obs$x), Inf, obs$x), shape = list(nobs))
       }
       if (object$loss_cens && anyNA(obs$x)) {
         private$.xc_lower <- keras::k_constant(
           ifelse(is.na(obs$x), obs$xmin, -Inf),
-          shape = list(length(obs$x))
+          shape = list(nobs)
         )
         private$.xc_upper <- keras::k_constant(
           ifelse(is.na(obs$x), obs$xmax, Inf),
-          shape = list(length(obs$x))
+          shape = list(nobs)
         )
       }
       if (object$loss_trunc && any(is.finite(obs$tmin) | is.finite(obs$tmax))) {
-        private$.xt_lower <- keras::k_constant(obs$tmin, shape = list(length(obs$x)))
-        private$.xt_upper <- keras::k_constant(obs$tmax, shape = list(length(obs$x)))
+        private$.xt_lower <- keras::k_constant(obs$tmin, shape = list(nobs))
+        private$.xt_upper <- keras::k_constant(obs$tmax, shape = list(nobs))
       }
       private$reset()
     },
