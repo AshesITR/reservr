@@ -129,4 +129,4 @@ Collate:
     'trunc_obs.R'
     'truncate_claims.R'
     'weighted_stats.R'
-URL: https://ashesitr.github.io/reservr/
+URL: https://ashesitr.github.io/reservr/, https://github.com/AshesITR/reservr
