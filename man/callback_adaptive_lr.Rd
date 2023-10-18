@@ -64,7 +64,7 @@ group <- sample(c(0, 1), size = 100, replace = TRUE)
 x <- dist$sample(100, with_params = list(rate = group + 1))
 global_fit <- fit(dist, x)
 
-if (keras::is_keras_available()) {
+if (interactive() && keras::is_keras_available()) {
   library(keras)
   l_in <- layer_input(shape = 1L)
   mod <- tf_compile_model(

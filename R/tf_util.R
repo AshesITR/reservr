@@ -54,7 +54,7 @@ as_params <- function(x) {
 #' The shape will be `(nrow(x), ncol(x))` where `x` is first converted to an R matrix via [as.matrix()].
 #'
 #' @examples
-#' if (keras::is_keras_available()) {
+#' if (interactive() && keras::is_keras_available()) {
 #'   k_matrix(diag(1:3))
 #'   k_matrix(diag(1:3), dtype = "int32")
 #'   # Vectors are converted to columns:

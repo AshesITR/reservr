@@ -19,7 +19,7 @@ The shape will be \verb{(nrow(x), ncol(x))} where \code{x} is first converted to
 Cast to a TensorFlow matrix
 }
 \examples{
-if (keras::is_keras_available()) {
+if (interactive() && keras::is_keras_available()) {
   k_matrix(diag(1:3))
   k_matrix(diag(1:3), dtype = "int32")
   # Vectors are converted to columns:

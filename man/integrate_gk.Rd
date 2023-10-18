@@ -37,9 +37,7 @@ number of function evaluations per integration interval will be
 }
 \value{
 A vector of integrals with the i-th entry containing an approximation
-of
-
-int_{lower[i]}^{upper[i]} fun(t, pick_params_at(params, i)) dt
+of the integral of fun(t, pick_params_at(params, i)) dt over the interval lower[i] to upper[i]
 }
 \description{
 Integrates fun over the bounds [ lower, upper ] vectorized over \code{lower} and
