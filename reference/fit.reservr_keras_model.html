@@ -112,16 +112,16 @@ If unspecified, <code>batch_size</code> will default to 32.</p></dd>
 
 
 <dt>epochs</dt>
-<dd><p>Number of epochs to train the model.
-Note that in conjunction with <code>initial_epoch</code>,
-<code>epochs</code> is to be understood as "final epoch". The model is
-not trained for a number of iterations given by <code>epochs</code>, but
+<dd><p>Number of epochs to train the model. Note that in conjunction
+with <code>initial_epoch</code>, <code>epochs</code> is to be understood as "final epoch". The
+model is not trained for a number of iterations given by <code>epochs</code>, but
 merely until the epoch of index <code>epochs</code> is reached.</p></dd>
 
 
 <dt>verbose</dt>
-<dd><p>Verbosity mode (0 = silent, 1 = progress bar, 2 = one line per
-epoch).</p></dd>
+<dd><p>Verbosity mode (0 = silent, 1 = progress bar, 2 = one line
+per epoch). Defaults to 1 in most contexts, 2 if in knitr render or running
+on a distributed training server.</p></dd>
 
 
 <dt>callbacks</dt>
@@ -140,9 +140,9 @@ different default.</p></dd>
 <dd><p>Float between 0 and 1. Fraction of the training data
 to be used as validation data. The model will set apart this fraction of
 the training data, will not train on it, and will evaluate the loss and any
-model metrics on this data at the end of each epoch. The validation data
-is selected from the last samples in the <code>x</code> and <code>y</code> data provided,
-before shuffling.</p></dd>
+model metrics on this data at the end of each epoch. The validation data is
+selected from the last samples in the <code>x</code> and <code>y</code> data provided, before
+shuffling.</p></dd>
 
 
 <dt>validation_data</dt>
@@ -153,17 +153,17 @@ val_sample_weights). <code>validation_data</code> will override <code>validation
 
 
 <dt>shuffle</dt>
-<dd><p>shuffle: Logical (whether to shuffle the training data
-before each epoch) or string (for "batch"). "batch" is a special option
-for dealing with the limitations of HDF5 data; it shuffles in batch-sized
+<dd><p>shuffle: Logical (whether to shuffle the training data before
+each epoch) or string (for "batch"). "batch" is a special option for
+dealing with the limitations of HDF5 data; it shuffles in batch-sized
 chunks. Has no effect when <code>steps_per_epoch</code> is not <code>NULL</code>.</p></dd>
 
 
 <dt>class_weight</dt>
 <dd><p>Optional named list mapping indices (integers) to a
-weight (float) value, used for weighting the loss function
-(during training only). This can be useful to tell the model to
-"pay more attention" to samples from an under-represented class.</p></dd>
+weight (float) value, used for weighting the loss function (during training
+only). This can be useful to tell the model to "pay more attention" to
+samples from an under-represented class.</p></dd>
 
 
 <dt>sample_weight</dt>
@@ -184,8 +184,8 @@ resuming a previous training run).</p></dd>
 <dd><p>Total number of steps (batches of samples) before
 declaring one epoch finished and starting the next epoch. When training
 with input tensors such as TensorFlow data tensors, the default <code>NULL</code> is
-equal to the number of samples in your dataset divided by the batch
-size, or 1 if that cannot be determined.</p></dd>
+equal to the number of samples in your dataset divided by the batch size,
+or 1 if that cannot be determined.</p></dd>
 
 
 <dt>validation_steps</dt>
