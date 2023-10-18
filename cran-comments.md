@@ -7,6 +7,15 @@
 
 ## R CMD check results
 
+    checking installed package size ... NOTE
+      installed size is 13.7Mb
+      sub-directories of 1Mb or more:
+        R      1.5Mb
+        libs  11.7Mb
+
+The R source code is 409,1kB; I am not sure why installed size is almost triple that amount.
+`libs` is large due to the size of the built C++ library (`reservr.so` is 8,6MB on my machine). 
+
     checking for GNU extensions in Makefiles ... NOTE
       GNU make is a SystemRequirements.
 
