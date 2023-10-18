@@ -16,4 +16,6 @@ test_that("exponential distribution works", {
   expect_diff_probability(expo, x, list(rate = 4.0))
   expect_tf_logdensity(expo, params, x)
   expect_tf_logprobability(expo, params, x, x + 1.0)
+
+  expect_tf_fit(expo, params, I_POSITIVE_REALS)
 })

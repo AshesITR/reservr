@@ -18,4 +18,6 @@ test_that("lognormal distribution works", {
   expect_tf_logprobability(dist, params, 0, x)
   expect_tf_logprobability(dist, params, x, Inf)
   expect_tf_logprobability(dist, params, -Inf, x)
+
+  expect_tf_fit(dist, params, I_POSITIVE_REALS)
 })

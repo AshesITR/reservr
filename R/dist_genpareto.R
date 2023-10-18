@@ -279,7 +279,7 @@ fit_dist_start.GeneralizedParetoDistribution <- function(dist, obs, ...) {
   ph <- names(res)
 
   if ("u" %in% ph) {
-    u <- min(obs$xmin)
+    u <- min(obs$xmin[is.finite(obs$xmin)])
     res$u <- u
   } else {
     u <- dist$get_params()$u
@@ -289,8 +289,13 @@ fit_dist_start.GeneralizedParetoDistribution <- function(dist, obs, ...) {
 
   if ("xi" %in% ph) {
     hillord <- ceiling(sum(x > u) / 2.0)
-    xs <- sort(x[x > u], decreasing = TRUE) - u
-    xi <- mean(log(xs[seq_len(hillord - 1L)])) - log(xs[hillord])
+    if (hillord > 0L) {
+      xs <- sort(x[x > u], decreasing = TRUE) - u
+      xi <- mean(log(xs[seq_len(hillord - 1L)])) - log(xs[hillord])
+    } else {
+      # all obs are <= u
+      xi <- 0.0
+    }
 
     # Handle dist_genpareto1 initialisation
     xi_bounds <- dist$get_param_bounds()$xi

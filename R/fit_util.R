@@ -34,8 +34,8 @@
 .get_init_x <- function(obs, .min = -Inf, .max = Inf) {
   res <- obs$x
   i_cens <- is.na(obs$x) & obs$xmin > .min & obs$xmax < .max
-  r_cens <- is.na(obs$x) & obs$xmax == .max
-  l_cens <- is.na(obs$x) & obs$xmin == .min
+  r_cens <- is.na(obs$x) & obs$xmax >= .max & is.finite(obs$xmin)
+  l_cens <- is.na(obs$x) & obs$xmin <= .min & is.finite(obs$xmax)
   res[i_cens] <- 0.5 * obs$xmin[i_cens] + 0.5 * obs$xmax[i_cens]
   res[r_cens] <- obs$xmin[r_cens]
   res[l_cens] <- obs$xmax[l_cens]

@@ -102,8 +102,8 @@ GammaDistribution <- distribution_class_simple(
     res
   },
   tf_logdensity = function() function(x, args) { # nolint: brace.
-    shape <- tf$broadcast_to(args[["shape"]], x$shape)
-    rate <- tf$broadcast_to(args[["rate"]], x$shape)
+    shape <- args[["shape"]]
+    rate <- args[["rate"]]
 
     ok <- x > 0
     x_safe <- tf$where(ok, x, 1.0)
@@ -115,8 +115,8 @@ GammaDistribution <- distribution_class_simple(
     )
   },
   tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
-    shape <- tf$broadcast_to(args[["shape"]], qmin$shape)
-    rate <- tf$broadcast_to(args[["rate"]], qmax$shape)
+    shape <- args[["shape"]]
+    rate <- args[["rate"]]
 
     qmin0 <- qmin <= 0.0
     qmax0 <- qmax <= 0.0

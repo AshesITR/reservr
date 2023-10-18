@@ -77,6 +77,9 @@ test_that("erlang mixture distribution works", {
   expect_iprobability(dist, params, x, x + 1.0)
   expect_iprobability(dist, params, 0, x)
   expect_iprobability(dist, params, x, Inf)
+
+  dist$default_params$shapes <- params$shapes
+  expect_tf_fit(dist, params[c("scale", "probs")], I_POSITIVE_REALS)
 })
 
 test_that("can use erlang mixtures with 1 component", {

@@ -108,8 +108,8 @@ LogNormalDistribution <- distribution_class_simple(
     res
   },
   tf_logdensity = function() function(x, args) { # nolint: brace.
-    meanlog <- tf$broadcast_to(args[["meanlog"]], x$shape)
-    sdlog <- tf$broadcast_to(args[["sdlog"]], x$shape)
+    meanlog <- args[["meanlog"]]
+    sdlog <- args[["sdlog"]]
 
     ok <- x > K$zero
     x_safe <- tf$where(ok, x, K$one)
@@ -123,8 +123,8 @@ LogNormalDistribution <- distribution_class_simple(
     )
   },
   tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
-    meanlog <- tf$broadcast_to(args[["meanlog"]], qmin$shape)
-    sdlog <- tf$broadcast_to(args[["sdlog"]], qmin$shape)
+    meanlog <- args[["meanlog"]]
+    sdlog <- args[["sdlog"]]
 
     qmin_ok <- qmin > K$zero
     qmin_safe <- tf$where(qmin_ok, qmin, K$one)

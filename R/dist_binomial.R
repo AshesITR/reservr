@@ -108,13 +108,13 @@ BinomialDistribution <- distribution_class_simple(
     res
   },
   tf_logdensity = function() function(x, args) { # nolint: brace.
-    size <- tf$broadcast_to(tf$squeeze(args[["size"]]), x$shape)
-    prob <- tf$broadcast_to(tf$squeeze(args[["prob"]]), x$shape)
+    size <- args[["size"]]
+    prob <- args[["prob"]]
 
     ok <- tf_is_integerish(x) & x >= K$zero & x <= size
     x_safe <- tf$where(ok, x, K$zero)
 
-    beta_x <- tf$math$lbeta(tf$stack(list(K$one + x_safe, K$one + size - x_safe), axis = 1L))
+    beta_x <- tf$math$lbeta(tf$stack(list(K$one + x_safe, K$one + size - x_safe), axis = -1L))
 
     tf$where(
       ok,
@@ -123,8 +123,9 @@ BinomialDistribution <- distribution_class_simple(
     )
   },
   tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
-    size <- tf$broadcast_to(tf$squeeze(args[["size"]]), qmin$shape)
-    prob <- tf$broadcast_to(tf$squeeze(args[["prob"]]), qmin$shape)
+    tf <- tensorflow::tf
+    size <- args[["size"]]
+    prob <- tf$squeeze(args[["prob"]])
 
     qmin0 <- qmin <= K$zero
     qmax_ok <- qmax >= K$zero & qmax < size
@@ -149,7 +150,7 @@ BinomialDistribution <- distribution_class_simple(
     )
   },
   tf_is_discrete_at = function() function(x, args) { # nolint: brace.
-    size <- tf$broadcast_to(tf$squeeze(args[["size"]]), x$shape)
+    size <- args[["size"]]
 
     tf_is_integerish(x) & x >= K$zero & x <= size
   }

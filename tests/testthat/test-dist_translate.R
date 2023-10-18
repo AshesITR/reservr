@@ -57,4 +57,6 @@ test_that("test dist_translate", {
   expect_tf_logprobability(dist, params, x, x + 1.0)
   expect_tf_logprobability(dist, params, 0, x)
   expect_tf_logprobability(dist, params, x, Inf)
+
+  expect_tf_fit(dist, params, interval(1.0, Inf))
 })

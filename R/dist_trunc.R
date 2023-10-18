@@ -253,9 +253,9 @@ TruncatedDistribution <- distribution_class(
     dist_logprob <- self$get_components()[[1L]]$tf_logprobability()
 
     function(x, args) {
-      min <- tf$broadcast_to(args[["min"]], x$shape)
-      max <- tf$broadcast_to(args[["max"]], x$shape)
-      offset <- tf$broadcast_to(args[["offset"]], x$shape)
+      min <- args[["min"]]
+      max <- args[["max"]]
+      offset <- args[["offset"]]
       dist_args <- args[["dist"]]
 
       x_trans <- x - offset
@@ -269,9 +269,9 @@ TruncatedDistribution <- distribution_class(
     dist_logprob <- self$get_components()[[1L]]$tf_logprobability()
 
     function(qmin, qmax, args) {
-      min <- tf$broadcast_to(args[["min"]], qmin$shape)
-      max <- tf$broadcast_to(args[["max"]], qmin$shape)
-      offset <- tf$broadcast_to(args[["offset"]], qmin$shape)
+      min <- args[["min"]]
+      max <- args[["max"]]
+      offset <- args[["offset"]]
       dist_args <- args[["dist"]]
 
       xt_min <- qmin - offset
@@ -284,15 +284,104 @@ TruncatedDistribution <- distribution_class(
       tf$where(zero, K$neg_inf, dist_logprob(xt_min_safe, xt_max_safe, dist_args) - dist_logprob(min, max, dist_args))
     }
   },
+    tf_compile_params = function(input, name_prefix = "") {
+    ph <- self$get_placeholders()
+    comp <- self$get_components()[[1L]]
+
+    if ("offset" %in% names(ph)) {
+      out <- list(
+        offset = I_REALS$tf_make_layer(
+          input = input,
+          name = paste0(name_prefix, "offset")
+        )
+      )
+      has_offset <- TRUE
+    } else {
+      out <- list()
+      has_offset <- FALSE
+    }
+
+    if ("min" %in% names(ph)) {
+      out <- c(
+        out,
+        list(
+          multiplier = I_REALS$tf_make_layer(
+            input = input,
+            name = paste0(name_prefix, "min")
+          )
+        )
+      )
+      has_min <- TRUE
+    } else {
+      has_min <- FALSE
+    }
+
+    if ("max" %in% names(ph)) {
+      out <- c(
+        out,
+        list(
+          multiplier = I_REALS$tf_make_layer(
+            input = input,
+            name = paste0(name_prefix, "max")
+          )
+        )
+      )
+      has_max <- TRUE
+    } else {
+      has_max <- FALSE
+    }
+
+    comp_inflater <- NULL
+
+    if (length(ph$dist)) {
+      dist_compiled <- comp$tf_compile_params(
+        input = input,
+        name_prefix = paste0(name_prefix, "dist_")
+      )
+      comp_inflater <- dist_compiled$output_inflater
+      out <- c(out, dist_compiled$outputs)
+    }
+
+    list(
+      outputs = out,
+      output_inflater = eval(bquote(function(outputs) {
+        if (!is.list(outputs)) outputs <- list(outputs)
+        has_offset <- .(has_offset)
+        has_min <- .(has_min)
+        has_max <- .(has_max)
+        comp_inflater <- .(comp_inflater)
+
+        out <- list()
+        if (has_offset) {
+          out$offset <- outputs[[1L]]
+          outputs <- outputs[-1L]
+        }
+        if (has_min) {
+          out$min <- outputs[[1L]]
+          outputs <- outputs[-1L]
+        }
+        if (has_max) {
+          out$max <- outputs[[1L]]
+          outputs <- outputs[-1L]
+        }
+        if (!is.null(comp_inflater)) {
+          out$dist <- comp_inflater(outputs)
+        } else {
+          out$dist <- list()
+        }
+        out
+      }))
+    )
+  },
   tf_is_discrete_at = function() {
     if (self$is_continuous()) return(super$tf_is_discrete_at())
 
     dist_disc <- self$get_components()[[1L]]$tf_is_discrete_at()
 
     function(x, args) {
-      min <- tf$broadcast_to(args[["min"]], x$shape)
-      max <- tf$broadcast_to(args[["max"]], x$shape)
-      offset <- tf$broadcast_to(args[["offset"]], x$shape)
+      min <- args[["min"]]
+      max <- args[["max"]]
+      offset <- args[["offset"]]
       dist_args <- args[["dist"]]
 
       x_trans <- x - offset

@@ -65,4 +65,6 @@ test_that("test dist_mixture", {
   expect_iprobability(dist, params, x, x + 1.0)
   expect_iprobability(dist, params, 0, x)
   expect_iprobability(dist, params, x, Inf)
+
+  expect_tf_fit(dist, params, I_POSITIVE_REALS)
 })

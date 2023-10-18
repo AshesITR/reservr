@@ -104,9 +104,9 @@ blended_transition <- function(x, u, eps, .gradient = FALSE, .extend_na = FALSE)
   for (i in seq_len(k)) {
     u_curr <- u[, i]
     e_curr <- eps[, i]
-    b_curr <- u_curr - e_curr < x & x < u_curr + e_curr
-    lo_curr <- x <= u_curr - e_curr
-    hi_curr <- x >= u_curr + e_curr
+    b_curr <- !is.na(x) & u_curr - e_curr < x & x < u_curr + e_curr
+    lo_curr <- !is.na(x) & x <= u_curr - e_curr
+    hi_curr <- !is.na(x) & x >= u_curr + e_curr
 
     res[hi_curr, i] <- u_curr[hi_curr]
     res[lo_curr, i + 1L] <- u_curr[lo_curr]

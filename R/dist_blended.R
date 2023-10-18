@@ -637,11 +637,7 @@ BlendedDistribution <- distribution_class(
 
         sc <- tf$where(
           tf$math$is_finite(prob),
-          comps_logprob[[i]](
-            tf$broadcast_to(imin[i], tf$shape(qmin)),
-            tf$broadcast_to(imax[i], tf$shape(qmax)),
-            dist_args[[i]]
-          ),
+          comps_logprob[[i]](imin[i], imax[i], dist_args[[i]]),
           K$zero
         )
 

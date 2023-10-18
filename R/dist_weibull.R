@@ -112,8 +112,8 @@ WeibullDistribution <- distribution_class_simple(
     res
   },
   tf_logdensity = function() function(x, args) { # nolint: brace.
-    shape <- tf$broadcast_to(args[["shape"]], x$shape)
-    scale <- tf$broadcast_to(args[["scale"]], x$shape)
+    shape <- args[["shape"]]
+    scale <- args[["scale"]]
 
     ok <- x > 0.0 & tf$math$is_finite(x)
     x_safe <- tf$where(ok, x, 1.0)
@@ -125,8 +125,8 @@ WeibullDistribution <- distribution_class_simple(
     )
   },
   tf_logprobability = function() function(qmin, qmax, args) { # nolint: brace.
-    shape <- tf$broadcast_to(args[["shape"]], qmin$shape)
-    scale <- tf$broadcast_to(args[["scale"]], qmin$shape)
+    shape <- args[["shape"]]
+    scale <- args[["scale"]]
 
     qmin0 <- qmin <= 0.0
     qmin_safe <- tf$where(qmin0, K$one, qmin / scale)

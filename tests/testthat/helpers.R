@@ -404,3 +404,65 @@ expect_tf_logprobability <- function(dist, args, xmin, xmax,
     tolerance = tolerance
   )
 }
+
+expect_tf_fit <- function(dist, args, support, global_fit_args = NULL) {
+  skip_if_no_tensorflow()
+  x <- dist$sample(10L, with_params = args)
+  c0 <- support$range[1L]
+  c1 <- pmax(x - 1.0, 0.5 * (x + support$range[1L]))
+  c2 <- pmin(x + 1.0, 0.5 * (x + support$range[2L]))
+  if (support$integer) {
+    c1 <- floor(c1)
+    c2 <- ceiling(c2)
+  }
+  c3 <- support$range[2L]
+
+  #                   1     2   3   4  5   6   7
+  sample_mat <- rbind(-Inf, c0, c1, x, c2, c3, Inf)
+  #           obs, obs|supp, lcens, lcens|supp, icens, rcens|supp, rcens, ltrunc, rtrunc, itrunc
+  r_xmin <- c(4L,  4L,       1L,    2L,         3L,    3L,         3L,    4L,     4L,     4L)
+  r_xmax <- c(4L,  4L,       5L,    5L,         5L,    6L,         7L,    4L,     4L,     4L)
+  r_tmin <- c(1L,  2L,       1L,    1L,         1L,    1L,         1L,    1L,     3L,     3L)
+  r_tmax <- c(7L,  6L,       7L,    7L,         7L,    7L,         7L,    5L,     7L,     5L)
+  c_offsets <- 7L * (seq_len(10L) - 1L)
+
+  obs <- trunc_obs(
+    xmin = sample_mat[r_xmin + c_offsets],
+    xmax = sample_mat[r_xmax + c_offsets],
+    tmin = sample_mat[r_tmin + c_offsets],
+    tmax = sample_mat[r_tmax + c_offsets]
+  )
+  if (is.null(global_fit_args)) {
+    p0 <- fit(dist, obs)$params
+  } else {
+    p0 <- do.call(fit, c(list(dist, obs = obs), global_fit_args))$params
+  }
+  x_in <- keras::k_constant(rep(1.0, nrow(obs)), shape = list(nrow(obs)))
+  x_in1 <- keras::k_constant(1.0, shape = 1L)
+  l_in <- keras::layer_input(shape = 1L)
+  tf_mod <- tf_compile_model(
+    inputs = list(l_in),
+    intermediate_output = l_in,
+    dist = dist,
+    optimizer = keras::optimizer_sgd()
+  )
+  expect_s3_class(tf_mod, "reservr_keras_model")
+  out <- character(nrow(obs))
+  for (i in seq_len(nrow(obs))) {
+    tf_initialise_model(tf_mod, p0, mode = "zero")
+    gr_debugger <- callback_debug_dist_gradients(tf_mod, x_in1, obs[i, ], keep_grads = TRUE)
+    out[i] <- paste(capture.output(
+      fit(tf_mod, x_in1, obs[i, ], callbacks = list(gr_debugger)),
+      type = "message"
+    ), collapse = "")
+  }
+  expect_identical(out, character(nrow(obs)))
+  tf_initialise_model(tf_mod, p0, mode = "zero")
+  gr_debugger <- callback_debug_dist_gradients(tf_mod, x_in, obs, keep_grads = TRUE)
+  train_out <- paste(capture.output(
+    tf_hist <- fit(tf_mod, x_in, obs, callbacks = list(gr_debugger)),
+    type = "message"
+  ), collapse = "")
+  expect_equal(train_out, "")
+  expect_s3_class(tf_hist, "keras_training_history")
+}
