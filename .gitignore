@@ -6,6 +6,7 @@
 inst/doc
 /lib/
 *-coverage.html
+revdep
 
 # JRE Error logs
 hs_err_pid*

@@ -228,6 +228,8 @@ ErlangMixtureDistribution <- distribution_class(
       shapes <- tf$reshape(shapes, keras::k_constant(as.integer(c(1, -1)), dtype = "int32"))
       scale <- args[["scale"]]
       scale <- tf$reshape(scale, keras::k_constant(as.integer(c(-1, 1)), dtype = "int32"))
+      qmin <- tf$reshape(qmin, list(-1L))
+      qmax <- tf$reshape(qmax, list(-1L))
 
       qmax_ok <- tf$math$is_finite(qmax) & qmax > K$zero
       qmin_ok <- qmin > K$zero
