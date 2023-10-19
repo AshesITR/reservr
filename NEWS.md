@@ -1,3 +1,5 @@
+# reservr (development version)
+
 # reservr 0.0.2
 
 * Fixed tensorflow log-density implementation for `dist_erlangmix()` and `dist_exponential()` to work with censored data.
