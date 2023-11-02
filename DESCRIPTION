@@ -64,7 +64,8 @@ Suggests:
     tibble,
     bench,
     survival,
-    rticles
+    rticles,
+    bookdown
 LinkingTo: 
     BH,
     Rcpp,
