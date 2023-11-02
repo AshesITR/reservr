@@ -63,7 +63,8 @@ Suggests:
     tidyr (>= 1.0.2),
     tibble,
     bench,
-    survival
+    survival,
+    rticles
 LinkingTo: 
     BH,
     Rcpp,
