@@ -61,7 +61,9 @@ Suggests:
     tensorflow (>= 2.0.0),
     testthat (>= 2.1.0),
     tidyr (>= 1.0.2),
-    tibble
+    tibble,
+    bench,
+    survival
 LinkingTo: 
     BH,
     Rcpp,
