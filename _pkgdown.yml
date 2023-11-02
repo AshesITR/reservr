@@ -1,5 +1,7 @@
 url: https://ashesitr.github.io/reservr/
 destination: docs
+template:
+  bootstrap: 5
 reference:
 - title: Distributions
   desc: |
