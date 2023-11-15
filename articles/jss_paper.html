@@ -803,11 +803,11 @@ This is useful for conditional maximum likelihood estimation in the presence of 
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
-<span><span class="co">##   expression                             min median `itr/sec` mem_alloc `gc/sec`</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;bch:&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> dist$density(-2:2, with_params = l… 32.4µs 35.4µs    <span style="text-decoration: underline;">27</span>825.        0B     27.9</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> denscmp(-2:2, matrix(c(0, 1), nrow…  5.3µs  6.1µs   <span style="text-decoration: underline;">156</span>957.        0B     31.4</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> dnorm(-2:2, mean = rep(0, 5L), sd …  1.9µs  2.3µs   <span style="text-decoration: underline;">407</span>632.    2.58KB     40.8</span></span></code></pre>
+<span><span class="co">##   expression                            min  median `itr/sec` mem_alloc `gc/sec`</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> dist$density(-2:2, with_params =…  26.1µs 28.56µs    <span style="text-decoration: underline;">34</span>403.        0B     34.4</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> denscmp(-2:2, matrix(c(0, 1), nr…  4.19µs     5µs   <span style="text-decoration: underline;">194</span>188.        0B     38.8</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> dnorm(-2:2, mean = rep(0, 5L), s…   1.6µs  1.97µs   <span style="text-decoration: underline;">449</span>887.    2.58KB     45.0</span></span></code></pre>
 </div>
 <div class="section level4" number="2.2.5" short-title="tensorflow interface">
 <h4 id="tensorflow-interface">
