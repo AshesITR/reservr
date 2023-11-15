@@ -1,5 +1,6 @@
 ---
 documentclass: jss
+classoption: nojss
 author:
   - name: Alexander Rosenstock
     affiliation: |
