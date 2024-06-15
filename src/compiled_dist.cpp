@@ -357,6 +357,10 @@ arma::vec dist_erlangmix_density_impl(const arma::vec x, bool log_p, const TP pr
   int k = num_components(probs);
   int n = std::max(std::max(x.n_elem, num_observations(probs)), std::max(scale.n_elem, num_observations(shapes)));
   bool shape_is_matrix = is_matrix(shapes);
+  if (n == 0) {
+    arma::vec empty = arma::zeros(0);
+    return empty;
+  }
   arma::mat compdens(n, k);
   int i_x = 0, d_x = x.n_elem > 1 ? 1 : 0;
   int i_s = 0, d_s = scale.n_elem > 1 ? 1 : 0;
@@ -429,6 +433,10 @@ arma::vec dist_erlangmix_probability_impl(const arma::vec q, bool lower_tail, bo
   int k = num_components(probs);
   int n = std::max(std::max(q.n_elem, num_observations(probs)), std::max(scale.n_elem, num_observations(shapes)));
   bool shape_is_matrix = is_matrix(shapes);
+  if (n == 0) {
+    arma::vec empty = arma::zeros(0);
+    return empty;
+  }
   arma::mat compprob(n, k);
   int i_q = 0, d_q = q.n_elem > 1 ? 1 : 0;
   int i_s = 0, d_s = scale.n_elem > 1 ? 1 : 0;
@@ -501,6 +509,10 @@ arma::vec dist_erlangmix_iprobability_impl(const arma::vec qmin, const arma::vec
   int k = num_components(probs);
   int n = std::max(std::max(qmin.n_elem, qmax.n_elem), std::max(num_observations(probs), std::max(scale.n_elem, num_observations(shapes))));
   bool shape_is_matrix = is_matrix(shapes);
+  if (n == 0) {
+    arma::vec empty = arma::zeros(0);
+    return empty;
+  }
   arma::mat compprob(n, k);
   int i_qmin = 0, d_qmin = qmin.n_elem > 1 ? 1 : 0;
   int i_qmax = 0, d_qmax = qmax.n_elem > 1 ? 1 : 0;
@@ -575,6 +587,10 @@ arma::vec dist_blended_density_impl(const arma::vec x, const arma::mat params, b
   int k = comp_densities.size();
   int n = std::max(std::max(x.n_elem, params.n_rows), std::max(num_observations(probs), std::max(num_observations(breaks), num_observations(epsilons))));
   int i = 0;
+  if (n == 0) {
+    arma::vec empty = arma::zeros(0);
+    return empty;
+  }
   arma::mat compdens(n, k, arma::fill::zeros);
   SEXP curr_params;
   bool breaks_is_matrix = is_matrix(breaks);
@@ -709,6 +725,10 @@ arma::vec dist_blended_probability_impl(const arma::vec q, const arma::mat param
   int k = comp_iprobabilities.size();
   int n = std::max(std::max(q.n_elem, params.n_rows), std::max(num_observations(probs), std::max(num_observations(breaks), num_observations(epsilons))));
   int i = 0;
+  if (n == 0) {
+    arma::vec empty = arma::zeros(0);
+    return empty;
+  }
   arma::mat compprob(n, k, arma::fill::zeros);
   SEXP curr_params;
   for (int j = 0; j < k; j++) {
@@ -840,6 +860,10 @@ arma::vec dist_blended_iprobability_impl(const arma::vec qmin, const arma::vec q
   int k = comp_iprobabilities.size();
   int n = std::max(std::max(qmin.n_elem, qmax.n_elem), std::max(std::max(params.n_rows, num_observations(probs)), std::max(num_observations(breaks), num_observations(epsilons))));
   int i = 0;
+  if (n == 0) {
+    arma::vec empty = arma::zeros(0);
+    return empty;
+  }
   arma::mat compprob(n, k, arma::fill::zeros);
   SEXP curr_params;
   bool breaks_is_matrix = is_matrix(breaks);

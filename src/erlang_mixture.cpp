@@ -76,6 +76,14 @@ Rcpp::List trunc_erlangmix_ellik(const arma::vec& xmin, const arma::vec& xmax, c
   const arma::vec& tmax, const arma::vec& weight, const arma::vec& shapes, double scale, const arma::mat& zadj,
   bool parallel) {
 
+  if (xmin.n_elem == 0) {
+    arma::vec empty = arma::zeros(0);
+    return Rcpp::List::create(
+      Rcpp::Named("objective") = empty,
+      Rcpp::Named("gradient") = empty
+    );
+  }
+
   arma::mat logdens(arma::size(zadj));
   arma::mat logdens_grad_mat(arma::size(zadj));
   arma::vec logdens_grad_vec(xmin.n_elem);
