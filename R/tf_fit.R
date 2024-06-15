@@ -9,7 +9,7 @@
 #' Contains one set of parameters per row in `data`.
 #'
 #' @examples
-#' if (interactive() && keras3::is_keras_available()) {
+#' if (interactive()) {
 #'   dist <- dist_exponential()
 #'   params <- list(rate = 1.0)
 #'   N <- 100L
@@ -88,7 +88,7 @@ generics::fit
 #' rand_input <- runif(N)
 #' x <- dist$sample(N, with_params = params)
 #'
-#' if (interactive() && keras3::is_keras_available()) {
+#' if (interactive()) {
 #'   tf_in <- keras3::layer_input(1L)
 #'   mod <- tf_compile_model(
 #'     inputs = list(tf_in),

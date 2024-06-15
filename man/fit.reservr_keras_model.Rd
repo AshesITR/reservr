@@ -180,7 +180,7 @@ N <- 100L
 rand_input <- runif(N)
 x <- dist$sample(N, with_params = params)
 
-if (interactive() && keras3::is_keras_available()) {
+if (interactive()) {
   tf_in <- keras3::layer_input(1L)
   mod <- tf_compile_model(
     inputs = list(tf_in),

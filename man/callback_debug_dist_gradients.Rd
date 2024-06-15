@@ -42,7 +42,7 @@ group <- sample(c(0, 1), size = 100, replace = TRUE)
 x <- dist$sample(100, with_params = list(rate = group + 1))
 global_fit <- fit(dist, x)
 
-if (interactive() && keras3::is_keras_available()) {
+if (interactive()) {
   library(keras3)
   l_in <- layer_input(shape = 1L)
   mod <- tf_compile_model(
@@ -54,10 +54,10 @@ if (interactive() && keras3::is_keras_available()) {
     truncation = FALSE
   )
   tf_initialise_model(mod, global_fit$params)
-  gradient_tracker <- callback_debug_dist_gradients(mod, k_constant(group), x, keep_grads = TRUE)
+  gradient_tracker <- callback_debug_dist_gradients(mod, as_tensor(group, config_floatx()), x, keep_grads = TRUE)
   fit_history <- fit(
     mod,
-    x = k_constant(group),
+    x = as_tensor(group, config_floatx()),
     y = x,
     epochs = 20L,
     callbacks = list(
@@ -70,7 +70,7 @@ if (interactive() && keras3::is_keras_available()) {
 
   plot(fit_history)
 
-  predicted_means <- predict(mod, data = k_constant(c(0, 1)))
+  predicted_means <- predict(mod, data = as_tensor(c(0, 1), config_floatx()))
 }
 
 }

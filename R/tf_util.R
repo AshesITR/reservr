@@ -5,7 +5,7 @@
 #' @return A nested list of vectors suitable as distribution parameters
 #'
 #' @examples
-#' if (interactive() && keras3::is_keras_available()) {
+#' if (interactive()) {
 #'   tf_params <- list(
 #'     probs = k_matrix(t(c(0.5, 0.3, 0.2))),
 #'     shapes = k_matrix(t(c(1L, 2L, 3L)), dtype = "int32"),
@@ -54,7 +54,7 @@ as_params <- function(x) {
 #' The shape will be `(nrow(x), ncol(x))` where `x` is first converted to an R matrix via [as.matrix()].
 #'
 #' @examples
-#' if (interactive() && keras3::is_keras_available()) {
+#' if (interactive()) {
 #'   k_matrix(diag(1:3))
 #'   k_matrix(diag(1:3), dtype = "int32")
 #'   # Vectors are converted to columns:

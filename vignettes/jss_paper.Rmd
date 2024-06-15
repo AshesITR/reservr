@@ -831,7 +831,7 @@ First, we simulate data $(Y,X)$ from the model defined by $X \sim \mathrm{Unif}(
 
 ```{r}
 set.seed(1431L)
-tensorflow::set_random_seed(1432L)
+keras3::set_random_seed(1432L)
 
 dataset <- tibble::tibble(
   x = runif(100, min = 10, max = 20),
@@ -895,6 +895,8 @@ nnet_fit <- fit(
 The training history can be plotted, displaying the loss by epoch (black circles), and a blue smoothing line.
 
 ```{r}
+# Fix weird behavior of keras3
+nnet_fit$params$epochs <- max(nnet_fit$params$epochs, length(nnet_fit$metrics$loss))
 plot(nnet_fit)
 ```
 
@@ -1015,6 +1017,8 @@ nnet_fit <- fit(
   shuffle = FALSE,
   verbose = FALSE
 )
+
+nnet_fit$params$epochs <- max(nnet_fit$params$epochs, length(nnet_fit$metrics$loss))
 plot(nnet_fit)
 
 ovarian$expected_lifetime <- 1.0 / predict(nnet, dat$x)$rate

@@ -23,7 +23,7 @@ Contains one set of parameters per row in \code{data}.
 Predict individual distribution parameters
 }
 \examples{
-if (interactive() && keras3::is_keras_available()) {
+if (interactive()) {
   dist <- dist_exponential()
   params <- list(rate = 1.0)
   N <- 100L
