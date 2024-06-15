@@ -248,3 +248,4 @@ softmax_vec <- function(x) {
 dsoftmax_vec <- function(x) {
     .Call(`_reservr_dsoftmax_vec`, x)
 }
+

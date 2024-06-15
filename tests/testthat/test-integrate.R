@@ -1,5 +1,6 @@
 test_that("test integration of univariate function", {
   expect_equal(integrate_gk(sin, 0, c(1, 2) * pi), c(2, 0))
+  expect_equal(integrate_gk(sin, numeric(), numeric()), numeric())
 })
 
 test_that("test integration of function with parameters", {

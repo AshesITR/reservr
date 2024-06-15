@@ -4,6 +4,10 @@ using namespace arma;
 
 // [[Rcpp::export]]
 arma::mat softmax_mat(arma::mat x) {
+  if (x.n_elem == 0) {
+    arma::mat empty = arma::zeros(arma::size(x));
+    return empty;
+  }
   x.each_col() -= max(x, 1);
   mat ex = exp(x);
   vec row_sums = sum(ex, 1);
