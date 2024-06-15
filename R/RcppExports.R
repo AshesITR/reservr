@@ -222,6 +222,7 @@ dgamma_matrix <- function(x, shape, scale) {
 }
 
 pgamma_diff_matrix <- function(lower, upper, shape, scale) {
+    stopifnot(length(lower) > 0L)
     .Call(`_reservr_pgamma_diff_matrix`, lower, upper, shape, scale)
 }
 
