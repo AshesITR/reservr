@@ -11,12 +11,12 @@ test_that("test tf_initialize", {
   global_fit <- fit(dist, x)
   expect_equal(global_fit$params$rate, 1.36503094795327, tolerance = 1.0e-7)
 
-  l_in <- keras::layer_input(shape = 1L)
+  l_in <- keras3::keras_input(shape = 1L)
   mod <- tf_compile_model(
     inputs = list(l_in),
     intermediate_output = l_in,
     dist = dist,
-    optimizer = keras::optimizer_adam(),
+    optimizer = keras3::optimizer_adam(),
     censoring = FALSE,
     truncation = FALSE
   )
@@ -25,7 +25,7 @@ test_that("test tf_initialize", {
 
   tensorflow::set_random_seed(1337L)
   random_weight <- as.numeric(
-    tensorflow::tf$random$uniform(list(1L), minval = -0.1, maxval = 0.1, dtype = keras::k_floatx()) * bias
+    tensorflow::tf$random$uniform(list(1L), minval = -0.1, maxval = 0.1, dtype = keras3::config_floatx()) * bias
   )
   tensorflow::set_random_seed(1337L)
 

@@ -11,7 +11,7 @@
 #' @param truncation A flag, whether the compiled model should support truncated
 #' observations. Set to `FALSE` for higher efficiency. `fit(...)` will warn if
 #' the resuting model is used to fit truncated observations.
-#' @inheritParams keras::compile.keras.engine.training.Model
+#' @inheritParams keras3::compile.keras.src.models.model.Model
 #'
 #' @return A `reservr_keras_model` that can be used to train truncated
 #' and censored observations from `dist` based on input data from `inputs`.
@@ -23,13 +23,13 @@
 #' rand_input <- runif(N)
 #' x <- dist$sample(N, with_params = params)
 #'
-#' if (interactive() && keras::is_keras_available()) {
-#'   tf_in <- keras::layer_input(1L)
+#' if (interactive() && keras3::is_keras_available()) {
+#'   tf_in <- keras3::layer_input(1L)
 #'   mod <- tf_compile_model(
 #'     inputs = list(tf_in),
 #'     intermediate_output = tf_in,
 #'     dist = dist,
-#'     optimizer = keras::optimizer_adam(),
+#'     optimizer = keras3::optimizer_adam(),
 #'     censoring = FALSE,
 #'     truncation = FALSE
 #'   )
@@ -38,9 +38,8 @@
 #' @export
 tf_compile_model <- function(inputs, intermediate_output, dist, optimizer,
                              censoring = TRUE, truncation = TRUE,
-                             metrics = NULL, sample_weight_mode = NULL,
-                             weighted_metrics = NULL, target_tensors = NULL) {
-  check_installed(c("tensorflow", "keras"))
+                             metrics = NULL, weighted_metrics = NULL) {
+  check_installed(c("tensorflow", "keras3"))
 
   loss <- if (censoring && truncation) {
     tf_compile_loss_trunc_cens(dist)
@@ -63,7 +62,7 @@ tf_compile_model <- function(inputs, intermediate_output, dist, optimizer,
 
   out <- list(
     dist = dist,
-    model = keras::keras_model(
+    model = keras3::keras_model(
       inputs = inputs,
       outputs = params_compressed$output
     ),
@@ -73,14 +72,12 @@ tf_compile_model <- function(inputs, intermediate_output, dist, optimizer,
     loss_cens = censoring,
     loss_trunc = truncation
   )
-  keras::compile(
+  keras3::compile(
     out$model,
     optimizer = optimizer,
     loss = loss_compressed,
     metrics = metrics,
-    sample_weight_mode = sample_weight_mode,
-    weighted_metrics = weighted_metrics,
-    target_tensors = target_tensors
+    weighted_metrics = weighted_metrics
   )
   class(out) <- "reservr_keras_model"
   out
@@ -92,7 +89,7 @@ tf_compress_output <- function(outputs) {
 
   if (length(outputs) > 1L) {
     list(
-      output = keras::layer_concatenate(unname(outputs)),
+      output = keras3::layer_concatenate(unname(outputs)),
       output_splitter = eval(bquote(function(output_condensed) {
         output_names <- .(output_names)
         output_dims <- .(output_dims)

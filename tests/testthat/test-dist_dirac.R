@@ -33,8 +33,8 @@ test_that("dirac distribution works", {
   tf_is_d <- d0$tf_is_discrete_at()
   expect_equal(
     as.logical(tf_is_d(
-      x = keras::k_constant(c(0.0, 1.0)),
-      args = list(point = keras::k_constant(0.0))
+      x = keras3::as_tensor(c(0.0, 1.0), keras3::config_floatx()),
+      args = list(point = keras3::as_tensor(0.0, keras3::config_floatx()))
     )),
     c(TRUE, FALSE)
   )

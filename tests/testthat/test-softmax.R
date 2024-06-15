@@ -15,7 +15,7 @@ test_that("test softmax", {
     )
   )
 
-  expect_equal(dsoftmax(numeric()), matrix(nrow = 0L, ncol = 0L))
+  expect_equal(dsoftmax(numeric()), matrix(NA_real_, nrow = 0L, ncol = 0L))
   expect_equal(dsoftmax(c(1, 1)),
                matrix(c(0.25, -0.25, -0.25, 0.25), nrow = 2L))
   expect_equal(dsoftmax(c(1, 1)), dsoftmax(c(2, 2)))

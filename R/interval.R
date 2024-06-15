@@ -67,7 +67,7 @@ Interval <- R6Class(
         identical(self$integer, b$integer)
     },
     tf_make_layer = function(input, name = NULL, size = 1L) {
-      check_installed("keras")
+      check_installed("keras3")
 
       # TODO support closed ranges as well
 
@@ -96,56 +96,54 @@ Interval <- R6Class(
           unit = "sigmoid"
         )
 
-        keras::layer_dense(
+        keras3::layer_dense(
           object = input,
           units = size,
           activation = activation,
-          name = name
+          name = name,
+          dtype = keras3::config_floatx()
         )
       } else if (int_case == "interval") {
         # (0, 1) -> (a, b)
-        multip <- diag(self$range[2L] - self$range[1L], size, size)
-        const <- rep_len(self$range[1L], size)
+        multip <- self$range[2L] - self$range[1L]
+        const <- self$range[1L]
 
-        inner_layer <- keras::layer_dense(
+        inner_layer <- keras3::layer_dense(
           object = input,
           units = size,
           activation = "sigmoid",
-          name = name
+          name = name,
+          dtype = keras3::config_floatx()
         )
-        keras::layer_dense(
+        keras3::layer_lambda(
           object = inner_layer,
-          units = size, activation = "linear",
-          weights = list(
-            keras::k_constant(multip, shape = c(size, size)),
-            keras::k_constant(const, shape = size)
-          ), trainable = FALSE
+          function(x) {
+            multip * x + const
+          }
         )
       } else { # half_line
         if (self$range[1L] == -Inf) {
           # (0, Inf) -> (-Inf, a)
-          multip <- diag(-1.0, size, size)
-          const <- rep_len(self$range[2L], size)
+          multip <- -1.0
+          const <- self$range[2L]
         } else {
           # (0, Inf) -> (a, Inf)
-          multip <- diag(1.0, size, size)
-          const <- rep_len(self$range[1L], size)
+          multip <- 1.0
+          const <- self$range[1L]
         }
 
-        inner_layer <- keras::layer_dense(
+        inner_layer <- keras3::layer_dense(
           object = input,
           units = size,
           activation = "softplus",
-          name = name
+          name = name,
+          dtype = keras3::config_floatx()
         )
-        keras::layer_dense(
+        keras3::layer_lambda(
           object = inner_layer,
-          units = size, activation = "linear",
-          weights = list(
-            keras::k_constant(multip, shape = c(size, size)),
-            keras::k_constant(const, shape = size)
-          ),
-          trainable = FALSE
+          function(x) {
+            multip * x + const
+          }
         )
       }
     }

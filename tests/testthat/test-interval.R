@@ -169,18 +169,19 @@ test_that("test tf_make_layer", {
 
   set.seed(1307L)
   tensorflow::tf$random$set_seed(1341L)
-  test_inputs <- keras::k_constant(
-    value = c(-10, 10, runif(98, -10, 10)),
+  test_inputs <- keras3::as_tensor(
+    c(-10, 10, runif(98, -10, 10)),
+    keras3::config_floatx(),
     shape = c(100, 1)
   )
 
-  tf_in <- keras::layer_input(1L)
+  tf_in <- keras3::keras_input(1L)
 
   tf_layers <- lapply(
     test_intervals,
     function(int) {
       tf_out <- int$tf_make_layer(input = tf_in)
-      keras::keras_model(tf_in, tf_out)
+      keras3::keras_model(tf_in, tf_out)
     }
   )
 

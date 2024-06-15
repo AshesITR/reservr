@@ -1,6 +1,7 @@
 # reservr (development version)
 
 * Fixed segfaults on r-devel caused by zero-length input to C++ routines.
+* Migrated to `{keras3}` for keras support.
 
 # reservr 0.0.2
 

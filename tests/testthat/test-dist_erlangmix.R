@@ -113,7 +113,7 @@ test_that("numerically unstable tf fitting works", {
   set.seed(2350L)
 
   dist <- dist_erlangmix(list(1, 50))
-  params <- list(probs = list(0.9, 0.1), scale = 20)
+  params <- list(probs = list(0.9, 0.1), scale = 20.0)
   N <- 1000L
   x <- dist$sample(N, with_params = params)
   tensorflow::tf$keras$backend$set_floatx("float32")
@@ -124,12 +124,12 @@ test_that("numerically unstable tf fitting works", {
 
   rand_input <- k_matrix(runif(nrow(obs)))
 
-  tf_in <- keras::layer_input(1L)
+  tf_in <- keras3::keras_input(1L, dtype = keras3::config_floatx())
   mod <- tf_compile_model(
     inputs = list(tf_in),
     intermediate_output = tf_in,
     dist = dist,
-    optimizer = keras::optimizer_adam()
+    optimizer = keras3::optimizer_adam()
   )
 
   tf_initialise_model(mod, params, mode = "zero")

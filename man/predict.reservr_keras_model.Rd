@@ -23,19 +23,19 @@ Contains one set of parameters per row in \code{data}.
 Predict individual distribution parameters
 }
 \examples{
-if (interactive() && keras::is_keras_available()) {
+if (interactive() && keras3::is_keras_available()) {
   dist <- dist_exponential()
   params <- list(rate = 1.0)
   N <- 100L
   rand_input <- runif(N)
   x <- dist$sample(N, with_params = params)
 
-  tf_in <- keras::layer_input(1L)
+  tf_in <- keras3::layer_input(1L)
   mod <- tf_compile_model(
     inputs = list(tf_in),
     intermediate_output = tf_in,
     dist = dist,
-    optimizer = keras::optimizer_adam(),
+    optimizer = keras3::optimizer_adam(),
     censoring = FALSE,
     truncation = FALSE
   )

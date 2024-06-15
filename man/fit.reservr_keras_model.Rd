@@ -31,66 +31,131 @@
 
 \item{y}{A \code{trunc_obs} tibble of observed outcomes, or something convertible via \code{\link[=as_trunc_obs]{as_trunc_obs()}}.}
 
-\item{batch_size}{Integer or \code{NULL}. Number of samples per gradient update.
-If unspecified, \code{batch_size} will default to 32.}
+\item{batch_size}{Integer or \code{NULL}.
+Number of samples per gradient update.
+If unspecified, \code{batch_size} will default to \code{32}.
+Do not specify the \code{batch_size} if your data is in the
+form of TF Datasets or generators,
+(since they generate batches).}
 
-\item{epochs}{Number of epochs to train the model. Note that in conjunction
-with \code{initial_epoch}, \code{epochs} is to be understood as "final epoch". The
-model is not trained for a number of iterations given by \code{epochs}, but
-merely until the epoch of index \code{epochs} is reached.}
+\item{epochs}{Integer. Number of epochs to train the model.
+An epoch is an iteration over the entire \code{x} and \code{y}
+data provided
+(unless the \code{steps_per_epoch} flag is set to
+something other than \code{NULL}).
+Note that in conjunction with \code{initial_epoch},
+\code{epochs} is to be understood as "final epoch".
+The model is not trained for a number of iterations
+given by \code{epochs}, but merely until the epoch
+of index \code{epochs} is reached.}
 
-\item{verbose}{Verbosity mode (0 = silent, 1 = progress bar, 2 = one line
-per epoch). Defaults to 1 in most contexts, 2 if in knitr render or running
-on a distributed training server.}
+\item{verbose}{\code{"auto"}, \code{0}, \code{1}, or \code{2}. Verbosity mode.
+\code{0} = silent, \code{1} = progress bar, \code{2} = one line per epoch.
+\code{"auto"} becomes 1 for most cases,
+\code{2} if in a knitr render or running on a distributed training server.
+Note that the progress bar is not
+particularly useful when logged to a file,
+so \code{verbose=2} is recommended when not running interactively
+(e.g., in a production environment). Defaults to \code{"auto"}.}
 
-\item{callbacks}{List of callbacks to be called during training.}
+\item{callbacks}{List of \code{Callback()} instances.
+List of callbacks to apply during training.
+See \verb{callback_*}.}
 
 \item{view_metrics}{View realtime plot of training metrics (by epoch). The
 default (\code{"auto"}) will display the plot when running within RStudio,
-\code{metrics} were specified during model \code{\link[keras:compile]{compile()}}, \code{epochs > 1} and
-\code{verbose > 0}. Use the global \code{keras.view_metrics} option to establish a
-different default.}
+\code{metrics} were specified during model \code{\link[keras3:compile]{compile()}}, \code{epochs > 1} and
+\code{verbose > 0}. Set the global \code{options(keras.view_metrics = )} option to
+establish a different default.}
 
-\item{validation_split}{Float between 0 and 1. Fraction of the training data
-to be used as validation data. The model will set apart this fraction of
-the training data, will not train on it, and will evaluate the loss and any
-model metrics on this data at the end of each epoch. The validation data is
-selected from the last samples in the \code{x} and \code{y} data provided, before
-shuffling.}
+\item{validation_split}{Float between 0 and 1.
+Fraction of the training data to be used as validation data.
+The model will set apart this fraction of the training data,
+will not train on it, and will evaluate
+the loss and any model metrics
+on this data at the end of each epoch.
+The validation data is selected from the last samples
+in the \code{x} and \code{y} data provided, before shuffling. This
+argument is not supported when \code{x} is a TF Dataset or generator.
+If both \code{validation_data} and \code{validation_split} are provided,
+\code{validation_data} will override \code{validation_split}.}
 
-\item{validation_data}{Data on which to evaluate the loss and any model
-metrics at the end of each epoch. The model will not be trained on this
-data. This could be a list (x_val, y_val) or a list (x_val, y_val,
-val_sample_weights). \code{validation_data} will override \code{validation_split}.}
+\item{validation_data}{Data on which to evaluate
+the loss and any model metrics at the end of each epoch.
+The model will not be trained on this data. Thus, note the fact
+that the validation loss of data provided using
+\code{validation_split} or \code{validation_data} is not affected by
+regularization layers like noise and dropout.
+\code{validation_data} will override \code{validation_split}.
+It could be:
+\itemize{
+\item A tuple \verb{(x_val, y_val)} of arrays or tensors.
+\item A tuple \verb{(x_val, y_val, val_sample_weights)} of
+arrays.
+\item A generator returning
+\verb{(inputs, targets)} or \verb{(inputs, targets, sample_weights)}.
+}}
 
-\item{shuffle}{shuffle: Logical (whether to shuffle the training data before
-each epoch) or string (for "batch"). "batch" is a special option for
-dealing with the limitations of HDF5 data; it shuffles in batch-sized
-chunks. Has no effect when \code{steps_per_epoch} is not \code{NULL}.}
+\item{shuffle}{Boolean, whether to shuffle the training data
+before each epoch. This argument is
+ignored when \code{x} is a generator or a TF Dataset.}
 
-\item{class_weight}{Optional named list mapping indices (integers) to a
-weight (float) value, used for weighting the loss function (during training
-only). This can be useful to tell the model to "pay more attention" to
-samples from an under-represented class.}
+\item{class_weight}{Optional named list mapping class indices (integers, 0-based)
+to a weight (float) value, used for weighting the loss function
+(during training only).
+This can be useful to tell the model to
+"pay more attention" to samples from
+an under-represented class. When \code{class_weight} is specified
+and targets have a rank of 2 or greater, either \code{y} must be
+one-hot encoded, or an explicit final dimension of \code{1} must
+be included for sparse class labels.}
 
-\item{sample_weight}{Optional array of the same length as x, containing
-weights to apply to the model's loss for each sample. In the case of
-temporal data, you can pass a 2D array with shape (samples,
-sequence_length), to apply a different weight to every timestep of every
-sample. In this case you should make sure to specify
-\code{sample_weight_mode="temporal"} in \code{\link[keras:compile]{compile()}}.}
+\item{sample_weight}{Optional array of weights for
+the training samples, used for weighting the loss function
+(during training only). You can either pass a flat (1D)
+array/vector with the same length as the input samples
+(1:1 mapping between weights and samples),
+or in the case of temporal data,
+you can pass a 2D array (matrix) with shape
+\verb{(samples, sequence_length)},
+to apply a different weight to every timestep of every sample.
+This argument is not supported when \code{x} is a TF Dataset or generator,
+instead provide the
+sample_weights as the third element of \code{x}.
+Note that sample weighting does not apply to metrics specified
+via the \code{metrics} argument in \code{compile()}. To apply sample
+weighting to your metrics, you can specify them via the
+\code{weighted_metrics} in \code{compile()} instead.}
 
-\item{initial_epoch}{Integer, Epoch at which to start training (useful for
-resuming a previous training run).}
+\item{initial_epoch}{Integer.
+Epoch at which to start training
+(useful for resuming a previous training run).}
 
-\item{steps_per_epoch}{Total number of steps (batches of samples) before
-declaring one epoch finished and starting the next epoch. When training
-with input tensors such as TensorFlow data tensors, the default \code{NULL} is
-equal to the number of samples in your dataset divided by the batch size,
-or 1 if that cannot be determined.}
+\item{steps_per_epoch}{Integer or \code{NULL}.
+Total number of steps (batches of samples)
+before declaring one epoch finished and starting the
+next epoch. When training with input tensors such as
+backend-native tensors, the default \code{NULL} is equal to
+the number of samples in your dataset divided by
+the batch size, or \code{1} if that cannot be determined. If \code{x} is a
+TF Dataset, and \code{steps_per_epoch}
+is \code{NULL}, the epoch will run until the input dataset is
+exhausted.  When passing an infinitely repeating dataset, you
+must specify the \code{steps_per_epoch} argument. If
+\code{steps_per_epoch = -1} the training will run indefinitely with an
+infinitely repeating dataset.}
 
-\item{validation_steps}{Only relevant if \code{steps_per_epoch} is specified.
-Total number of steps (batches of samples) to validate before stopping.}
+\item{validation_steps}{Only relevant if \code{validation_data} is provided.
+Total number of steps (batches of
+samples) to draw before stopping when performing validation
+at the end of every epoch. If \code{validation_steps} is \code{NULL},
+validation will run until the \code{validation_data} dataset is
+exhausted. In the case of an infinitely repeated dataset, it
+will run into an infinite loop. If \code{validation_steps} is
+specified and only part of the dataset will be consumed, the
+evaluation will start from the beginning of the dataset at each
+epoch. This ensures that the same validation samples are used
+every time.}
 
 \item{...}{Unused. If old arguments are supplied, an error message will be raised informing how to fix the issue.}
 }
@@ -99,7 +164,7 @@ A \code{history} object that contains all information collected during training.
 The model object will be updated in-place as a side-effect.
 }
 \description{
-This function delegates most work to \code{\link[keras:fit.keras.engine.training.Model]{keras::fit.keras.engine.training.Model()}} and performs additional consistency
+This function delegates most work to \code{\link[keras3:fit.keras.src.models.model.Model]{keras3::fit.keras.src.models.model.Model()}} and performs additional consistency
 checks to make sure \code{\link[=tf_compile_model]{tf_compile_model()}} was called with the appropriate options to support fitting the observations
 \code{y} as well as automatically converting \code{y} to a n x 6 matrix needed by the compiled loss function.
 }
@@ -115,13 +180,13 @@ N <- 100L
 rand_input <- runif(N)
 x <- dist$sample(N, with_params = params)
 
-if (interactive() && keras::is_keras_available()) {
-  tf_in <- keras::layer_input(1L)
+if (interactive() && keras3::is_keras_available()) {
+  tf_in <- keras3::layer_input(1L)
   mod <- tf_compile_model(
     inputs = list(tf_in),
     intermediate_output = tf_in,
     dist = dist,
-    optimizer = keras::optimizer_adam(),
+    optimizer = keras3::optimizer_adam(),
     censoring = FALSE,
     truncation = FALSE
   )
@@ -139,5 +204,5 @@ if (interactive() && keras::is_keras_available()) {
 
 }
 \seealso{
-predict.reservr_keras_model tf_compile_model keras::fit.keras.engine.training.Model
+predict.reservr_keras_model tf_compile_model keras3::fit.keras.src.models.model.Model
 }

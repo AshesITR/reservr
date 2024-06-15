@@ -13,7 +13,7 @@ test_that("set floatx to 64-bit", {
   skip_if_no_tensorflow()
   expect_true({
     tensorflow::tf$keras$backend$set_floatx("float64")
-    keras::k_set_floatx("float64")
+    keras3::config_set_floatx("float64")
     TRUE
   })
 })
@@ -356,7 +356,7 @@ expect_tf_logdensity <- function(dist, args, x, tolerance = 1.0e-7) {
   skip_if_no_tensorflow()
 
   tf_logdens <- dist$tf_logdensity()
-  x_tf <- keras::k_constant(x)
+  x_tf <- keras3::as_tensor(x, keras3::config_floatx())
   args_tf <- dist$tf_make_constants(args)
   tf_logdens_result <- tf_logdens(x_tf, args_tf)
   expect_equal(tf_logdens_result$shape$rank, 1L)
@@ -379,8 +379,8 @@ expect_tf_logprobability <- function(dist, args, xmin, xmax,
   interval_prob <- dist$probability(xmax, with_params = args) -
     dist$probability(xmin, with_params = args)
 
-  xmin_tf <- keras::k_constant(xmin)
-  xmax_tf <- keras::k_constant(xmax)
+  xmin_tf <- keras3::as_tensor(xmin, keras3::config_floatx())
+  xmax_tf <- keras3::as_tensor(xmax, keras3::config_floatx())
   args_tf <- dist$tf_make_constants(args)
 
   disc <- dist$is_discrete_at(xmin, with_params = args)
@@ -437,14 +437,14 @@ expect_tf_fit <- function(dist, args, support, global_fit_args = NULL) {
   } else {
     p0 <- do.call(fit, c(list(dist, obs = obs), global_fit_args))$params
   }
-  x_in <- keras::k_constant(rep(1.0, nrow(obs)), shape = list(nrow(obs)))
-  x_in1 <- keras::k_constant(1.0, shape = 1L)
-  l_in <- keras::layer_input(shape = 1L)
+  x_in <- keras3::as_tensor(rep(1.0, nrow(obs)), keras3::config_floatx(), shape = list(nrow(obs)))
+  x_in1 <- keras3::as_tensor(1.0, keras3::config_floatx(), shape = 1L)
+  l_in <- keras3::keras_input(shape = 1L)
   tf_mod <- tf_compile_model(
     inputs = list(l_in),
     intermediate_output = l_in,
     dist = dist,
-    optimizer = keras::optimizer_sgd()
+    optimizer = keras3::optimizer_sgd()
   )
   expect_s3_class(tf_mod, "reservr_keras_model")
   out <- character(nrow(obs))

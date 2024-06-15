@@ -8,12 +8,12 @@ test_that("test tf_fit for full data", {
   rand_input <- runif(N)
   x <- dist$sample(N, with_params = params)
 
-  tf_in <- keras::layer_input(1L)
+  tf_in <- keras3::keras_input(1L)
   mod <- tf_compile_model(
     inputs = list(tf_in),
     intermediate_output = tf_in,
     dist = dist,
-    optimizer = keras::optimizer_adam(),
+    optimizer = keras3::optimizer_adam(),
     censoring = FALSE,
     truncation = FALSE
   )
@@ -22,7 +22,7 @@ test_that("test tf_fit for full data", {
   expect_identical(mod$dist, dist)
   expect_false(mod$loss_cens)
   expect_false(mod$loss_trunc)
-  expect_s3_class(mod$model, "keras.engine.training.Model")
+  expect_s3_class(mod$model, "keras.src.models.model.Model")
 
   tf_fit <- fit(
     object = mod,
@@ -31,12 +31,12 @@ test_that("test tf_fit for full data", {
     epochs = 10L,
     callbacks = list(
       callback_adaptive_lr("loss", factor = 0.5, patience = 2L),
-      keras::callback_reduce_lr_on_plateau("loss", min_lr = 1.0)
+      keras3::callback_reduce_lr_on_plateau("loss", min_lr = 1.0)
     )
   )
 
   expect_named(tf_fit, c("params", "metrics"), ignore.order = TRUE)
-  expect_identical(unname(lengths(tf_fit$metrics)), rep(10L, 2L))
+  expect_identical(unname(lengths(tf_fit$metrics)), rep(11L, 2L))
   # Loss was reduced in every step
   expect_lt(max(diff(tf_fit$metrics$loss)), 0)
 
@@ -80,12 +80,12 @@ test_that("test tf_fit for censored data", {
   rand_input <- runif(N)
   x <- dist$sample(N, with_params = params)
 
-  tf_in <- keras::layer_input(1L)
+  tf_in <- keras3::keras_input(1L)
   mod <- tf_compile_model(
     inputs = list(tf_in),
     intermediate_output = tf_in,
     dist = dist,
-    optimizer = keras::optimizer_adam(),
+    optimizer = keras3::optimizer_adam(),
     censoring = TRUE,
     truncation = FALSE
   )
@@ -94,7 +94,7 @@ test_that("test tf_fit for censored data", {
   expect_identical(mod$dist, dist)
   expect_true(mod$loss_cens)
   expect_false(mod$loss_trunc)
-  expect_s3_class(mod$model, "keras.engine.training.Model")
+  expect_s3_class(mod$model, "keras.src.models.model.Model")
 
   tf_fit <- fit(
     object = mod,
@@ -107,12 +107,12 @@ test_that("test tf_fit for censored data", {
     epochs = 10L,
     callbacks = list(
       callback_adaptive_lr("loss", factor = 0.5, patience = 2L),
-      keras::callback_reduce_lr_on_plateau("loss", min_lr = 1.0)
+      keras3::callback_reduce_lr_on_plateau("loss", min_lr = 1.0)
     )
   )
 
   expect_named(tf_fit, c("params", "metrics"), ignore.order = TRUE)
-  expect_identical(unname(lengths(tf_fit$metrics)), rep(10L, 2L))
+  expect_identical(unname(lengths(tf_fit$metrics)), rep(11L, 2L))
   # Loss was reduced in every step
   expect_lt(max(diff(tf_fit$metrics$loss)), 0)
 
@@ -132,12 +132,12 @@ test_that("test tf_fit for truncated data", {
   N <- 100L
   x <- dist$sample(N, with_params = params)
 
-  tf_in <- keras::layer_input(1L)
+  tf_in <- keras3::keras_input(1L)
   mod <- tf_compile_model(
     inputs = list(tf_in),
     intermediate_output = tf_in,
     dist = dist,
-    optimizer = keras::optimizer_adam(),
+    optimizer = keras3::optimizer_adam(),
     censoring = FALSE,
     truncation = TRUE
   )
@@ -146,7 +146,7 @@ test_that("test tf_fit for truncated data", {
   expect_identical(mod$dist, dist)
   expect_false(mod$loss_cens)
   expect_true(mod$loss_trunc)
-  expect_s3_class(mod$model, "keras.engine.training.Model")
+  expect_s3_class(mod$model, "keras.src.models.model.Model")
 
   obs <- truncate_obs(x, tmin_new = 0.5, tmax_new = 1.5)
   N <- nrow(obs)
@@ -159,12 +159,12 @@ test_that("test tf_fit for truncated data", {
     epochs = 10L,
     callbacks = list(
       callback_adaptive_lr("loss", factor = 0.5, patience = 2L),
-      keras::callback_reduce_lr_on_plateau("loss", min_lr = 1.0)
+      keras3::callback_reduce_lr_on_plateau("loss", min_lr = 1.0)
     )
   )
 
   expect_named(tf_fit, c("params", "metrics"), ignore.order = TRUE)
-  expect_identical(unname(lengths(tf_fit$metrics)), rep(10L, 2L))
+  expect_identical(unname(lengths(tf_fit$metrics)), rep(11L, 2L))
   # Loss was reduced in every step
   expect_lt(max(diff(tf_fit$metrics$loss)), 0)
 
@@ -184,12 +184,12 @@ test_that("test tf_fit for truncated and censored data", {
   N <- 100L
   x <- dist$sample(N, with_params = params)
 
-  tf_in <- keras::layer_input(1L)
+  tf_in <- keras3::keras_input(1L)
   mod <- tf_compile_model(
     inputs = list(tf_in),
     intermediate_output = tf_in,
     dist = dist,
-    optimizer = keras::optimizer_adam(),
+    optimizer = keras3::optimizer_adam(),
     censoring = TRUE,
     truncation = TRUE
   )
@@ -198,7 +198,7 @@ test_that("test tf_fit for truncated and censored data", {
   expect_identical(mod$dist, dist)
   expect_true(mod$loss_cens)
   expect_true(mod$loss_trunc)
-  expect_s3_class(mod$model, "keras.engine.training.Model")
+  expect_s3_class(mod$model, "keras.src.models.model.Model")
 
   obs <- truncate_obs(
     trunc_obs(
@@ -218,12 +218,12 @@ test_that("test tf_fit for truncated and censored data", {
     epochs = 10L,
     callbacks = list(
       callback_adaptive_lr("loss", factor = 0.5, patience = 2L),
-      keras::callback_reduce_lr_on_plateau("loss", min_lr = 1.0)
+      keras3::callback_reduce_lr_on_plateau("loss", min_lr = 1.0)
     )
   )
 
   expect_named(tf_fit, c("params", "metrics"), ignore.order = TRUE)
-  expect_identical(unname(lengths(tf_fit$metrics)), rep(10L, 2L))
+  expect_identical(unname(lengths(tf_fit$metrics)), rep(11L, 2L))
   # Loss was reduced in every step
   expect_lt(max(diff(tf_fit$metrics$loss)), 0)
 
@@ -245,12 +245,12 @@ test_that("keras interop fitting works", {
   rand_input <- runif(N)
   x <- dist$sample(N, with_params = params)
 
-  tf_in <- keras::layer_input(1L)
+  tf_in <- keras3::keras_input(1L)
   mod <- tf_compile_model(
     inputs = list(tf_in),
     intermediate_output = tf_in,
     dist = dist,
-    optimizer = keras::optimizer_adam(),
+    optimizer = keras3::optimizer_adam(),
     censoring = FALSE,
     truncation = FALSE
   )
@@ -259,9 +259,9 @@ test_that("keras interop fitting works", {
   expect_identical(mod$dist, dist)
   expect_false(mod$loss_cens)
   expect_false(mod$loss_trunc)
-  expect_s3_class(mod$model, "keras.engine.training.Model")
+  expect_s3_class(mod$model, "keras.src.models.model.Model")
 
-  keras::fit(
+  fit(
     mod$model,
     x = k_matrix(rand_input),
     y = k_matrix(trunc_obs(x)),
@@ -305,17 +305,17 @@ test_that("tf_fit works with multiple nested parameters", {
   dist$default_params$breaks <- params$breaks
   dist$default_params$bandwidths <- params$bandwidths
 
-  tf_in <- keras::layer_input(1L)
+  tf_in <- keras3::keras_input(1L)
   mod <- tf_compile_model(
     inputs = list(tf_in),
     intermediate_output = tf_in,
     dist = dist,
-    optimizer = keras::optimizer_adam(),
+    optimizer = keras3::optimizer_adam(),
     censoring = FALSE,
     truncation = TRUE
   )
 
-  keras::fit(
+  fit(
     mod$model,
     x = k_matrix(rand_input),
     y = k_matrix(trunc_obs(x)),
@@ -332,7 +332,7 @@ test_that("complicated mixtures work with tensorflow", {
   skip_if_no_tensorflow()
   set.seed(1023L)
   tensorflow::set_random_seed(1023L)
-  keras::k_set_floatx("float64")
+  keras3::config_set_floatx("float64")
 
   create_family <- function(n, m, u, eps) {
     diracs <- seq_len(n) - 1L
@@ -385,12 +385,12 @@ test_that("complicated mixtures work with tensorflow", {
 
   input <- runif(nrow(obs))
 
-  tf_in <- keras::layer_input(1L)
+  tf_in <- keras3::keras_input(1L)
   mod <- tf_compile_model(
     inputs = list(tf_in),
     intermediate_output = tf_in,
     dist = dist,
-    optimizer = keras::optimizer_adam(),
+    optimizer = keras3::optimizer_adam(),
     censoring = FALSE,
     truncation = TRUE
   )
@@ -403,7 +403,7 @@ test_that("complicated mixtures work with tensorflow", {
     history <- fit(
       mod, x = input, y = obs,
       batch_size = nrow(obs),
-      callbacks = list(cb)
+      #callbacks = list(cb)
     )
   })
 

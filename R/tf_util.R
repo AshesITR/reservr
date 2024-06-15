@@ -5,11 +5,11 @@
 #' @return A nested list of vectors suitable as distribution parameters
 #'
 #' @examples
-#' if (interactive() && keras::is_keras_available()) {
+#' if (interactive() && keras3::is_keras_available()) {
 #'   tf_params <- list(
 #'     probs = k_matrix(t(c(0.5, 0.3, 0.2))),
 #'     shapes = k_matrix(t(c(1L, 2L, 3L)), dtype = "int32"),
-#'     scale = keras::k_constant(1.0)
+#'     scale = keras3::as_tensor(1.0, keras3::config_floatx())
 #'   )
 #'   params <- as_params(tf_params)
 #'   dist <- dist_erlangmix(vector("list", 3L))
@@ -48,13 +48,13 @@ as_params <- function(x) {
 #' Cast to a TensorFlow matrix
 #'
 #' @param x Numeric object to be converted to a matrix Tensor.
-#' @param dtype Type of the elements of the resulting tensor. Defaults to [k_floatx()].
+#' @param dtype Type of the elements of the resulting tensor. Defaults to [keras3::config_floatx()].
 #'
 #' @return A two-dimensional `tf.Tensor` with values from `x`.
 #' The shape will be `(nrow(x), ncol(x))` where `x` is first converted to an R matrix via [as.matrix()].
 #'
 #' @examples
-#' if (interactive() && keras::is_keras_available()) {
+#' if (interactive() && keras3::is_keras_available()) {
 #'   k_matrix(diag(1:3))
 #'   k_matrix(diag(1:3), dtype = "int32")
 #'   # Vectors are converted to columns:
@@ -63,7 +63,10 @@ as_params <- function(x) {
 #'
 #' @export
 k_matrix <- function(x, dtype = NULL) {
-  keras::k_constant(as.matrix(x), dtype = dtype)
+  if (is.null(dtype)) {
+    dtype <- keras3::config_floatx()
+  }
+  keras3::as_tensor(as.matrix(x), dtype = dtype)
 }
 
 #' @export

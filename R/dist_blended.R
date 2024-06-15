@@ -331,20 +331,20 @@ BlendedDistribution <- distribution_class(
     }
   },
   tf_make_constants = function(with_params = list()) {
-    check_installed("keras")
+    check_installed("keras3")
     params <- private$.make_params(with_params, 1)
     out <- list()
     if (length(params$probs) && !is.null(params$probs[[1L]])) {
       probs <- as.numeric(params$probs)
-      out$probs <- keras::k_constant(probs / sum(probs), shape = list(1L, length(params$probs)))
+      out$probs <- keras3::as_tensor(probs / sum(probs), shape = list(1L, length(params$probs)))
     }
     if (length(params$breaks) && !is.null(params$breaks[[1L]])) {
-      out$breaks <- keras::k_constant(
+      out$breaks <- keras3::as_tensor(
         as.numeric(params$breaks), shape = list(length(params$breaks))
       )
     }
     if (length(params$bandwidths) && !is.null(params$bandwidths[[1L]])) {
-      out$bandwidths <- keras::k_constant(
+      out$bandwidths <- keras3::as_tensor(
         as.numeric(params$bandwidths), shape = list(length(params$bandwidths))
       )
     }
@@ -360,9 +360,10 @@ BlendedDistribution <- distribution_class(
     k <- length(comps)
     if (length(ph$probs)) {
       out <- list(
-        probs = keras::layer_dense(
+        probs = keras3::layer_dense(
           input, units = k, activation = "softmax",
-          name = paste0(name_prefix, "probs")
+          name = paste0(name_prefix, "probs"),
+          dtype = keras3::config_floatx()
         )
       )
       out_indices <- 0L
@@ -372,17 +373,19 @@ BlendedDistribution <- distribution_class(
     }
 
     if (length(ph$breaks)) {
-      out$breaks <- keras::layer_dense(
+      out$breaks <- keras3::layer_dense(
         input, units = k - 1L, activation = "linear",
-        name = paste0(name_prefix, "breaks")
+        name = paste0(name_prefix, "breaks"),
+        dtype = keras3::config_floatx()
       )
       out_indices <- c(out_indices, -1L)
     }
 
     if (length(ph$bandwidths)) {
-      out$bandwidths <- keras::layer_dense(
+      out$bandwidths <- keras3::layer_dense(
         input, units = k - 1L, activation = "softplus",
-        name = paste0(name_prefix, "bandwidths")
+        name = paste0(name_prefix, "bandwidths"),
+        dtype = keras3::config_floatx()
       )
       out_indices <- c(out_indices, -2L)
     }
@@ -464,8 +467,8 @@ BlendedDistribution <- distribution_class(
       eps <- args[["bandwidths"]]
 
       # TODO make compatible with u trainable
-      imin <- tf$concat(list(keras::k_constant(-Inf, shape = 1L), u), axis = 0L)
-      imax <- tf$concat(list(u, keras::k_constant(Inf, shape = 1L)), axis = 0L)
+      imin <- tf$concat(list(keras3::as_tensor(-Inf, keras3::config_floatx(), shape = 1L), u), axis = 0L)
+      imax <- tf$concat(list(u, keras3::as_tensor(Inf, keras3::config_floatx(), shape = 1L)), axis = 0L)
 
       log_probs <- log(probs)
 
@@ -605,10 +608,10 @@ BlendedDistribution <- distribution_class(
       eps <- args[["bandwidths"]]
 
       # TODO make compatible with u trainable
-      imin <- tf$concat(list(keras::k_constant(-Inf, shape = 1L), u), axis = 0L)
-      epsmin <- tf$concat(list(keras::k_constant(0.0, shape = 1L), eps), axis = 0L)
-      imax <- tf$concat(list(u, keras::k_constant(Inf, shape = 1L)), axis = 0L)
-      epsmax <- tf$concat(list(eps, keras::k_constant(0.0, shape = 1L)), axis = 0L)
+      imin <- tf$concat(list(keras3::as_tensor(-Inf, keras3::config_floatx(), shape = 1L), u), axis = 0L)
+      epsmin <- tf$concat(list(keras3::as_tensor(0.0, keras3::config_floatx(), shape = 1L), eps), axis = 0L)
+      imax <- tf$concat(list(u, keras3::as_tensor(Inf, keras3::config_floatx(), shape = 1L)), axis = 0L)
+      epsmax <- tf$concat(list(eps, keras3::as_tensor(0.0, keras3::config_floatx(), shape = 1L)), axis = 0L)
 
       log_probs <- log(probs)
 

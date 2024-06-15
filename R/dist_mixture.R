@@ -326,12 +326,12 @@ MixtureDistribution <- distribution_class(
     }
   },
   tf_make_constants = function(with_params = list()) {
-    check_installed("keras")
+    check_installed("keras3")
     params <- private$.make_params(with_params, 1)
     out <- list()
     if (length(params$probs) && !is.null(params$probs[[1L]])) {
       probs <- as.numeric(params$probs)
-      out$probs <- keras::k_constant(probs / sum(probs), shape = c(1L, length(probs)))
+      out$probs <- keras3::as_tensor(probs / sum(probs), shape = c(1L, length(probs)))
     }
     out$dists <- lapply(
       params$dists,
@@ -345,9 +345,10 @@ MixtureDistribution <- distribution_class(
     k <- length(comps)
     if (length(ph$probs)) {
       out <- list(
-        probs = keras::layer_dense(
+        probs = keras3::layer_dense(
           input, units = k, activation = "softmax",
-          name = paste0(name_prefix, "probs")
+          name = paste0(name_prefix, "probs"),
+          dtype = keras3::config_floatx()
         )
       )
       out_indices <- 0L

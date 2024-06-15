@@ -13,7 +13,7 @@
 #' The Message will contain information about which likelihood components have
 #' NaN in their gradients.
 #'
-#' @return A `KerasCallback` suitable for passing to [keras::fit()].
+#' @return A `KerasCallback` suitable for passing to [keras3::fit()].
 #'
 #' @examples
 #' dist <- dist_exponential()
@@ -21,8 +21,8 @@
 #' x <- dist$sample(100, with_params = list(rate = group + 1))
 #' global_fit <- fit(dist, x)
 #'
-#' if (interactive() && keras::is_keras_available()) {
-#'   library(keras)
+#' if (interactive() && keras3::is_keras_available()) {
+#'   library(keras3)
 #'   l_in <- layer_input(shape = 1L)
 #'   mod <- tf_compile_model(
 #'     inputs = list(l_in),
@@ -33,7 +33,6 @@
 #'     truncation = FALSE
 #'   )
 #'   tf_initialise_model(mod, global_fit$params)
-#'   # TODO update when rstudio/keras#1230 is fixed
 #'   gradient_tracker <- callback_debug_dist_gradients(mod, k_constant(group), x, keep_grads = TRUE)
 #'   fit_history <- fit(
 #'     mod,
@@ -65,15 +64,14 @@ callback_debug_dist_gradients <- function(object, data, obs,
               msg = "`keep_grads` must be a bool.")
   assert_that(is_bool(stop_on_na),
               msg = "`stop_on_na` must be a bool.")
-  DebugDistGradientsCallback$new(
+  DebugDistGradientsCallback(
     object = object, data = data, obs = obs,
     keep_grads = keep_grads, stop_on_na = stop_on_na, verbose = verbose
   )
 }
 
-DebugDistGradientsCallback <- R6Class(
+DebugDistGradientsCallback <- keras3::Callback(
   "DebugDistGradientsCallback",
-  inherit = keras::KerasCallback,
   public = list(
     initialize = function(object, data, obs, keep_grads, stop_on_na, verbose) {
       private$.object <- object
@@ -88,21 +86,23 @@ DebugDistGradientsCallback <- R6Class(
       private$.const <- object$dist$tf_make_constants()
       nobs <- nrow(obs)
       if (!all(is.na(obs$x))) {
-        private$.xd <- keras::k_constant(ifelse(is.na(obs$x), Inf, obs$x), shape = list(nobs))
+        private$.xd <- keras3::as_tensor(ifelse(is.na(obs$x), Inf, obs$x), keras3::config_floatx(), shape = list(nobs))
       }
       if (object$loss_cens && anyNA(obs$x)) {
-        private$.xc_lower <- keras::k_constant(
+        private$.xc_lower <- keras3::as_tensor(
           ifelse(is.na(obs$x), obs$xmin, -Inf),
+          keras3::config_floatx(),
           shape = list(nobs)
         )
-        private$.xc_upper <- keras::k_constant(
+        private$.xc_upper <- keras3::as_tensor(
           ifelse(is.na(obs$x), obs$xmax, Inf),
+          keras3::config_floatx(),
           shape = list(nobs)
         )
       }
       if (object$loss_trunc && any(is.finite(obs$tmin) | is.finite(obs$tmax))) {
-        private$.xt_lower <- keras::k_constant(obs$tmin, shape = list(nobs))
-        private$.xt_upper <- keras::k_constant(obs$tmax, shape = list(nobs))
+        private$.xt_lower <- keras3::as_tensor(obs$tmin, keras3::config_floatx(), shape = list(nobs))
+        private$.xt_upper <- keras3::as_tensor(obs$tmax, keras3::config_floatx(), shape = list(nobs))
       }
       private$reset()
     },
@@ -134,7 +134,7 @@ DebugDistGradientsCallback <- R6Class(
     log_epoch = function(epoch) {
       `%as%` <- tensorflow::`%as%`
       with(tensorflow::tf$GradientTape(persistent = TRUE) %as% tape, {
-        curr_args <- self$model(private$.data)
+        curr_args <- keras3::op_cast(self$model(private$.data), keras3::config_floatx())
         curr_args <- private$.object$output_splitter(curr_args)
         curr_args <- private$.object$output_inflater(curr_args)
         curr_args <- tf_merge_constants(curr_args, private$.const)
@@ -209,33 +209,6 @@ DebugDistGradientsCallback <- R6Class(
         ifelse(bad_trunc, "bad", "ok")
       ))[bad_idx]
       paste(infos, collapse = "; ")
-    }
-  ),
-  active = list(
-    gradient_logs = function(value) {
-      if (!missing(value)) stop("`gradient_logs` is read-only.")
-      private$.gradient_logs
-    },
-    keep_grads = function(value) {
-      if (!missing(value)) {
-        assert_that(is_bool(value), msg = "`keep_grads` must be a bool.")
-        private$.keep_grads <- value
-      }
-      private$.keep_grads
-    },
-    stop_on_na = function(value) {
-      if (!missing(value)) {
-        assert_that(is_bool(value), msg = "`stop_on_na` must be a bool.")
-        private$.stop_on_na <- value
-      }
-      private$.stop_on_na
-    },
-    verbose = function(value) {
-      if (!missing(value)) {
-        assert_that(is_bool(value), msg = "`verbose` must be a bool.")
-        private$.verbose <- value
-      }
-      private$.verbose
     }
   )
 )

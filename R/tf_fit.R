@@ -9,19 +9,19 @@
 #' Contains one set of parameters per row in `data`.
 #'
 #' @examples
-#' if (interactive() && keras::is_keras_available()) {
+#' if (interactive() && keras3::is_keras_available()) {
 #'   dist <- dist_exponential()
 #'   params <- list(rate = 1.0)
 #'   N <- 100L
 #'   rand_input <- runif(N)
 #'   x <- dist$sample(N, with_params = params)
 #'
-#'   tf_in <- keras::layer_input(1L)
+#'   tf_in <- keras3::layer_input(1L)
 #'   mod <- tf_compile_model(
 #'     inputs = list(tf_in),
 #'     intermediate_output = tf_in,
 #'     dist = dist,
-#'     optimizer = keras::optimizer_adam(),
+#'     optimizer = keras3::optimizer_adam(),
 #'     censoring = FALSE,
 #'     truncation = FALSE
 #'   )
@@ -62,7 +62,7 @@ generics::fit
 
 #' Fit a neural network based distribution model to data
 #'
-#' This function delegates most work to [keras::fit.keras.engine.training.Model()] and performs additional consistency
+#' This function delegates most work to [keras3::fit.keras.src.models.model.Model()] and performs additional consistency
 #' checks to make sure [tf_compile_model()] was called with the appropriate options to support fitting the observations
 #' `y` as well as automatically converting `y` to a n x 6 matrix needed by the compiled loss function.
 #'
@@ -73,13 +73,13 @@ generics::fit
 #' @param object A compiled `reservr_keras_model` as obtained by [tf_compile_model()].
 #' @param x A list of input tensors (predictors)
 #' @param y A `trunc_obs` tibble of observed outcomes, or something convertible via [as_trunc_obs()].
-#' @inheritParams keras::fit.keras.engine.training.Model
+#' @inheritParams keras3::fit.keras.src.models.model.Model
 #' @param ... Unused. If old arguments are supplied, an error message will be raised informing how to fix the issue.
 #'
 #' @return A `history` object that contains all information collected during training.
 #' The model object will be updated in-place as a side-effect.
 #'
-#' @seealso predict.reservr_keras_model tf_compile_model keras::fit.keras.engine.training.Model
+#' @seealso predict.reservr_keras_model tf_compile_model keras3::fit.keras.src.models.model.Model
 #'
 #' @examples
 #' dist <- dist_exponential()
@@ -88,13 +88,13 @@ generics::fit
 #' rand_input <- runif(N)
 #' x <- dist$sample(N, with_params = params)
 #'
-#' if (interactive() && keras::is_keras_available()) {
-#'   tf_in <- keras::layer_input(1L)
+#' if (interactive() && keras3::is_keras_available()) {
+#'   tf_in <- keras3::layer_input(1L)
 #'   mod <- tf_compile_model(
 #'     inputs = list(tf_in),
 #'     intermediate_output = tf_in,
 #'     dist = dist,
-#'     optimizer = keras::optimizer_adam(),
+#'     optimizer = keras3::optimizer_adam(),
 #'     censoring = FALSE,
 #'     truncation = FALSE
 #'   )
@@ -117,7 +117,7 @@ fit.reservr_keras_model <- function(object, x, y, batch_size = NULL, epochs = 10
                                     validation_split = 0, validation_data = NULL, shuffle = TRUE,
                                     class_weight = NULL, sample_weight = NULL, initial_epoch = 0,
                                     steps_per_epoch = NULL, validation_steps = NULL, ...) {
-  check_installed(c("tensorflow", "keras"))
+  check_installed(c("tensorflow", "keras3"))
   old_args <- c(
     "data", "obs", "n_epochs", "trace", ".debug_gradients", ".lr_decay", ".lr_patience", ".lr_min", ".lr_delta_rel",
     ".lr_delta_abs"

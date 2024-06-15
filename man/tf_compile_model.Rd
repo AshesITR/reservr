@@ -12,9 +12,7 @@ tf_compile_model(
   censoring = TRUE,
   truncation = TRUE,
   metrics = NULL,
-  sample_weight_mode = NULL,
-  weighted_metrics = NULL,
-  target_tensors = NULL
+  weighted_metrics = NULL
 )
 }
 \arguments{
@@ -26,8 +24,8 @@ distribution parameters}
 \item{dist}{A \code{Distribution} to use for compiling the loss and parameter
 outputs}
 
-\item{optimizer}{String (name of optimizer) or optimizer instance. For most
-models, this defaults to \code{"rmsprop"}}
+\item{optimizer}{String (name of optimizer) or optimizer instance. See
+\verb{optimizer_*} family.}
 
 \item{censoring}{A flag, whether the compiled model should support censored
 observations. Set to \code{FALSE} for higher efficiency. \code{fit(...)} will error if
@@ -37,36 +35,43 @@ the resulting model is used to fit censored observations.}
 observations. Set to \code{FALSE} for higher efficiency. \code{fit(...)} will warn if
 the resuting model is used to fit truncated observations.}
 
-\item{metrics}{List of metrics to be evaluated by the model during training
-and testing. Each of this can be a string (name of a built-in function),
-function or a \code{keras$metrics$Metric} class instance. See
-\code{?tf$keras$metrics}. Typically you will use \code{metrics=list('accuracy')}. A
-function is any callable with the signature \code{result = fn(y_true, y_pred)}.
-To specify different metrics for different outputs of a multi-output model,
-you could also pass a dictionary, such as \code{metrics=list(output_a = 'accuracy', output_b = c('accuracy', 'mse'))}. You can also pass a list to
-specify a metric or a list of metrics for each output, such as
-\code{metrics=list(list('accuracy'), list('accuracy', 'mse'))} or
-\code{metrics=list('accuracy', c('accuracy', 'mse'))}. When you pass the strings
-\code{'accuracy'} or \code{'acc'}, this is converted to one of
-\code{tf.keras.metrics.BinaryAccuracy}, \code{tf.keras.metrics.CategoricalAccuracy},
-\code{tf.keras.metrics.SparseCategoricalAccuracy} based on the loss function
-used and the model output shape. A similar conversion is done for the
-strings \code{'crossentropy'} and \code{'ce'}.}
+\item{metrics}{List of metrics to be evaluated by the model during
+training and testing. Each of these can be:
+\itemize{
+\item a string (name of a
+built-in function),
+\item a function, optionally with a \code{"name"} attribute or
+\item a \code{\link[keras3:Metric]{Metric()}}
+instance. See the \verb{metric_*} family of functions.
+}
 
-\item{sample_weight_mode}{If you need to do timestep-wise sample weighting
-(2D weights), set this to "temporal". \code{NULL} defaults to sample-wise
-weights (1D). If the model has multiple outputs, you can use a different
-\code{sample_weight_mode} on each output by passing a list of modes.}
+Typically you will use
+\code{metrics = c('accuracy')}. A function is any callable with the
+signature \code{result = fn(y_true, y_pred)}. To specify different
+metrics for different outputs of a multi-output model, you could
+also pass a named list, such as
+\code{metrics = list(a = 'accuracy', b = c('accuracy', 'mse'))}.
+You can also pass a list to specify a metric or a list of
+metrics for each output, such as
+\code{metrics = list(c('accuracy'), c('accuracy', 'mse'))}
+or \code{metrics = list('accuracy', c('accuracy', 'mse'))}. When you pass
+the strings \code{'accuracy'} or \code{'acc'}, we convert this to one of
+\code{metric_binary_accuracy()},
+\code{metric_categorical_accuracy()},
+\code{metric_sparse_categorical_accuracy()} based on the
+shapes of the targets and of the model output. A similar
+conversion is done for the strings \code{"crossentropy"}
+and \code{"ce"} as well.
+The metrics passed here are evaluated without sample weighting;
+if you would like sample weighting to apply, you can specify
+your metrics via the \code{weighted_metrics} argument instead.
+
+If providing an anonymous R function, you can customize the printed name
+during training by assigning \verb{attr(<fn>, "name") <- "my_custom_metric_name"},
+or by calling \code{\link[keras3:custom_metric]{custom_metric("my_custom_metric_name", <fn>)}}}
 
 \item{weighted_metrics}{List of metrics to be evaluated and weighted by
 \code{sample_weight} or \code{class_weight} during training and testing.}
-
-\item{target_tensors}{By default, Keras will create a placeholder for the
-model's target, which will be fed with the target data during training. If
-instead you would like to use your own target tensor (in turn, Keras will
-not expect external data for these targets at training time), you can
-specify them via the \code{target_tensors} argument. It should be a single
-tensor (for a single-output sequential model).}
 }
 \value{
 A \code{reservr_keras_model} that can be used to train truncated
@@ -82,13 +87,13 @@ N <- 100L
 rand_input <- runif(N)
 x <- dist$sample(N, with_params = params)
 
-if (interactive() && keras::is_keras_available()) {
-  tf_in <- keras::layer_input(1L)
+if (interactive() && keras3::is_keras_available()) {
+  tf_in <- keras3::layer_input(1L)
   mod <- tf_compile_model(
     inputs = list(tf_in),
     intermediate_output = tf_in,
     dist = dist,
-    optimizer = keras::optimizer_adam(),
+    optimizer = keras3::optimizer_adam(),
     censoring = FALSE,
     truncation = FALSE
   )

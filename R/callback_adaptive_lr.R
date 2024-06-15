@@ -1,6 +1,6 @@
 #' Keras Callback for adaptive learning rate with weight restoration
 #'
-#' Provides a keras callback similar to [keras::callback_reduce_lr_on_plateau()] but which also restores the weights
+#' Provides a keras callback similar to [keras3::callback_reduce_lr_on_plateau()] but which also restores the weights
 #' to the best seen so far whenever a learning rate reduction occurs, and with slightly more restrictive improvement
 #' detection.
 #'
@@ -26,7 +26,7 @@
 #' Thus, if you want to also log the learning rate, you should add [callback_reduce_lr_on_plateau()] with a high
 #' `min_lr` to effectively disable the callback but still monitor the learning rate.
 #'
-#' @return A `KerasCallback` suitable for passing to [keras::fit()].
+#' @return A `KerasCallback` suitable for passing to [keras3::fit()].
 #'
 #' @examples
 #' dist <- dist_exponential()
@@ -34,8 +34,8 @@
 #' x <- dist$sample(100, with_params = list(rate = group + 1))
 #' global_fit <- fit(dist, x)
 #'
-#' if (interactive() && keras::is_keras_available()) {
-#'   library(keras)
+#' if (interactive() && keras3::is_keras_available()) {
+#'   library(keras3)
 #'   l_in <- layer_input(shape = 1L)
 #'   mod <- tf_compile_model(
 #'     inputs = list(l_in),
@@ -67,30 +67,36 @@ callback_adaptive_lr <- function(monitor = "val_loss", factor = 0.1, patience = 
                                  mode = c("auto", "min", "max"), delta_abs = 1.0e-4, delta_rel = 0.0, cooldown = 0L,
                                  min_lr = 0, restore_weights = TRUE) {
   mode <- match.arg(mode)
-  AdaptiveLRCallback$new(
+  AdaptiveLRCallback(
     monitor = monitor, factor = factor, patience = patience, verbose = verbose, mode = mode,
     delta_abs = delta_abs, delta_rel = delta_rel, cooldown = cooldown, min_lr = min_lr,
     restore_weights = restore_weights
   )
 }
 
-AdaptiveLRCallback <- R6Class(
+AdaptiveLRCallback <- keras3::Callback(
   "AdaptiveLRCallback",
-  inherit = keras::KerasCallback,
   public = list(
+    monitor = NULL,
     initialize = function(monitor = "val_loss", factor = 0.1, patience = 10L, verbose = 0L, mode = "auto",
                           delta_abs = 1.0e-4, delta_rel = 0.0, cooldown = 0L, min_lr = 0,
                           restore_weights = TRUE, ...) {
       self$monitor <- monitor
-      self$factor <- factor
-      self$patience <- patience
-      self$verbose <- verbose
+      private$.factor <- factor
+      private$.patience <- patience
+      private$.verbose <- verbose
+
+      mode <- match.arg(mode, c("min", "max", "auto"))
+      if (mode == "auto") {
+        mode <- if (grepl("acc", self$monitor)) "max" else "min"
+      }
       self$mode <- mode
-      self$delta_abs <- delta_abs
-      self$delta_rel <- delta_rel
-      self$cooldown <- cooldown
-      self$min_lr <- min_lr
-      self$restore_weights <- restore_weights
+
+      private$.delta_abs <- delta_abs
+      private$.delta_rel <- delta_rel
+      private$.cooldown <- cooldown
+      private$.min_lr <- min_lr
+      private$.restore_weights <- restore_weights
       private$reset()
     },
     on_train_begin = function(logs = NULL) {
@@ -137,10 +143,10 @@ AdaptiveLRCallback <- R6Class(
       }
 
       if (private$.patience_counter >= private$.patience || is.na(new_metric)) {
-        old_lr <- as.numeric(self$model$optimizer$lr)
+        old_lr <- as.numeric(self$model$optimizer$learning_rate)
         if (old_lr > private$.min_lr) {
           new_lr <- pmax(private$.min_lr, old_lr * private$.factor)
-          self$model$optimizer$lr <- new_lr
+          self$model$optimizer$learning_rate <- new_lr
           private$.patience_counter <- 0L
           private$.cooldown_counter <- private$.cooldown
           if (private$.restore_weights && private$.best_epoch < epoch) {
@@ -165,7 +171,7 @@ AdaptiveLRCallback <- R6Class(
       }
 
       # Track learning rate (requires keras >= 2.4.0.9000 to actually work)
-      logs[["lr"]] <- self$model$optimizer$lr
+      logs[["lr"]] <- self$model$optimizer$learning_rate
 
       invisible(NULL)
     }
@@ -180,8 +186,6 @@ AdaptiveLRCallback <- R6Class(
     .patience_counter = 0L,
     .cooldown = NA_integer_,
     .cooldown_counter = 0L,
-    .mode = NA_character_,
-    .monitor = NA_character_,
     .restore_weights = NA,
     .factor = NA_real_,
     .min_lr = NA_real_,
@@ -191,7 +195,7 @@ AdaptiveLRCallback <- R6Class(
     has_improved_slightly = NULL,
     reset = function() {
       private$.active <- TRUE
-      if (private$.mode == "min") {
+      if (self$mode == "min") {
 
         private$has_improved <- function(epoch, new_metric) {
           isTRUE(
@@ -228,99 +232,6 @@ AdaptiveLRCallback <- R6Class(
       private$.best_epoch <- 0L
       private$.cooldown_counter <- 0L
       private$.patience_counter <- 0L
-    }
-  ),
-  active = list(
-    best_weights = function(value) {
-      if (!missing(value)) stop("`best_weights` is read-only.")
-      private$.best_weights
-    },
-    best_metric = function(value) {
-      if (!missing(value)) stop("`best_metric` is read-only.")
-      private$.best_metric
-    },
-    best_epoch = function(value) {
-      if (!missing(value)) stop("`best_epoch` is read-only.")
-      private$.best_epoch
-    },
-    patience = function(value) {
-      if (!missing(value)) {
-        assert_that(is_scalar_integerish(value, finite = TRUE), value > 0L,
-                    msg = "`patience` must be a positive integer.")
-        private$.patience <- as.integer(value)
-      }
-      private$.patience
-    },
-    mode = function(value) {
-      if (!missing(value)) {
-        value <- match.arg(value, c("min", "max", "auto"))
-        if (value == "auto") {
-          value <- if (grepl("acc", private$.monitor)) "max" else "min"
-        }
-        private$.mode <- value
-      }
-      private$.mode
-    },
-    monitor = function(value) {
-      if (!missing(value)) {
-        assert_that(is_string(value), msg = "`monitor` must be a string.")
-        private$.monitor <- value
-      }
-      private$.monitor
-    },
-    restore_weights = function(value) {
-      if (!missing(value)) {
-        assert_that(is_bool(value), msg = "`restore_weights` must be a bool.")
-        private$.restore_weights <- value
-      }
-      private$.restore_weights
-    },
-    factor = function(value) {
-      if (!missing(value)) {
-        assert_that(is_scalar_double(value), value >= 0, value < 1,
-                    msg = "`factor` must be a number in [0, 1).")
-        private$.factor <- value
-      }
-      private$.factor
-    },
-    min_lr = function(value) {
-      if (!missing(value)) {
-        assert_that(is_scalar_double(value), value >= 0,
-                    msg = "`min_lr` must be a non-negative number.")
-        private$.min_lr <- value
-      }
-      private$.min_lr
-    },
-    delta_rel = function(value) {
-      if (!missing(value)) {
-        assert_that(is_scalar_double(value), value >= 0,
-                    msg = "`delta_rel` must be a non-negative number.")
-        private$.delta_rel <- value
-      }
-      private$.delta_rel
-    },
-    delta_abs = function(value) {
-      if (!missing(value)) {
-        assert_that(is_scalar_double(value), value >= 0,
-                    msg = "`delta_abs` must be a non-negative number.")
-        private$.delta_abs <- value
-      }
-      private$.delta_abs
-    },
-    verbose = function(value) {
-      if (!missing(value)) {
-        assert_that(is_scalar_integerish(value, finite = TRUE))
-        private$.verbose <- value
-      }
-      private$.verbose
-    },
-    cooldown = function(value) {
-      if (!missing(value)) {
-        assert_that(is_scalar_integerish(value), value >= 0,
-                    msg = "`cooldown` must be a non-negative integer.")
-        private$.cooldown <- value
-      }
-      private$.cooldown
     }
   )
 )

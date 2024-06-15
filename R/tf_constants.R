@@ -24,9 +24,9 @@ Constants <- R6Class(
 
     lapply(consts, function(r_value) {
       eval(substitute(function(value) {
-        check_installed("keras")
+        check_installed("keras3")
         assert_that(missing(value), msg = "constants are read-only.")
-        keras::k_constant(r_value)
+        keras3::as_tensor(r_value, keras3::config_floatx())
       }, list(r_value = r_value)))
     })
   })

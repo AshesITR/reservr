@@ -195,9 +195,9 @@ ErlangMixtureDistribution <- distribution_class(
       probs <- args[["probs"]]
       probs <- tf$reshape(probs, list(-1L, k))
       shapes <- args[["shapes"]]
-      shapes <- tf$reshape(shapes, keras::k_constant(as.integer(c(1, -1)), dtype = "int32"))
+      shapes <- tf$reshape(shapes, keras3::as_tensor(as.integer(c(1, -1)), dtype = "int32"))
       scale <- args[["scale"]]
-      scale <- tf$reshape(scale, keras::k_constant(as.integer(c(-1, 1)), dtype = "int32"))
+      scale <- tf$reshape(scale, keras3::as_tensor(as.integer(c(-1, 1)), dtype = "int32"))
 
       x_ok <- tf$math$is_finite(x) & x > K$zero
       x_safe <- tf$where(x_ok, x, K$one)
@@ -225,9 +225,9 @@ ErlangMixtureDistribution <- distribution_class(
       probs <- args[["probs"]]
       probs <- tf$reshape(probs, list(-1L, k))
       shapes <- args[["shapes"]]
-      shapes <- tf$reshape(shapes, keras::k_constant(as.integer(c(1, -1)), dtype = "int32"))
+      shapes <- tf$reshape(shapes, keras3::as_tensor(as.integer(c(1, -1)), dtype = "int32"))
       scale <- args[["scale"]]
-      scale <- tf$reshape(scale, keras::k_constant(as.integer(c(-1, 1)), dtype = "int32"))
+      scale <- tf$reshape(scale, keras3::as_tensor(as.integer(c(-1, 1)), dtype = "int32"))
       qmin <- tf$reshape(qmin, list(-1L))
       qmax <- tf$reshape(qmax, list(-1L))
 
@@ -243,12 +243,12 @@ ErlangMixtureDistribution <- distribution_class(
       qmax_unstable <- (qmax <= K$zero)[, tf$newaxis] | (tf$math$igamma(
         shapes,
         qmax_finite[, tf$newaxis] / scale
-      ) < keras::k_epsilon())
+      ) < keras3::config_epsilon())
 
       qmin_unstable <- (qmin <= K$zero)[, tf$newaxis] | (tf$math$igamma(
         shapes,
         qmin_finite[, tf$newaxis] / scale
-      ) < keras::k_epsilon())
+      ) < keras3::config_epsilon())
 
       tf$where(
         qmax > K$zero,
@@ -287,24 +287,24 @@ ErlangMixtureDistribution <- distribution_class(
     }
   },
   tf_make_constants = function(with_params = list()) {
-    check_installed("keras")
+    check_installed("keras3")
     params <- private$.make_params(with_params, 1)
     out <- list()
     if (length(params$probs) && !is.null(params$probs[[1L]])) {
       probs <- as.numeric(params$probs)
-      out$probs <- keras::k_constant(probs / sum(probs), shape = c(1L, length(probs)))
+      out$probs <- keras3::as_tensor(probs / sum(probs), keras3::config_floatx(), shape = c(1L, length(probs)))
     }
     if (length(params$shapes) && !is.null(params$shapes[[1L]])) {
-      out$shapes <- keras::k_constant(as.numeric(params$shapes))
+      out$shapes <- keras3::as_tensor(as.numeric(params$shapes), keras3::config_floatx())
     }
     if (!is.null(params$scale)) {
-      out$scale <- keras::k_constant(params$scale)
+      out$scale <- keras3::as_tensor(params$scale, keras3::config_floatx())
     }
 
     out
   },
   tf_compile_params = function(input, name_prefix = "") {
-    check_installed("keras")
+    check_installed("keras3")
     ph <- self$get_placeholders()
     k <- length(self$get_components())
     out <- list()
@@ -318,9 +318,10 @@ ErlangMixtureDistribution <- distribution_class(
     }
 
     if (length(ph$probs)) {
-      out$probs <- keras::layer_dense(
+      out$probs <- keras3::layer_dense(
         input, units = k, activation = "softmax",
-        name = paste0(name_prefix, "probs")
+        name = paste0(name_prefix, "probs"),
+        dtype = keras3::config_floatx()
       )
     }
 

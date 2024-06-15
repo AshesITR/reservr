@@ -28,13 +28,13 @@ taking exogenous variables into account.
 network predicts the parameters of any pre-specified distribution family.
 
 It also dynamically compiles a suitable conditional likelihood based loss, depending on the type of problem
-(censoring, truncation), which can be optimized using the `keras::fit` implementation out-of-the box.
+(censoring, truncation), which can be optimized using the `keras3::fit` implementation out-of-the box.
 This means there is full flexibility with respect to callbacks, optimizers, mini-batching, etc.
 
 ```{r setup}
 library(reservr)
 library(tensorflow)
-library(keras)
+library(keras3)
 library(tibble)
 library(ggplot2)
 ```
@@ -46,7 +46,7 @@ As a true relationship we use $y = 2 x + \epsilon$ with $\epsilon \sim \mathcal{
 We will not use censoring or truncation.
 
 ```{r sim-data}
-if (keras::is_keras_available()) {
+if (keras3::is_keras_available()) {
   set.seed(1431L)
   tensorflow::set_random_seed(1432L)
 
@@ -68,11 +68,7 @@ if (keras::is_keras_available()) {
   # in practice, this would be deeper
   nnet_output <- nnet_input
 
-  optimizer <- if (packageVersion("keras") >= "2.6.0") {
-    optimizer_adam(learning_rate = 0.1)
-  } else {
-    optimizer_adam(lr = 0.1)
-  }
+  optimizer_adam(learning_rate = 0.1)
 
   nnet <- tf_compile_model(
     inputs = list(nnet_input),

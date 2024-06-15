@@ -45,10 +45,10 @@ The minimum number of epochs between two learning rate reductions is \code{patie
 This is very useful if the metric oscillates.}
 }
 \value{
-A \code{KerasCallback} suitable for passing to \code{\link[keras:reexports]{keras::fit()}}.
+A \code{KerasCallback} suitable for passing to \code{\link[keras3:reexports]{keras3::fit()}}.
 }
 \description{
-Provides a keras callback similar to \code{\link[keras:callback_reduce_lr_on_plateau]{keras::callback_reduce_lr_on_plateau()}} but which also restores the weights
+Provides a keras callback similar to \code{\link[keras3:callback_reduce_lr_on_plateau]{keras3::callback_reduce_lr_on_plateau()}} but which also restores the weights
 to the best seen so far whenever a learning rate reduction occurs, and with slightly more restrictive improvement
 detection.
 }
@@ -64,8 +64,8 @@ group <- sample(c(0, 1), size = 100, replace = TRUE)
 x <- dist$sample(100, with_params = list(rate = group + 1))
 global_fit <- fit(dist, x)
 
-if (interactive() && keras::is_keras_available()) {
-  library(keras)
+if (interactive() && keras3::is_keras_available()) {
+  library(keras3)
   l_in <- layer_input(shape = 1L)
   mod <- tf_compile_model(
     inputs = list(l_in),

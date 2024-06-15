@@ -820,7 +820,7 @@ Given input layers `inputs` and an intermediate output layer `intermediate_outpu
 * Compiles the loss for `dist` defined by \eqref{eq:cml-regression-likelihood} as $l(g) = -\tfrac{1}{\#(\mathfrak{I}_{\mathrm{reg}})} \ell(g|\mathfrak{I}_{\mathrm{reg}})$, optionally disabling `censoring` or `truncation` for efficiency.
 * Creates a list of final output layers mapping `intermediate_output` onto the parameter space $\Theta$ of `dist` using `Distribution$tf_compile_params()`.
   This step adds additional degrees of freedom to the overall model, and the approach is described in \citet[Section A]{Rosenstock2022supp}
-* Runs `keras::compile()` on the underlying `keras.engine.training.Model`.
+* Runs `keras3::compile()` on the underlying `keras.src.models.model.Model`.
 
 The following example defines a linear model with homoskedasticity assumption and fits it using $100$ iterations of the Adam optimization algorithm \citep{Kingma2015}.
 First, we simulate data $(Y,X)$ from the model defined by $X \sim \mathrm{Unif}(10,20)$ and $Y | X =x \sim \mathcal{N}(\mu = 2x, \sigma = 1)$.
@@ -844,7 +844,7 @@ dist <- dist_normal(sd = 1.0)
 Using \pkg{keras}, we define an empty neural network, just taking $x$ as an input and performing no transformation.
 
 ```{r}
-nnet_input <- keras::layer_input(shape = 1L, name = "x_input")
+nnet_input <- keras3::keras_input(shape = 1L, name = "x_input")
 nnet_output <- nnet_input
 ```
 
@@ -863,7 +863,7 @@ nnet <- tf_compile_model(
   inputs = list(nnet_input),
   intermediate_output = nnet_output,
   dist = dist,
-  optimizer = keras::optimizer_adam(learning_rate = 0.1),
+  optimizer = keras3::optimizer_adam(learning_rate = 0.1),
   censoring = FALSE,
   truncation = FALSE
 )
@@ -874,7 +874,7 @@ nnet$model
 The fit can now be performed, modifying the parameters (weights) of `nnet` in-place.
 Note that the argument `y` of fit accepts a `trunc_obs` object.
 In our example, the vector `y` is silently converted to an untruncated, uncensored `trunc_obs` object.
-`fit()` returns the `keras_training_history` of the underlying call to `fit()` on the `keras.engine.training.Model`.
+`fit()` returns the `keras_training_history` of the underlying call to `fit()` on the `keras.src.models.model.Model`.
 
 ```{r}
 nnet_fit <- fit(
@@ -898,7 +898,7 @@ The `predict()` method of `reservr_keras_model` takes input tensors and returns 
 We can thus extract the only parameter `mean` and compare it to an OLS fit for the same dataset:
 
 ```{r}
-pred_params <- predict(nnet, data = list(keras::k_constant(dataset$x)))
+pred_params <- predict(nnet, data = list(keras3::as_tensor(dataset$x, keras3::config_floatx())))
 
 lm_fit <- lm(y ~ x, data = dataset)
 
@@ -912,7 +912,7 @@ ggplot(dataset, aes(x = x, y = y)) +
   geom_line(aes(y = y_lm), linetype = 2L, color = "green")
 ```
 
-Since a `reservr_keras_model` includes the underlying `keras.engine.training.Model`, its parameters can also be extracted and compared to the OLS coefficients
+Since a `reservr_keras_model` includes the underlying `keras.src.models.model.Model`, its parameters can also be extracted and compared to the OLS coefficients
 
 ```{r}
 coef_nnet <- rev(as.numeric(nnet$model$get_weights()))
@@ -927,13 +927,13 @@ Our goal is to predict the rate parameter of an exponential survival time distri
 The variables $\mathtt{resid.ds}, \mathtt{rx}$ and $\mathtt{ecog.ps}$ are indicator variables coded in $\{1, 2\}$.
 $\mathtt{age}$ is a continuous variable with values in $(38, 75)$.
 Due to the different scale of the $\mathtt{age}$ variable, it is useful to separate it from the other variables in order to perform normalization.
-Normalization using `keras::layer_normalization()` transforms its input variables to zero mean and unit variance.
+Normalization using `keras3::layer_normalization()` transforms its input variables to zero mean and unit variance.
 This step is not necessary for the categorical features.
 
 ```{r}
 set.seed(1219L)
 tensorflow::set_random_seed(1219L)
-keras::k_set_floatx("float32")
+keras3::config_set_floatx("float32")
 
 dist <- dist_exponential()
 ovarian <- survival::ovarian
@@ -943,7 +943,7 @@ dat <- list(
     xmax = ifelse(ovarian$fustat == 1, ovarian$futime, Inf)
   ),
   x = list(
-    age = keras::k_constant(ovarian$age, shape = nrow(ovarian)),
+    age = keras3::as_tensor(ovarian$age, keras3::config_floatx(), shape = nrow(ovarian)),
     flags = k_matrix(ovarian[, c("resid.ds", "rx", "ecog.ps")] - 1.0)
   )
 )
@@ -953,8 +953,8 @@ Next, we define the input layers and shapes, conforming to our input predictor l
 
 ```{r}
 nnet_inputs <- list(
-  keras::layer_input(shape = 1L, name = "age"),
-  keras::layer_input(shape = 3L, name = "flags")
+  keras3::keras_input(shape = 1L, name = "age"),
+  keras3::keras_input(shape = 3L, name = "flags")
 )
 ```
 
@@ -963,26 +963,26 @@ We then add two hidden ReLU-layers each with $5$ neurons to the network and comp
 This is accomplished using a dense layer with $1$ neuron and the $\mathrm{softplus}$ activation function.
 
 ```{r}
-hidden1 <- keras::layer_concatenate(
-  keras::layer_normalization(nnet_inputs[[1L]]),
+hidden1 <- keras3::layer_concatenate(
+  keras3::layer_normalization(nnet_inputs[[1L]]),
   nnet_inputs[[2L]]
 )
-hidden2 <- keras::layer_dense(
+hidden2 <- keras3::layer_dense(
   hidden1,
   units = 5L,
-  activation = keras::activation_relu
+  activation = keras3::activation_relu
 )
-nnet_output <- keras::layer_dense(
+nnet_output <- keras3::layer_dense(
   hidden2,
   units = 5L,
-  activation = keras::activation_relu
+  activation = keras3::activation_relu
 )
 
 nnet <- tf_compile_model(
   inputs = nnet_inputs,
   intermediate_output = nnet_output,
   dist = dist,
-  optimizer = keras::optimizer_adam(learning_rate = 0.01),
+  optimizer = keras3::optimizer_adam(learning_rate = 0.01),
   censoring = TRUE,
   truncation = FALSE
 )

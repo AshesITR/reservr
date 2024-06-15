@@ -9,7 +9,7 @@ k_matrix(x, dtype = NULL)
 \arguments{
 \item{x}{Numeric object to be converted to a matrix Tensor.}
 
-\item{dtype}{Type of the elements of the resulting tensor. Defaults to \code{\link[=k_floatx]{k_floatx()}}.}
+\item{dtype}{Type of the elements of the resulting tensor. Defaults to \code{\link[keras3:config_floatx]{keras3::config_floatx()}}.}
 }
 \value{
 A two-dimensional \code{tf.Tensor} with values from \code{x}.
@@ -19,7 +19,7 @@ The shape will be \verb{(nrow(x), ncol(x))} where \code{x} is first converted to
 Cast to a TensorFlow matrix
 }
 \examples{
-if (interactive() && keras::is_keras_available()) {
+if (interactive() && keras3::is_keras_available()) {
   k_matrix(diag(1:3))
   k_matrix(diag(1:3), dtype = "int32")
   # Vectors are converted to columns:

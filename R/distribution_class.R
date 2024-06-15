@@ -461,7 +461,7 @@ Distribution <- R6Class(
     #' Distribution with values sprecified by parameters. Each constant is a
     #' TensorFlow Tensor of dtype `floatx`.
     tf_make_constants = function(with_params = list()) {
-      check_installed(c("keras", "tensorflow"))
+      check_installed(c("keras3", "tensorflow"))
       my_params <- private$.make_params(with_params, 1L)
 
       get_tf_consts <- function(elem) {
@@ -475,7 +475,7 @@ Distribution <- R6Class(
           are_null <- vapply(elem, is.null, logical(1L))
           lapply(elem[!are_null], get_tf_consts)
         } else if (is.numeric(elem)) {
-          keras::k_constant(elem)
+          keras3::as_tensor(elem, keras3::config_floatx())
         } else {
           # nocov start
           stop(
@@ -767,9 +767,9 @@ Distribution <- R6Class(
       float64 = list()
     ),
     .tf_retrieve_or_call = function(name, impl) {
-      check_installed(c("keras", "tensorflow"))
+      check_installed(c("keras3", "tensorflow"))
 
-      cache_key <- keras::k_floatx()
+      cache_key <- keras3::config_floatx()
 
       res <- private$.tf_functions[[cache_key]][[name]]
       use_cache <- getOption("reservr.cache_tf_function", default = TRUE)

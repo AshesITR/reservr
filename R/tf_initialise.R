@@ -22,8 +22,8 @@
 #' x <- dist$sample(100, with_params = list(rate = group + 1))
 #' global_fit <- fit(dist, x)
 #'
-#' if (interactive() && keras::is_keras_available()) {
-#'   library(keras)
+#' if (interactive() && keras3::is_keras_available()) {
+#'   library(keras3)
 #'   l_in <- layer_input(shape = 1L)
 #'   mod <- tf_compile_model(
 #'     inputs = list(l_in),
@@ -78,7 +78,7 @@ tf_initialise_model <- function(model, params, mode = c("scale", "perturb", "zer
         scale = {
           new_weights <- tensorflow::tf$random$uniform(
             layer$kernel$shape,
-            minval = -0.1, maxval = 0.1, dtype = keras::k_floatx()
+            minval = -0.1, maxval = 0.1, dtype = keras3::config_floatx()
           ) * bias[tensorflow::tf$newaxis, ]
           layer$kernel$assign(new_weights)
         },
