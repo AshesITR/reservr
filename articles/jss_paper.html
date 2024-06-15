@@ -8,10 +8,10 @@
 <meta name="description" content="reservr">
 <title>Fitting Distributions and Neural Networks to Censored and Truncated Data: The R Package reservr • reservr</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Fitting Distributions and Neural Networks to Censored and Truncated Data: The R Package reservr">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Fitting Distributions and Neural Networks to Censored and Truncated Data: The R Package reservr">
 <meta property="og:description" content="reservr">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -22,7 +22,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">reservr</a>
 
@@ -94,10 +94,10 @@ ARAG SE</div>
 <p>Statistical analyses are typically concerned with modelling and estimating the distribution of some measured variable of interest <span class="math inline">\(Y\)</span>, called the outcome, possibly conditional on the value of one or several endogenous variables <span class="math inline">\(X\)</span>, called predictors.
 In the absence of endogenous variables, this process is usually called distribution fitting, and in the presence of endogenous variables it is called regression.
 Classical regression, such as via generalized linear models (GLMs), is concerned with the influence of endogenous variables on the mean of the outcome, i.e., <span class="math inline">\(\mathsf{E}(Y|X) = f(X)\)</span>, and often links other parameters of the conditional outcome distribution to its mean.
-A gentle introduction to generalized linear models can be found in <span class="citation">Dobson and Barnett (<a href="#ref-DobsonBarnett2018" role="doc-biblioref">2018</a>)</span>.
-An implementation of GLMs is available in the <strong>stats</strong> <em>R</em> package, which is part of <em>R</em> itself <span class="citation">(<a href="#ref-baseR" role="doc-biblioref">R Core Team 2023</a>)</span>.
-Some models also allow specification of additional parameters of the conditional outcome distribution, such as Generalized Additive Models for Location, Scale and Shape <span class="citation">(<a href="#ref-GAMLSS" role="doc-biblioref">Stasinopoulos and Rigby 2007</a>)</span>.
-More recently, deep distributional regression has been proposed, which allows for flexible specification of individual outcome distribution parameters <span class="citation">(<a href="#ref-deepregression" role="doc-biblioref">Rügamer et al. 2023</a>)</span>.</p>
+A gentle introduction to generalized linear models can be found in <span class="citation">Dobson and Barnett (<a href="#ref-DobsonBarnett2018">2018</a>)</span>.
+An implementation of GLMs is available in the <strong>stats</strong> <em>R</em> package, which is part of <em>R</em> itself <span class="citation">(<a href="#ref-baseR">R Core Team 2023</a>)</span>.
+Some models also allow specification of additional parameters of the conditional outcome distribution, such as Generalized Additive Models for Location, Scale and Shape <span class="citation">(<a href="#ref-GAMLSS">Stasinopoulos and Rigby 2007</a>)</span>.
+More recently, deep distributional regression has been proposed, which allows for flexible specification of individual outcome distribution parameters <span class="citation">(<a href="#ref-deepregression">Rügamer et al. 2023</a>)</span>.</p>
 <p>Statistical methods (such as those described and implemented in the previously mentioned papers) often require complete data, that is full information on all observations <span class="math inline">\((X, Y)\)</span> of interest.
 In this paper, we describe an R-package that allows for distributional regression in three common observation schemes that do not provide complete data.
 First of all, data with <em>interval censoring</em> applied to the outcome <span class="math inline">\(Y\)</span> refers to the case where only lower and upper bounds for <span class="math inline">\(Y\)</span> are observed, instead of the actual value.
@@ -109,7 +109,7 @@ Its coordinates have the following interpretation: the last two coordinates, whi
 The first two coordinates, which satisfy <span class="math inline">\(L \le M \le V \le U\)</span> and which may be <span class="math inline">\(\mp \infty\)</span>, encode censoring: the observation <span class="math inline">\((M, V) = (m, v)\)</span> means that the target variable <span class="math inline">\(Y\)</span> satisfies <span class="math inline">\(Y \in (m, v]\)</span> if <span class="math inline">\(m &lt; v\)</span> and <span class="math inline">\(Y = m\)</span> if <span class="math inline">\(m = v\)</span>; the latter corresponds to an uncensored observation of <span class="math inline">\(Y\)</span>.</p>
 <p>It is instructive to focus on the simpler problem of distribution parameter estimation before proceeding with distributional regression.
 Suppose we observe an independent sample <span class="math inline">\(\mathcal J = \{(m_i, v_i, l_i, u_i): i=1, \ldots, n\}\)</span> of <span class="math inline">\((M, V, L, U)\)</span>.
-Suggested by standard maximum (conditional) likelihood approaches for truncated <span class="citation">(<a href="#ref-DoerreEmura2019" role="doc-biblioref">Dörre and Emura 2019</a>)</span> and censored observations <span class="citation">(<a href="#ref-Sun2006" role="doc-biblioref">Sun 2006</a>)</span>, we suggest to estimate <span class="math inline">\(\theta\)</span> by maximizing the objective function
+Suggested by standard maximum (conditional) likelihood approaches for truncated <span class="citation">(<a href="#ref-DoerreEmura2019">Dörre and Emura 2019</a>)</span> and censored observations <span class="citation">(<a href="#ref-Sun2006">Sun 2006</a>)</span>, we suggest to estimate <span class="math inline">\(\theta\)</span> by maximizing the objective function
 <!-- -->
 <span class="math display" id="eq:cml-likelihood-nw">\[\begin{align}
   \ell(\theta) = \sum_{(m, v, l, u) \in \mathcal J} \Big\{ \log f_\theta(m)  \mathbf{1}(m=v) + \log F_\theta((m,v]) \mathbf{1}(m&lt;v) \Big\} - \log F_\theta((l,u]), \tag{1.1}
@@ -264,10 +264,10 @@ The two cases <span class="math inline">\(l &lt; m &lt; v = u\)</span> and <span
 <span class="header-section-number">1.2</span> Related packages<a class="anchor" aria-label="anchor" href="#related-packages"></a>
 </h3>
 <p>For the less general cases of non-informative censoring without random truncation and fixed truncation, i.e., <span class="math inline">\((L, U)\)</span> constant for all observations, as well as for estimation of distribution parameters in the absence of censoring or random truncation, there are a number of <em>R</em> packages that can fit distributions, some of them also supporting weights.
-Among these are <strong>MASS</strong> <span class="citation">(<a href="#ref-MASS" role="doc-biblioref">Venables and Ripley 2002</a>)</span>, <strong>fitdistrplus</strong> <span class="citation">(<a href="#ref-fitdistrplus" role="doc-biblioref">Delignette-Muller and Dutang 2015</a>)</span>, <strong>survival</strong> <span class="citation">(<a href="#ref-survival" role="doc-biblioref">Therneau 2023</a>)</span>, <strong>flexsurv</strong> <span class="citation">(<a href="#ref-flexsurv" role="doc-biblioref">Jackson 2016</a>)</span>.
+Among these are <strong>MASS</strong> <span class="citation">(<a href="#ref-MASS">Venables and Ripley 2002</a>)</span>, <strong>fitdistrplus</strong> <span class="citation">(<a href="#ref-fitdistrplus">Delignette-Muller and Dutang 2015</a>)</span>, <strong>survival</strong> <span class="citation">(<a href="#ref-survival">Therneau 2023</a>)</span>, <strong>flexsurv</strong> <span class="citation">(<a href="#ref-flexsurv">Jackson 2016</a>)</span>.
 Note that fixed truncation is an operation that can be baked into the distribution family whose parameters are to be estimated, allowing for classical maximum likelihood estimation.
 Many of the packages also support classic regression of expected values given predictors.
-Distributional regression packages, such as <strong>gamlss</strong> <span class="citation">(<a href="#ref-GAMLSS" role="doc-biblioref">Stasinopoulos and Rigby 2007</a>)</span> and <strong>deepregression</strong> <span class="citation">(<a href="#ref-deepregression" role="doc-biblioref">Rügamer et al. 2023</a>)</span> currently do not support interval censoring or random truncation.
+Distributional regression packages, such as <strong>gamlss</strong> <span class="citation">(<a href="#ref-GAMLSS">Stasinopoulos and Rigby 2007</a>)</span> and <strong>deepregression</strong> <span class="citation">(<a href="#ref-deepregression">Rügamer et al. 2023</a>)</span> currently do not support interval censoring or random truncation.
 See the following table for an overview of available features for each package.</p>
 <table class="table">
 <colgroup>
@@ -336,9 +336,9 @@ See the following table for an overview of available features for each package.<
 </tr>
 </tbody>
 </table>
-<p>Another R6-based interface is provided by <strong>ROOPSD</strong> <span class="citation">(<a href="#ref-ROOPSD" role="doc-biblioref">Robin 2022</a>)</span>.</p>
-<p><strong>reservr</strong> builds upon the <em>R</em> packages <strong>tensorflow</strong> <span class="citation">(<a href="#ref-tensorflowR" role="doc-biblioref">Allaire and Tang 2022</a>)</span> and <strong>keras</strong> <span class="citation">(<a href="#ref-kerasR" role="doc-biblioref">Chollet, Allaire, et al. 2017</a>)</span> as an interface to the machine learning library <strong>TensorFlow</strong> <span class="citation">(<a href="#ref-tensorflow" role="doc-biblioref">Abadi et al. 2015</a>)</span> to perform distributional regression.
-This underlying infrastructure is shared with the distributional regression package <strong>deepregression</strong> <span class="citation">(<a href="#ref-deepregression" role="doc-biblioref">Rügamer et al. 2023</a>)</span>.
+<p>Another R6-based interface is provided by <strong>ROOPSD</strong> <span class="citation">(<a href="#ref-ROOPSD">Robin 2022</a>)</span>.</p>
+<p><strong>reservr</strong> builds upon the <em>R</em> packages <strong>tensorflow</strong> <span class="citation">(<a href="#ref-tensorflowR">Allaire and Tang 2022</a>)</span> and <strong>keras</strong> <span class="citation">(<a href="#ref-kerasR">Chollet, Allaire, et al. 2017</a>)</span> as an interface to the machine learning library <strong>TensorFlow</strong> <span class="citation">(<a href="#ref-tensorflow">Abadi et al. 2015</a>)</span> to perform distributional regression.
+This underlying infrastructure is shared with the distributional regression package <strong>deepregression</strong> <span class="citation">(<a href="#ref-deepregression">Rügamer et al. 2023</a>)</span>.
 The latter also supports distributional regression, but at the time of writing requires complete samples and does not support truncation or censoring.</p>
 <p>The remaining parts of this paper are structured as follows: Section <a href="#pkg-overview">2</a> details the core functionality of the corresponding <em>R</em> package <strong>reservr</strong>.
 It is split into definition of samples <span class="math inline">\(\mathfrak{I}\)</span> (Section <a href="#trunc-obs">2.1</a>), definition of distribution families (Section <a href="#distributions">2.2</a>), mathematical definitions of some available distribution families (Section <a href="#dist-definitions">2.3</a>), estimation of distribution parameters (Section <a href="#fit-dist">2.4</a>) and distributional regression using <strong>tensorflow</strong> (Section <a href="#tensorflow">2.5</a>).
@@ -450,7 +450,7 @@ Such an analysis was performed using <strong>reservr</strong> in .</p>
 <h3 id="distributions">
 <span class="header-section-number">2.2</span> Definition of distribution families<a class="anchor" aria-label="anchor" href="#distributions"></a>
 </h3>
-<p>Distribution families are implemented using the <strong>R6</strong> class system <span class="citation">(<a href="#ref-R6" role="doc-biblioref">Chang 2021</a>)</span>.
+<p>Distribution families are implemented using the <strong>R6</strong> class system <span class="citation">(<a href="#ref-R6">Chang 2021</a>)</span>.
 They inherit from the class <code>Distribution</code> and feature a common interface to</p>
 <ul>
 <li>manage fixed and free parameters of the underlying familiy,</li>
@@ -575,7 +575,7 @@ At the time of writing, these are:</p>
 </tr>
 <tr class="even">
 <td><code>dist_trunc(dist, min, max)</code></td>
-<td>The truncated distribution family consisting of all distributions of <span class="math inline">\(X |(\mathtt{min} \le X \le \mathtt{max})\)</span> with <span class="math inline">\(X \sim F \in \mathtt{dist}\)</span>
+<td>The truncated distribution family consisting of all distributions of <span class="math inline">\(X |(\mathtt{min} \le X  \le \mathtt{max})\)</span> with <span class="math inline">\(X \sim F \in \mathtt{dist}\)</span>
 </td>
 </tr>
 </tbody>
@@ -805,9 +805,9 @@ This is useful for conditional maximum likelihood estimation in the presence of 
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
 <span><span class="co">##   expression                            min  median `itr/sec` mem_alloc `gc/sec`</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> dist$density(-2:2, with_params =…  26.1µs 28.56µs    <span style="text-decoration: underline;">34</span>403.        0B     34.4</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> denscmp(-2:2, matrix(c(0, 1), nr…  4.19µs     5µs   <span style="text-decoration: underline;">194</span>188.        0B     38.8</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> dnorm(-2:2, mean = rep(0, 5L), s…   1.6µs  1.97µs   <span style="text-decoration: underline;">449</span>887.    2.58KB     45.0</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> dist$density(-2:2, with_params =… 26.53µs 29.07µs    <span style="text-decoration: underline;">33</span>684.        0B     37.1</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> denscmp(-2:2, matrix(c(0, 1), nr…  4.24µs  5.14µs   <span style="text-decoration: underline;">188</span>855.        0B     56.7</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> dnorm(-2:2, mean = rep(0, 5L), s…   1.7µs  1.99µs   <span style="text-decoration: underline;">469</span>504.    2.58KB     47.0</span></span></code></pre>
 </div>
 <div class="section level4" number="2.2.5" short-title="tensorflow interface">
 <h4 id="tensorflow-interface">
@@ -855,7 +855,7 @@ If <span class="math inline">\(\Gamma_{\alpha, \theta}\)</span> denotes a Gamma 
   \mathop{\mathrm{ErlangMixture}}(k) := \Bigl\{ F = \sum_{i = 1}^k p_i \Gamma_{\alpha_i, \theta} \Bigm|
    \alpha_i \in \mathbb{N}, \theta \in (0, \infty), p_i \in [0, 1], \sum_{i = 1}^k p_i = 1 \Bigr\}.
 \end{align*}\]</span></p>
-<p>Note that for <span class="math inline">\(k \to \infty\)</span>, Erlang mixtures are dense in the space of distributions on <span class="math inline">\((0, \infty)\)</span> with respect to weak convergence <span class="citation">(<a href="#ref-ll2012" role="doc-biblioref">Lee and Lin 2012</a>)</span>, making them a useful modeling choice for general positive continuous distributions. However, the tail index of all Erlang mixture distributions is always zero due to the exponential decay of Gamma densities.</p>
+<p>Note that for <span class="math inline">\(k \to \infty\)</span>, Erlang mixtures are dense in the space of distributions on <span class="math inline">\((0, \infty)\)</span> with respect to weak convergence <span class="citation">(<a href="#ref-ll2012">Lee and Lin 2012</a>)</span>, making them a useful modeling choice for general positive continuous distributions. However, the tail index of all Erlang mixture distributions is always zero due to the exponential decay of Gamma densities.</p>
 </div>
 <div class="section level4" number="2.3.3">
 <h4 id="dist-blended">
@@ -948,7 +948,7 @@ Note the constraint on the tail index <span class="math inline">\(\xi \in [0, 1)
 <p>This section describes the functions for the problem of estimating a parameter <span class="math inline">\(\theta \in \Theta\)</span> given a sample <span class="math inline">\(\mathfrak{I}\)</span> and a parameterized family <span class="math inline">\(\mathcal{F} = \{F_\theta \mid \theta \in \Theta\}\)</span>.
 Sometimes, the conditional log-likelihood in <a href="#eq:cml-likelihood">(1.2)</a> can be directly maximized, yielding an estimate for <span class="math inline">\(\theta\)</span>.
 This is the default behavior in <strong>reservr</strong> if no specialized estimation routine for the provided family <span class="math inline">\(\mathcal{F}_\theta\)</span> is defined.
-Depending on whether there are box constraints, nonlinear constraints or no constraints on the parameter space <span class="math inline">\(\Theta\)</span>, different implementations of nonlinear optimization algorithms from <strong>nloptr</strong> <span class="citation">(<a href="#ref-nloptr" role="doc-biblioref">Johnson 2007</a>)</span>, in particular truncated Newton <span class="citation">(<a href="#ref-nloptr-tnewton" role="doc-biblioref">Dembo and Steihaug 1983</a>)</span> for unconstrained families, L-BFGS <span class="citation">(<a href="#ref-nloptr-lbfgs" role="doc-biblioref">Liu and Nocedal 1989</a>)</span> for box-constrained families and SLSQP <span class="citation">(<a href="#ref-nloptr-slsqp" role="doc-biblioref">Kraft 1994</a>)</span> for general constrained families are employed.</p>
+Depending on whether there are box constraints, nonlinear constraints or no constraints on the parameter space <span class="math inline">\(\Theta\)</span>, different implementations of nonlinear optimization algorithms from <strong>nloptr</strong> <span class="citation">(<a href="#ref-nloptr">Johnson 2007</a>)</span>, in particular truncated Newton <span class="citation">(<a href="#ref-nloptr-tnewton">Dembo and Steihaug 1983</a>)</span> for unconstrained families, L-BFGS <span class="citation">(<a href="#ref-nloptr-lbfgs">Liu and Nocedal 1989</a>)</span> for box-constrained families and SLSQP <span class="citation">(<a href="#ref-nloptr-slsqp">Kraft 1994</a>)</span> for general constrained families are employed.</p>
 <p>In addition to the naive direct optimization approach, some families lend themselves to specialized estimation algorithms which usually show faster convergence due to making use of special structures in the parameter space <span class="math inline">\(\Theta\)</span>.</p>
 <p>Estimating distribution parameters from truncated observations is handled using the generic <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> method.
 It delegates to <code><a href="../reference/fit_dist.html">fit_dist()</a></code>, which is also generic with signature:</p>
@@ -1091,13 +1091,13 @@ The function returns an object of class <code>reservr_keras_model</code>, which 
 <li>Compiles the loss for <code>dist</code> defined by <a href="#eq:cml-regression-likelihood">(1.3)</a> as <span class="math inline">\(l(g) = -\tfrac{1}{\#(\mathfrak{I}_{\mathrm{reg}})} \ell(g|\mathfrak{I}_{\mathrm{reg}})\)</span>, optionally disabling <code>censoring</code> or <code>truncation</code> for efficiency.</li>
 <li>Creates a list of final output layers mapping <code>intermediate_output</code> onto the parameter space <span class="math inline">\(\Theta\)</span> of <code>dist</code> using <code>Distribution$tf_compile_params()</code>.
 This step adds additional degrees of freedom to the overall model, and the approach is described in </li>
-<li>Runs <code><a href="https://generics.r-lib.org/reference/compile.html" class="external-link">keras::compile()</a></code> on the underlying <code>keras.engine.training.Model</code>.</li>
+<li>Runs <code><a href="https://generics.r-lib.org/reference/compile.html" class="external-link">keras3::compile()</a></code> on the underlying <code>keras.src.models.model.Model</code>.</li>
 </ul>
-<p>The following example defines a linear model with homoskedasticity assumption and fits it using <span class="math inline">\(100\)</span> iterations of the Adam optimization algorithm <span class="citation">(<a href="#ref-Kingma2015" role="doc-biblioref">Kingma and Ba 2015</a>)</span>.
+<p>The following example defines a linear model with homoskedasticity assumption and fits it using <span class="math inline">\(100\)</span> iterations of the Adam optimization algorithm <span class="citation">(<a href="#ref-Kingma2015">Kingma and Ba 2015</a>)</span>.
 First, we simulate data <span class="math inline">\((Y,X)\)</span> from the model defined by <span class="math inline">\(X \sim \mathrm{Unif}(10,20)\)</span> and <span class="math inline">\(Y | X =x \sim \mathcal{N}(\mu = 2x, \sigma = 1)\)</span>.</p>
 <div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1431L</span><span class="op">)</span></span>
-<span><span class="fu">tensorflow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tensorflow/man/set_random_seed.html" class="external-link">set_random_seed</a></span><span class="op">(</span><span class="fl">1432L</span><span class="op">)</span></span>
+<span><span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/set_random_seed.html" class="external-link">set_random_seed</a></span><span class="op">(</span><span class="fl">1432L</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span>, min <span class="op">=</span> <span class="fl">10</span>, max <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,</span>
@@ -1108,7 +1108,7 @@ First, we simulate data <span class="math inline">\((Y,X)\)</span> from the mode
 <code class="sourceCode R"><span><span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dist_normal.html">dist_normal</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span></span></code></pre></div>
 <p>Using <strong>keras</strong>, we define an empty neural network, just taking <span class="math inline">\(x\)</span> as an input and performing no transformation.</p>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nnet_input</span> <span class="op">&lt;-</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">1L</span>, name <span class="op">=</span> <span class="st">"x_input"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">nnet_input</span> <span class="op">&lt;-</span> <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/keras_input.html" class="external-link">keras_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">1L</span>, name <span class="op">=</span> <span class="st">"x_input"</span><span class="op">)</span></span>
 <span><span class="va">nnet_output</span> <span class="op">&lt;-</span> <span class="va">nnet_input</span></span></code></pre></div>
 <p>Then, <code><a href="../reference/tf_compile_model.html">tf_compile_model()</a></code> adapts the input layer to the free parameter space <span class="math inline">\(\Theta = \mathbb{R}\)</span>.
 This introduces two parameters to the function family <span class="math inline">\(\mathcal{G}\)</span> and implies the functional relationship <span class="math inline">\(\mu = g(x) := \theta_1 \cdot x + \theta_0\)</span>.
@@ -1122,7 +1122,7 @@ Since our sample is fully observed, we disable censoring and truncation, leading
 <span>  inputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">nnet_input</span><span class="op">)</span>,</span>
 <span>  intermediate_output <span class="op">=</span> <span class="va">nnet_output</span>,</span>
 <span>  dist <span class="op">=</span> <span class="va">dist</span>,</span>
-<span>  optimizer <span class="op">=</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span>learning_rate <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,</span>
+<span>  optimizer <span class="op">=</span> <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span>learning_rate <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,</span>
 <span>  censoring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  truncation <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
@@ -1130,21 +1130,21 @@ Since our sample is fully observed, we disable censoring and truncation, leading
 <pre><code><span><span class="co">## A NormalDistribution with 1 dof</span></span></code></pre>
 <div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nnet</span><span class="op">$</span><span class="va">model</span></span></code></pre></div>
-<pre><code><span><span class="co">## Model: "model"</span></span>
-<span><span class="co">## ________________________________________________________________________________</span></span>
-<span><span class="co">##  Layer (type)                       Output Shape                    Param #     </span></span>
-<span><span class="co">## ================================================================================</span></span>
-<span><span class="co">##  x_input (InputLayer)               [(None, 1)]                     0           </span></span>
-<span><span class="co">##  mean (Dense)                       (None, 1)                       2           </span></span>
-<span><span class="co">## ================================================================================</span></span>
-<span><span class="co">## Total params: 2 (8.00 Byte)</span></span>
-<span><span class="co">## Trainable params: 2 (8.00 Byte)</span></span>
-<span><span class="co">## Non-trainable params: 0 (0.00 Byte)</span></span>
-<span><span class="co">## ________________________________________________________________________________</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="font-weight: bold;">Model: "functional_1"</span></span></span>
+<span><span class="co">## ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓</span></span>
+<span><span class="co">## ┃<span style="font-weight: bold;"> Layer (type)                      </span>┃<span style="font-weight: bold;"> Output Shape             </span>┃<span style="font-weight: bold;">       Param # </span>┃</span></span>
+<span><span class="co">## ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩</span></span>
+<span><span class="co">## │ x_input (<span style="color: #0087FF;">InputLayer</span>)              │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">1</span>)                │             <span style="color: #00AF00;">0</span> │</span></span>
+<span><span class="co">## ├───────────────────────────────────┼──────────────────────────┼───────────────┤</span></span>
+<span><span class="co">## │ mean (<span style="color: #0087FF;">Dense</span>)                      │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">1</span>)                │             <span style="color: #00AF00;">2</span> │</span></span>
+<span><span class="co">## └───────────────────────────────────┴──────────────────────────┴───────────────┘</span></span>
+<span><span class="co">## <span style="font-weight: bold;"> Total params: </span><span style="color: #00AF00;">2</span> (8.00 B)</span></span>
+<span><span class="co">## <span style="font-weight: bold;"> Trainable params: </span><span style="color: #00AF00;">2</span> (8.00 B)</span></span>
+<span><span class="co">## <span style="font-weight: bold;"> Non-trainable params: </span><span style="color: #00AF00;">0</span> (0.00 B)</span></span></code></pre>
 <p>The fit can now be performed, modifying the parameters (weights) of <code>nnet</code> in-place.
 Note that the argument <code>y</code> of fit accepts a <code>trunc_obs</code> object.
 In our example, the vector <code>y</code> is silently converted to an untruncated, uncensored <code>trunc_obs</code> object.
-<code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> returns the <code>keras_training_history</code> of the underlying call to <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> on the <code>keras.engine.training.Model</code>.</p>
+<code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> returns the <code>keras_training_history</code> of the underlying call to <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> on the <code>keras.src.models.model.Model</code>.</p>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nnet_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">nnet</span>,</span>
@@ -1157,12 +1157,14 @@ In our example, the vector <code>y</code> is silently converted to an untruncate
 <span><span class="op">)</span></span></code></pre></div>
 <p>The training history can be plotted, displaying the loss by epoch (black circles), and a blue smoothing line.</p>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Fix weird behavior of keras3</span></span>
+<span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">params</span><span class="op">$</span><span class="va">epochs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">params</span><span class="op">$</span><span class="va">epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">metrics</span><span class="op">$</span><span class="va">loss</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="jss_paper_files/figure-html/unnamed-chunk-23-1.png" width="672"></p>
 <p>The <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> method of <code>reservr_keras_model</code> takes input tensors and returns the predicted distribution parameters as a list compatible with <code>dist$get_placeholders()</code>.
 We can thus extract the only parameter <code>mean</code> and compare it to an OLS fit for the same dataset:</p>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pred_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">nnet</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">pred_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">nnet</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tensorflow/man/as_tensor.html" class="external-link">as_tensor</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">x</span>, <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/config_floatx.html" class="external-link">config_floatx</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">dataset</span><span class="op">)</span></span>
 <span></span>
@@ -1175,27 +1177,27 @@ We can thus extract the only parameter <code>mean</code> and compare it to an OL
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_pred</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_lm</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2L</span>, color <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="jss_paper_files/figure-html/unnamed-chunk-24-1.png" width="672"></p>
-<p>Since a <code>reservr_keras_model</code> includes the underlying <code>keras.engine.training.Model</code>, its parameters can also be extracted and compared to the OLS coefficients</p>
+<p>Since a <code>reservr_keras_model</code> includes the underlying <code>keras.src.models.model.Model</code>, its parameters can also be extracted and compared to the OLS coefficients</p>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">coef_nnet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">nnet</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="fu">get_weights</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">coef_lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm_fit</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">coef_nnet</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  num [1:2] 4.8 1.61</span></span></code></pre>
+<pre><code><span><span class="co">##  num [1:2] 4.85 1.61</span></span></code></pre>
 <div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">coef_lm</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  num [1:2] 0.565 1.957</span></span></code></pre>
-<p>We now discuss a more complex example involving censoring, using the right-censored <code>ovarian</code> dataset bundled with the <strong>survival</strong> package <span class="citation">(<a href="#ref-baseR" role="doc-biblioref">R Core Team 2023</a>)</span>.
+<p>We now discuss a more complex example involving censoring, using the right-censored <code>ovarian</code> dataset bundled with the <strong>survival</strong> package <span class="citation">(<a href="#ref-baseR">R Core Team 2023</a>)</span>.
 Our goal is to predict the rate parameter of an exponential survival time distribution in cancer patients given four features <span class="math inline">\(X = (\mathtt{age}, \mathtt{resid.ds}, \mathtt{rx}, \mathtt{ecog.ps})\)</span> collected in the study.
 The variables <span class="math inline">\(\mathtt{resid.ds}, \mathtt{rx}\)</span> and <span class="math inline">\(\mathtt{ecog.ps}\)</span> are indicator variables coded in <span class="math inline">\(\{1, 2\}\)</span>.
 <span class="math inline">\(\mathtt{age}\)</span> is a continuous variable with values in <span class="math inline">\((38, 75)\)</span>.
 Due to the different scale of the <span class="math inline">\(\mathtt{age}\)</span> variable, it is useful to separate it from the other variables in order to perform normalization.
-Normalization using <code><a href="https://rdrr.io/pkg/keras/man/layer_normalization.html" class="external-link">keras::layer_normalization()</a></code> transforms its input variables to zero mean and unit variance.
+Normalization using <code><a href="https://keras3.posit.co/reference/layer_normalization.html" class="external-link">keras3::layer_normalization()</a></code> transforms its input variables to zero mean and unit variance.
 This step is not necessary for the categorical features.</p>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1219L</span><span class="op">)</span></span>
 <span><span class="fu">tensorflow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tensorflow/man/set_random_seed.html" class="external-link">set_random_seed</a></span><span class="op">(</span><span class="fl">1219L</span><span class="op">)</span></span>
-<span><span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/k_floatx.html" class="external-link">k_set_floatx</a></span><span class="op">(</span><span class="st">"float32"</span><span class="op">)</span></span>
+<span><span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/config_set_floatx.html" class="external-link">config_set_floatx</a></span><span class="op">(</span><span class="st">"float32"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dist_exponential.html">dist_exponential</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ovarian</span> <span class="op">&lt;-</span> <span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/ovarian.html" class="external-link">ovarian</a></span></span>
@@ -1205,66 +1207,67 @@ This step is not necessary for the categorical features.</p>
 <span>    xmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ovarian</span><span class="op">$</span><span class="va">fustat</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">ovarian</span><span class="op">$</span><span class="va">futime</span>, <span class="cn">Inf</span><span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    age <span class="op">=</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/k_constant.html" class="external-link">k_constant</a></span><span class="op">(</span><span class="va">ovarian</span><span class="op">$</span><span class="va">age</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ovarian</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    age <span class="op">=</span> <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tensorflow/man/as_tensor.html" class="external-link">as_tensor</a></span><span class="op">(</span><span class="va">ovarian</span><span class="op">$</span><span class="va">age</span>, <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/config_floatx.html" class="external-link">config_floatx</a></span><span class="op">(</span><span class="op">)</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ovarian</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    flags <span class="op">=</span> <span class="fu"><a href="../reference/k_matrix.html">k_matrix</a></span><span class="op">(</span><span class="va">ovarian</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"resid.ds"</span>, <span class="st">"rx"</span>, <span class="st">"ecog.ps"</span><span class="op">)</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1.0</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Next, we define the input layers and shapes, conforming to our input predictor list <code>dat$x</code>.</p>
 <div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nnet_inputs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">1L</span>, name <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span>,</span>
-<span>  <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_input.html" class="external-link">layer_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">3L</span>, name <span class="op">=</span> <span class="st">"flags"</span><span class="op">)</span></span>
+<span>  <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/keras_input.html" class="external-link">keras_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">1L</span>, name <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/keras_input.html" class="external-link">keras_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">3L</span>, name <span class="op">=</span> <span class="st">"flags"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><code>age</code> will be normalized and then concatenated to the other features, stored in <code>flags</code>, resulting in a 4-dimensional representation.
 We then add two hidden ReLU-layers each with <span class="math inline">\(5\)</span> neurons to the network and compile the result, adapting the 5-dimensional hidden output to the parameter space <span class="math inline">\(\Theta = (0, \infty)\)</span> for the rate parameter of an exponential distribution.
 This is accomplished using a dense layer with <span class="math inline">\(1\)</span> neuron and the <span class="math inline">\(\mathrm{softplus}\)</span> activation function.</p>
 <div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">hidden1</span> <span class="op">&lt;-</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_concatenate.html" class="external-link">layer_concatenate</a></span><span class="op">(</span></span>
-<span>  <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_normalization.html" class="external-link">layer_normalization</a></span><span class="op">(</span><span class="va">nnet_inputs</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="va">hidden1</span> <span class="op">&lt;-</span> <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/layer_concatenate.html" class="external-link">layer_concatenate</a></span><span class="op">(</span></span>
+<span>  <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/layer_normalization.html" class="external-link">layer_normalization</a></span><span class="op">(</span><span class="va">nnet_inputs</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>  <span class="va">nnet_inputs</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">hidden2</span> <span class="op">&lt;-</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_dense.html" class="external-link">layer_dense</a></span><span class="op">(</span></span>
+<span><span class="va">hidden2</span> <span class="op">&lt;-</span> <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/layer_dense.html" class="external-link">layer_dense</a></span><span class="op">(</span></span>
 <span>  <span class="va">hidden1</span>,</span>
 <span>  units <span class="op">=</span> <span class="fl">5L</span>,</span>
-<span>  activation <span class="op">=</span> <span class="fu">keras</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/keras/man/activation_relu.html" class="external-link">activation_relu</a></span></span>
+<span>  activation <span class="op">=</span> <span class="fu">keras3</span><span class="fu">::</span><span class="va"><a href="https://keras3.posit.co/reference/activation_relu.html" class="external-link">activation_relu</a></span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">nnet_output</span> <span class="op">&lt;-</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_dense.html" class="external-link">layer_dense</a></span><span class="op">(</span></span>
+<span><span class="va">nnet_output</span> <span class="op">&lt;-</span> <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/layer_dense.html" class="external-link">layer_dense</a></span><span class="op">(</span></span>
 <span>  <span class="va">hidden2</span>,</span>
 <span>  units <span class="op">=</span> <span class="fl">5L</span>,</span>
-<span>  activation <span class="op">=</span> <span class="fu">keras</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/keras/man/activation_relu.html" class="external-link">activation_relu</a></span></span>
+<span>  activation <span class="op">=</span> <span class="fu">keras3</span><span class="fu">::</span><span class="va"><a href="https://keras3.posit.co/reference/activation_relu.html" class="external-link">activation_relu</a></span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nnet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tf_compile_model.html">tf_compile_model</a></span><span class="op">(</span></span>
 <span>  inputs <span class="op">=</span> <span class="va">nnet_inputs</span>,</span>
 <span>  intermediate_output <span class="op">=</span> <span class="va">nnet_output</span>,</span>
 <span>  dist <span class="op">=</span> <span class="va">dist</span>,</span>
-<span>  optimizer <span class="op">=</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span>learning_rate <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>  optimizer <span class="op">=</span> <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/optimizer_adam.html" class="external-link">optimizer_adam</a></span><span class="op">(</span>learning_rate <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>,</span>
 <span>  censoring <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  truncation <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">nnet</span><span class="op">$</span><span class="va">model</span></span></code></pre></div>
-<pre><code><span><span class="co">## Model: "model_1"</span></span>
-<span><span class="co">## ________________________________________________________________________________</span></span>
-<span><span class="co">##  Layer (type)       Output Shape         Para   Connected to         Trainable  </span></span>
-<span><span class="co">##                                          m #                                    </span></span>
-<span><span class="co">## ================================================================================</span></span>
-<span><span class="co">##  age (InputLayer)   [(None, 1)]          0      []                   Y          </span></span>
-<span><span class="co">##  normalization (No  (None, 1)            3      ['age[0][0]']        Y          </span></span>
-<span><span class="co">##  rmalization)                                                                   </span></span>
-<span><span class="co">##  flags (InputLayer  [(None, 3)]          0      []                   Y          </span></span>
-<span><span class="co">##  )                                                                              </span></span>
-<span><span class="co">##  concatenate (Conc  (None, 4)            0      ['normalization[0]   Y          </span></span>
-<span><span class="co">##  atenate)                                       [0]',                           </span></span>
-<span><span class="co">##                                                  'flags[0][0]']                 </span></span>
-<span><span class="co">##  dense (Dense)      (None, 5)            25     ['concatenate[0][0   Y          </span></span>
-<span><span class="co">##                                                 ]']                             </span></span>
-<span><span class="co">##  dense_1 (Dense)    (None, 5)            30     ['dense[0][0]']      Y          </span></span>
-<span><span class="co">##  rate (Dense)       (None, 1)            6      ['dense_1[0][0]']    Y          </span></span>
-<span><span class="co">## ================================================================================</span></span>
-<span><span class="co">## Total params: 64 (260.00 Byte)</span></span>
-<span><span class="co">## Trainable params: 61 (244.00 Byte)</span></span>
-<span><span class="co">## Non-trainable params: 3 (16.00 Byte)</span></span>
-<span><span class="co">## ________________________________________________________________________________</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="font-weight: bold;">Model: "functional_3"</span></span></span>
+<span><span class="co">## ┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━┓</span></span>
+<span><span class="co">## ┃<span style="font-weight: bold;"> Layer (type)       </span>┃<span style="font-weight: bold;"> Output Shape     </span>┃<span style="font-weight: bold;">    Param # </span>┃<span style="font-weight: bold;"> Connected to    </span>┃<span style="font-weight: bold;"> Trai… </span>┃</span></span>
+<span><span class="co">## ┡━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━┩</span></span>
+<span><span class="co">## │ age (<span style="color: #0087FF;">InputLayer</span>)   │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">1</span>)        │          <span style="color: #00AF00;">0</span> │ -               │   <span style="font-weight: bold;">-</span>   │</span></span>
+<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
+<span><span class="co">## │ normalization      │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">1</span>)        │          <span style="color: #00AF00;">3</span> │ age[<span style="color: #00AF00;">0</span>][<span style="color: #00AF00;">0</span>]       │   <span style="color: #00AF00; font-weight: bold;">Y</span>   │</span></span>
+<span><span class="co">## │ (<span style="color: #0087FF;">Normalization</span>)    │                  │            │                 │       │</span></span>
+<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
+<span><span class="co">## │ flags (<span style="color: #0087FF;">InputLayer</span>) │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">3</span>)        │          <span style="color: #00AF00;">0</span> │ -               │   <span style="font-weight: bold;">-</span>   │</span></span>
+<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
+<span><span class="co">## │ concatenate        │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">4</span>)        │          <span style="color: #00AF00;">0</span> │ normalization[<span style="color: #00AF00;">…</span> │   <span style="font-weight: bold;">-</span>   │</span></span>
+<span><span class="co">## │ (<span style="color: #0087FF;">Concatenate</span>)      │                  │            │ flags[<span style="color: #00AF00;">0</span>][<span style="color: #00AF00;">0</span>]     │       │</span></span>
+<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
+<span><span class="co">## │ dense (<span style="color: #0087FF;">Dense</span>)      │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">5</span>)        │         <span style="color: #00AF00;">25</span> │ concatenate[<span style="color: #00AF00;">0</span>]… │   <span style="color: #00AF00; font-weight: bold;">Y</span>   │</span></span>
+<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
+<span><span class="co">## │ dense_1 (<span style="color: #0087FF;">Dense</span>)    │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">5</span>)        │         <span style="color: #00AF00;">30</span> │ dense[<span style="color: #00AF00;">0</span>][<span style="color: #00AF00;">0</span>]     │   <span style="color: #00AF00; font-weight: bold;">Y</span>   │</span></span>
+<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
+<span><span class="co">## │ rate (<span style="color: #0087FF;">Dense</span>)       │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">1</span>)        │          <span style="color: #00AF00;">6</span> │ dense_1[<span style="color: #00AF00;">0</span>][<span style="color: #00AF00;">0</span>]   │   <span style="color: #00AF00; font-weight: bold;">Y</span>   │</span></span>
+<span><span class="co">## └────────────────────┴──────────────────┴────────────┴─────────────────┴───────┘</span></span>
+<span><span class="co">## <span style="font-weight: bold;"> Total params: </span><span style="color: #00AF00;">64</span> (260.00 B)</span></span>
+<span><span class="co">## <span style="font-weight: bold;"> Trainable params: </span><span style="color: #00AF00;">61</span> (244.00 B)</span></span>
+<span><span class="co">## <span style="font-weight: bold;"> Non-trainable params: </span><span style="color: #00AF00;">3</span> (16.00 B)</span></span></code></pre>
 <p>For stability reasons, the default weight initialization is not optimal.
 To circumvent this, we estimate a global exponential distribution fit on the observations and initialize the final layer weights such that the global fit is the initial prediction of the network.</p>
 <div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
@@ -1288,6 +1291,8 @@ To circumvent this, we estimate a global exponential distribution fit on the obs
 <span>  shuffle <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">params</span><span class="op">$</span><span class="va">epochs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">params</span><span class="op">$</span><span class="va">epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">metrics</span><span class="op">$</span><span class="va">loss</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="jss_paper_files/figure-html/unnamed-chunk-30-1.png" width="672"></p>
 <div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
@@ -1315,7 +1320,7 @@ The package includes facilities for (1) description of randomly truncated non-in
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-tensorflow" class="csl-entry">
 Abadi, Martín, Ashish Agarwal, Paul Barham, Eugene Brevdo, Zhifeng Chen, Craig Citro, Greg S. Corrado, et al. 2015. <span>“<span>TensorFlow</span>: Large-Scale Machine Learning on Heterogeneous Systems.”</span> <a href="https://www.tensorflow.org/" class="external-link">https://www.tensorflow.org/</a>.
 </div>
@@ -1388,13 +1393,11 @@ Venables, W. N., and B. D. Ripley. 2002. <em>Modern Applied Statistics with s</e
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Alexander Rosenstock.</p>
+  <p>Developed by Alexander Rosenstock.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
     </footer>
