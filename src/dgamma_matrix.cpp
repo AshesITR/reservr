@@ -20,8 +20,10 @@ NumericMatrix dgamma_matrix(NumericVector x, NumericVector shape, double scale) 
 NumericMatrix pgamma_diff_matrix(const NumericVector lower, const NumericVector upper, const NumericVector shape, const NumericVector scale) {
   int n = std::max(lower.size(), scale.size()), m = shape.size();
   NumericMatrix res(n, m);
-  if (n == 0 || m == 0) {
-    return res;
+  if (lower.size() == 0 || scale.size() == 0) {
+    return NumericMatrix(0, m);
+  } else if (m == 0) {
+    return NumericMatrix(n, 0);
   }
   int i_scale = 0, d_scale = scale.size() > 1 ? 1 : 0;
   int i_interval = 0, d_interval = lower.size() > 1 ? 1 : 0;
