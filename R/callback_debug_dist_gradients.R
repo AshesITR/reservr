@@ -33,7 +33,12 @@
 #'     truncation = FALSE
 #'   )
 #'   tf_initialise_model(mod, global_fit$params)
-#'   gradient_tracker <- callback_debug_dist_gradients(mod, as_tensor(group, config_floatx()), x, keep_grads = TRUE)
+#'   gradient_tracker <- callback_debug_dist_gradients(
+#'     mod,
+#'     as_tensor(group, config_floatx()),
+#'     x,
+#'     keep_grads = TRUE
+#'   )
 #'   fit_history <- fit(
 #'     mod,
 #'     x = as_tensor(group, config_floatx()),
