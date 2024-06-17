@@ -53,9 +53,9 @@ to the best seen so far whenever a learning rate reduction occurs, and with slig
 detection.
 }
 \details{
-Note that while \code{\link[=callback_reduce_lr_on_plateau]{callback_reduce_lr_on_plateau()}} automatically logs the learning rate as a metric 'lr',
+Note that while \code{\link[keras3:callback_reduce_lr_on_plateau]{keras3::callback_reduce_lr_on_plateau()}} automatically logs the learning rate as a metric 'lr',
 this is currently impossible from R.
-Thus, if you want to also log the learning rate, you should add \code{\link[=callback_reduce_lr_on_plateau]{callback_reduce_lr_on_plateau()}} with a high
+Thus, if you want to also log the learning rate, you should add \code{\link[keras3:callback_reduce_lr_on_plateau]{keras3::callback_reduce_lr_on_plateau()}} with a high
 \code{min_lr} to effectively disable the callback but still monitor the learning rate.
 }
 \examples{

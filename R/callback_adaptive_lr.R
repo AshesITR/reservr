@@ -21,9 +21,9 @@
 #' @param restore_weights Bool. If TRUE, the best weights will be restored at each learning rate reduction.
 #' This is very useful if the metric oscillates.
 #'
-#' @details Note that while [callback_reduce_lr_on_plateau()] automatically logs the learning rate as a metric 'lr',
+#' @details Note that while [keras3::callback_reduce_lr_on_plateau()] automatically logs the learning rate as a metric 'lr',
 #' this is currently impossible from R.
-#' Thus, if you want to also log the learning rate, you should add [callback_reduce_lr_on_plateau()] with a high
+#' Thus, if you want to also log the learning rate, you should add [keras3::callback_reduce_lr_on_plateau()] with a high
 #' `min_lr` to effectively disable the callback but still monitor the learning rate.
 #'
 #' @return A `KerasCallback` suitable for passing to [keras3::fit()].
