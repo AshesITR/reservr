@@ -135,9 +135,9 @@ This is very useful if the metric oscillates.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Note that while <code><a href="https://keras3.posit.co/reference/callback_reduce_lr_on_plateau.html" class="external-link">callback_reduce_lr_on_plateau()</a></code> automatically logs the learning rate as a metric 'lr',
+    <p>Note that while <code><a href="https://keras3.posit.co/reference/callback_reduce_lr_on_plateau.html" class="external-link">keras3::callback_reduce_lr_on_plateau()</a></code> automatically logs the learning rate as a metric 'lr',
 this is currently impossible from R.
-Thus, if you want to also log the learning rate, you should add <code><a href="https://keras3.posit.co/reference/callback_reduce_lr_on_plateau.html" class="external-link">callback_reduce_lr_on_plateau()</a></code> with a high
+Thus, if you want to also log the learning rate, you should add <code><a href="https://keras3.posit.co/reference/callback_reduce_lr_on_plateau.html" class="external-link">keras3::callback_reduce_lr_on_plateau()</a></code> with a high
 <code>min_lr</code> to effectively disable the callback but still monitor the learning rate.</p>
     </div>
 

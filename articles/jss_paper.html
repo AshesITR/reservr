@@ -385,8 +385,10 @@ For discrete random variables, <span class="math inline">\(\mathtt{xmin}\)</span
 The following code defines a sample of size 1 without truncation and censoring, with the realized value of <span class="math inline">\(1.3\)</span>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/trunc_obs.html">trunc_obs</a></span><span class="op">(</span><span class="fl">1.3</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##     x xmin xmax tmin tmax w</span></span>
-<span><span class="co">## 1 1.3  1.3  1.3 -Inf  Inf 1</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A data frame: 1 × 6</span></span></span>
+<span><span class="co">##       x  xmin  xmax  tmin  tmax     w</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>   1.3   1.3   1.3  -<span style="color: #BB0000;">Inf</span>   <span style="color: #BB0000;">Inf</span>     1</span></span></code></pre>
 <p>Simulating randomly truncated and interval censored data from a standard normal distribution with <span class="math inline">\(80\%\)</span> of the observations randomly interval censored and random uniform truncation <span class="math inline">\(L \sim \mathrm{Unif}[-2, 0]\)</span> and <span class="math inline">\(U \sim \mathrm{Unif}[0, 2]\)</span> can be simulated as follows</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
@@ -805,9 +807,9 @@ This is useful for conditional maximum likelihood estimation in the presence of 
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
 <span><span class="co">##   expression                            min  median `itr/sec` mem_alloc `gc/sec`</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> dist$density(-2:2, with_params =…  26.2µs 28.25µs    <span style="text-decoration: underline;">34</span>886.        0B     38.4</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> denscmp(-2:2, matrix(c(0, 1), nr…  4.25µs  4.77µs   <span style="text-decoration: underline;">205</span>280.        0B     61.6</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> dnorm(-2:2, mean = rep(0, 5L), s…  1.71µs  1.93µs   <span style="text-decoration: underline;">487</span>770.    2.58KB     48.8</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> dist$density(-2:2, with_params =… 27.08µs 29.92µs    <span style="text-decoration: underline;">32</span>435.        0B     16.2</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> denscmp(-2:2, matrix(c(0, 1), nr…   4.1µs  4.79µs   <span style="text-decoration: underline;">200</span>114.        0B     40.0</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> dnorm(-2:2, mean = rep(0, 5L), s…  1.66µs  1.96µs   <span style="text-decoration: underline;">478</span>716.    2.58KB      0</span></span></code></pre>
 </div>
 <div class="section level4" number="2.2.5" short-title="tensorflow interface">
 <h4 id="tensorflow-interface">
@@ -1126,26 +1128,13 @@ Since our sample is fully observed, we disable censoring and truncation, leading
 <span>  censoring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  truncation <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">nnet</span><span class="op">$</span><span class="va">dist</span></span></code></pre></div>
-<pre><code><span><span class="co">## A NormalDistribution with 1 dof</span></span></code></pre>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nnet</span><span class="op">$</span><span class="va">model</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="font-weight: bold;">Model: "functional_1"</span></span></span>
-<span><span class="co">## ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓</span></span>
-<span><span class="co">## ┃<span style="font-weight: bold;"> Layer (type)                      </span>┃<span style="font-weight: bold;"> Output Shape             </span>┃<span style="font-weight: bold;">       Param # </span>┃</span></span>
-<span><span class="co">## ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩</span></span>
-<span><span class="co">## │ x_input (<span style="color: #0087FF;">InputLayer</span>)              │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">1</span>)                │             <span style="color: #00AF00;">0</span> │</span></span>
-<span><span class="co">## ├───────────────────────────────────┼──────────────────────────┼───────────────┤</span></span>
-<span><span class="co">## │ mean (<span style="color: #0087FF;">Dense</span>)                      │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">1</span>)                │             <span style="color: #00AF00;">2</span> │</span></span>
-<span><span class="co">## └───────────────────────────────────┴──────────────────────────┴───────────────┘</span></span>
-<span><span class="co">## <span style="font-weight: bold;"> Total params: </span><span style="color: #00AF00;">2</span> (8.00 B)</span></span>
-<span><span class="co">## <span style="font-weight: bold;"> Trainable params: </span><span style="color: #00AF00;">2</span> (8.00 B)</span></span>
-<span><span class="co">## <span style="font-weight: bold;"> Non-trainable params: </span><span style="color: #00AF00;">0</span> (0.00 B)</span></span></code></pre>
+<span><span class="va">nnet</span><span class="op">$</span><span class="va">dist</span></span>
+<span><span class="va">nnet</span><span class="op">$</span><span class="va">model</span></span></code></pre></div>
 <p>The fit can now be performed, modifying the parameters (weights) of <code>nnet</code> in-place.
 Note that the argument <code>y</code> of fit accepts a <code>trunc_obs</code> object.
 In our example, the vector <code>y</code> is silently converted to an untruncated, uncensored <code>trunc_obs</code> object.
 <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> returns the <code>keras_training_history</code> of the underlying call to <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> on the <code>keras.src.models.model.Model</code>.</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nnet_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">nnet</span>,</span>
 <span>  x <span class="op">=</span> <span class="va">dataset</span><span class="op">$</span><span class="va">x</span>,</span>
@@ -1156,14 +1145,13 @@ In our example, the vector <code>y</code> is silently converted to an untruncate
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The training history can be plotted, displaying the loss by epoch (black circles), and a blue smoothing line.</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fix weird behavior of keras3</span></span>
 <span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">params</span><span class="op">$</span><span class="va">epochs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">params</span><span class="op">$</span><span class="va">epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">metrics</span><span class="op">$</span><span class="va">loss</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">)</span></span></code></pre></div>
-<p><img src="jss_paper_files/figure-html/unnamed-chunk-23-1.png" width="672"></p>
 <p>The <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> method of <code>reservr_keras_model</code> takes input tensors and returns the predicted distribution parameters as a list compatible with <code>dist$get_placeholders()</code>.
 We can thus extract the only parameter <code>mean</code> and compare it to an OLS fit for the same dataset:</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pred_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">nnet</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tensorflow/man/as_tensor.html" class="external-link">as_tensor</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">x</span>, <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/config_floatx.html" class="external-link">config_floatx</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">dataset</span><span class="op">)</span></span>
@@ -1176,17 +1164,13 @@ We can thus extract the only parameter <code>mean</code> and compare it to an OL
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_pred</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_lm</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2L</span>, color <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="jss_paper_files/figure-html/unnamed-chunk-24-1.png" width="672"></p>
 <p>Since a <code>reservr_keras_model</code> includes the underlying <code>keras.src.models.model.Model</code>, its parameters can also be extracted and compared to the OLS coefficients</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">coef_nnet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">nnet</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="fu">get_weights</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">coef_lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm_fit</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">coef_nnet</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  num [1:2] 4.85 1.61</span></span></code></pre>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">coef_lm</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  num [1:2] 0.565 1.957</span></span></code></pre>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">coef_nnet</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">coef_lm</span><span class="op">)</span></span></code></pre></div>
 <p>We now discuss a more complex example involving censoring, using the right-censored <code>ovarian</code> dataset bundled with the <strong>survival</strong> package <span class="citation">(<a href="#ref-baseR">R Core Team 2023</a>)</span>.
 Our goal is to predict the rate parameter of an exponential survival time distribution in cancer patients given four features <span class="math inline">\(X = (\mathtt{age}, \mathtt{resid.ds}, \mathtt{rx}, \mathtt{ecog.ps})\)</span> collected in the study.
 The variables <span class="math inline">\(\mathtt{resid.ds}, \mathtt{rx}\)</span> and <span class="math inline">\(\mathtt{ecog.ps}\)</span> are indicator variables coded in <span class="math inline">\(\{1, 2\}\)</span>.
@@ -1194,7 +1178,7 @@ The variables <span class="math inline">\(\mathtt{resid.ds}, \mathtt{rx}\)</span
 Due to the different scale of the <span class="math inline">\(\mathtt{age}\)</span> variable, it is useful to separate it from the other variables in order to perform normalization.
 Normalization using <code><a href="https://keras3.posit.co/reference/layer_normalization.html" class="external-link">keras3::layer_normalization()</a></code> transforms its input variables to zero mean and unit variance.
 This step is not necessary for the categorical features.</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1219L</span><span class="op">)</span></span>
 <span><span class="fu">tensorflow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tensorflow/man/set_random_seed.html" class="external-link">set_random_seed</a></span><span class="op">(</span><span class="fl">1219L</span><span class="op">)</span></span>
 <span><span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/config_set_floatx.html" class="external-link">config_set_floatx</a></span><span class="op">(</span><span class="st">"float32"</span><span class="op">)</span></span>
@@ -1212,7 +1196,7 @@ This step is not necessary for the categorical features.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Next, we define the input layers and shapes, conforming to our input predictor list <code>dat$x</code>.</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nnet_inputs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/keras_input.html" class="external-link">keras_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">1L</span>, name <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/keras_input.html" class="external-link">keras_input</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">3L</span>, name <span class="op">=</span> <span class="st">"flags"</span><span class="op">)</span></span>
@@ -1220,7 +1204,7 @@ This step is not necessary for the categorical features.</p>
 <p><code>age</code> will be normalized and then concatenated to the other features, stored in <code>flags</code>, resulting in a 4-dimensional representation.
 We then add two hidden ReLU-layers each with <span class="math inline">\(5\)</span> neurons to the network and compile the result, adapting the 5-dimensional hidden output to the parameter space <span class="math inline">\(\Theta = (0, \infty)\)</span> for the rate parameter of an exponential distribution.
 This is accomplished using a dense layer with <span class="math inline">\(1\)</span> neuron and the <span class="math inline">\(\mathrm{softplus}\)</span> activation function.</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hidden1</span> <span class="op">&lt;-</span> <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/layer_concatenate.html" class="external-link">layer_concatenate</a></span><span class="op">(</span></span>
 <span>  <span class="fu">keras3</span><span class="fu">::</span><span class="fu"><a href="https://keras3.posit.co/reference/layer_normalization.html" class="external-link">layer_normalization</a></span><span class="op">(</span><span class="va">nnet_inputs</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>  <span class="va">nnet_inputs</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span></span>
@@ -1245,43 +1229,15 @@ This is accomplished using a dense layer with <span class="math inline">\(1\)</s
 <span>  truncation <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">nnet</span><span class="op">$</span><span class="va">model</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="font-weight: bold;">Model: "functional_3"</span></span></span>
-<span><span class="co">## ┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━┓</span></span>
-<span><span class="co">## ┃<span style="font-weight: bold;"> Layer (type)       </span>┃<span style="font-weight: bold;"> Output Shape     </span>┃<span style="font-weight: bold;">    Param # </span>┃<span style="font-weight: bold;"> Connected to    </span>┃<span style="font-weight: bold;"> Trai… </span>┃</span></span>
-<span><span class="co">## ┡━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━┩</span></span>
-<span><span class="co">## │ age (<span style="color: #0087FF;">InputLayer</span>)   │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">1</span>)        │          <span style="color: #00AF00;">0</span> │ -               │   <span style="font-weight: bold;">-</span>   │</span></span>
-<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
-<span><span class="co">## │ normalization      │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">1</span>)        │          <span style="color: #00AF00;">3</span> │ age[<span style="color: #00AF00;">0</span>][<span style="color: #00AF00;">0</span>]       │   <span style="color: #00AF00; font-weight: bold;">Y</span>   │</span></span>
-<span><span class="co">## │ (<span style="color: #0087FF;">Normalization</span>)    │                  │            │                 │       │</span></span>
-<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
-<span><span class="co">## │ flags (<span style="color: #0087FF;">InputLayer</span>) │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">3</span>)        │          <span style="color: #00AF00;">0</span> │ -               │   <span style="font-weight: bold;">-</span>   │</span></span>
-<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
-<span><span class="co">## │ concatenate        │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">4</span>)        │          <span style="color: #00AF00;">0</span> │ normalization[<span style="color: #00AF00;">…</span> │   <span style="font-weight: bold;">-</span>   │</span></span>
-<span><span class="co">## │ (<span style="color: #0087FF;">Concatenate</span>)      │                  │            │ flags[<span style="color: #00AF00;">0</span>][<span style="color: #00AF00;">0</span>]     │       │</span></span>
-<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
-<span><span class="co">## │ dense (<span style="color: #0087FF;">Dense</span>)      │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">5</span>)        │         <span style="color: #00AF00;">25</span> │ concatenate[<span style="color: #00AF00;">0</span>]… │   <span style="color: #00AF00; font-weight: bold;">Y</span>   │</span></span>
-<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
-<span><span class="co">## │ dense_1 (<span style="color: #0087FF;">Dense</span>)    │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">5</span>)        │         <span style="color: #00AF00;">30</span> │ dense[<span style="color: #00AF00;">0</span>][<span style="color: #00AF00;">0</span>]     │   <span style="color: #00AF00; font-weight: bold;">Y</span>   │</span></span>
-<span><span class="co">## ├────────────────────┼──────────────────┼────────────┼─────────────────┼───────┤</span></span>
-<span><span class="co">## │ rate (<span style="color: #0087FF;">Dense</span>)       │ (<span style="color: #00D7FF;">None</span>, <span style="color: #00AF00;">1</span>)        │          <span style="color: #00AF00;">6</span> │ dense_1[<span style="color: #00AF00;">0</span>][<span style="color: #00AF00;">0</span>]   │   <span style="color: #00AF00; font-weight: bold;">Y</span>   │</span></span>
-<span><span class="co">## └────────────────────┴──────────────────┴────────────┴─────────────────┴───────┘</span></span>
-<span><span class="co">## <span style="font-weight: bold;"> Total params: </span><span style="color: #00AF00;">64</span> (260.00 B)</span></span>
-<span><span class="co">## <span style="font-weight: bold;"> Trainable params: </span><span style="color: #00AF00;">61</span> (244.00 B)</span></span>
-<span><span class="co">## <span style="font-weight: bold;"> Non-trainable params: </span><span style="color: #00AF00;">3</span> (16.00 B)</span></span></code></pre>
 <p>For stability reasons, the default weight initialization is not optimal.
 To circumvent this, we estimate a global exponential distribution fit on the observations and initialize the final layer weights such that the global fit is the initial prediction of the network.</p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">nnet</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## List of 1</span></span>
-<span><span class="co">##  $ rate: num [1:26] 2.15e-15 7.91e-16 6.10e-14 1.52e-11 5.70e-11 ...</span></span></code></pre>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">global_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">dist</span>, <span class="va">dat</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">nnet</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">global_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">dist</span>, <span class="va">dat</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/tf_initialise_model.html">tf_initialise_model</a></span><span class="op">(</span><span class="va">nnet</span>, params <span class="op">=</span> <span class="va">global_fit</span><span class="op">$</span><span class="va">params</span>, mode <span class="op">=</span> <span class="st">"zero"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">nnet</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## List of 1</span></span>
-<span><span class="co">##  $ rate: num [1:26] 0.00077 0.00077 0.00077 0.00077 0.00077 ...</span></span></code></pre>
 <p>Finally, we can train the network and visualize the predictions.</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nnet_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">nnet</span>,</span>
 <span>  x <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>,</span>
@@ -1293,15 +1249,12 @@ To circumvent this, we estimate a global exponential distribution fit on the obs
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">params</span><span class="op">$</span><span class="va">epochs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">params</span><span class="op">$</span><span class="va">epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">$</span><span class="va">metrics</span><span class="op">$</span><span class="va">loss</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">)</span></span></code></pre></div>
-<p><img src="jss_paper_files/figure-html/unnamed-chunk-30-1.png" width="672"></p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ovarian</span><span class="op">$</span><span class="va">expected_lifetime</span> <span class="op">&lt;-</span> <span class="fl">1.0</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">nnet</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">rate</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nnet_fit</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ovarian</span><span class="op">$</span><span class="va">expected_lifetime</span> <span class="op">&lt;-</span> <span class="fl">1.0</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">nnet</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">rate</span></span></code></pre></div>
 <p>A plot of expected lifetime by <span class="math inline">\((\mathtt{age}, \mathtt{rx})\)</span> shows that the network learned longer expected lifetimes for lower <span class="math inline">\(\mathtt{age}\)</span> and for treatment group (<span class="math inline">\(\mathtt{rx}\)</span>) 2.
 The global fit is included as a dashed blue line.</p>
-<p><img src="jss_paper_files/figure-html/unnamed-chunk-31-1.png" width="672"></p>
 <p>Individual predictions and observations can also be plotted on a subject level.</p>
-<p><img src="jss_paper_files/figure-html/unnamed-chunk-32-1.png" width="672"></p>
 </div>
 </div>
 <div class="section level2" number="3">
