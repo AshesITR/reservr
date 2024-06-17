@@ -39,6 +39,7 @@ vignette: >
 ```{r, setup, include=FALSE}
 library(reservr)
 options(prompt = 'R> ', continue = '+ ')
+keras_available <- reticulate::py_module_available("tensorflow.keras")
 ```
 
 \shortcites{deepregression,tensorflow}
@@ -829,7 +830,7 @@ Given input layers `inputs` and an intermediate output layer `intermediate_outpu
 The following example defines a linear model with homoskedasticity assumption and fits it using $100$ iterations of the Adam optimization algorithm [@Kingma2015].
 First, we simulate data $(Y,X)$ from the model defined by $X \sim \mathrm{Unif}(10,20)$ and $Y | X =x \sim \mathcal{N}(\mu = 2x, \sigma = 1)$.
 
-```{r}
+```{r, eval = keras_available}
 set.seed(1431L)
 keras3::set_random_seed(1432L)
 
@@ -847,7 +848,7 @@ dist <- dist_normal(sd = 1.0)
 
 Using **keras**, we define an empty neural network, just taking $x$ as an input and performing no transformation.
 
-```{r}
+```{r, eval = keras_available}
 nnet_input <- keras3::keras_input(shape = 1L, name = "x_input")
 nnet_output <- nnet_input
 ```
@@ -862,7 +863,7 @@ Since our sample is fully observed, we disable censoring and truncation, leading
 
 where $f_\mu(y)$ is the density of $\mathcal{N}(\mu=\mu, \sigma=1)$ evaluated at $y$.
 
-```{r}
+```{r, eval = keras_available}
 nnet <- tf_compile_model(
   inputs = list(nnet_input),
   intermediate_output = nnet_output,
@@ -880,7 +881,7 @@ Note that the argument `y` of fit accepts a `trunc_obs` object.
 In our example, the vector `y` is silently converted to an untruncated, uncensored `trunc_obs` object.
 `fit()` returns the `keras_training_history` of the underlying call to `fit()` on the `keras.src.models.model.Model`.
 
-```{r}
+```{r, eval = keras_available}
 nnet_fit <- fit(
   nnet,
   x = dataset$x,
@@ -894,7 +895,7 @@ nnet_fit <- fit(
 
 The training history can be plotted, displaying the loss by epoch (black circles), and a blue smoothing line.
 
-```{r}
+```{r, eval = keras_available}
 # Fix weird behavior of keras3
 nnet_fit$params$epochs <- max(nnet_fit$params$epochs, length(nnet_fit$metrics$loss))
 plot(nnet_fit)
@@ -903,7 +904,7 @@ plot(nnet_fit)
 The `predict()` method of `reservr_keras_model` takes input tensors and returns the predicted distribution parameters as a list compatible with `dist$get_placeholders()`.
 We can thus extract the only parameter `mean` and compare it to an OLS fit for the same dataset:
 
-```{r}
+```{r, eval = keras_available}
 pred_params <- predict(nnet, data = list(keras3::as_tensor(dataset$x, keras3::config_floatx())))
 
 lm_fit <- lm(y ~ x, data = dataset)
@@ -920,7 +921,7 @@ ggplot(dataset, aes(x = x, y = y)) +
 
 Since a `reservr_keras_model` includes the underlying `keras.src.models.model.Model`, its parameters can also be extracted and compared to the OLS coefficients
 
-```{r}
+```{r, eval = keras_available}
 coef_nnet <- rev(as.numeric(nnet$model$get_weights()))
 coef_lm <- unname(coef(lm_fit))
 
@@ -936,7 +937,7 @@ Due to the different scale of the $\mathtt{age}$ variable, it is useful to separ
 Normalization using `keras3::layer_normalization()` transforms its input variables to zero mean and unit variance.
 This step is not necessary for the categorical features.
 
-```{r}
+```{r, eval = keras_available}
 set.seed(1219L)
 tensorflow::set_random_seed(1219L)
 keras3::config_set_floatx("float32")
@@ -957,7 +958,7 @@ dat <- list(
 
 Next, we define the input layers and shapes, conforming to our input predictor list `dat$x`.
 
-```{r}
+```{r, eval = keras_available}
 nnet_inputs <- list(
   keras3::keras_input(shape = 1L, name = "age"),
   keras3::keras_input(shape = 3L, name = "flags")
@@ -968,7 +969,7 @@ nnet_inputs <- list(
 We then add two hidden ReLU-layers each with $5$ neurons to the network and compile the result, adapting the 5-dimensional hidden output to the parameter space $\Theta = (0, \infty)$ for the rate parameter of an exponential distribution.
 This is accomplished using a dense layer with $1$ neuron and the $\mathrm{softplus}$ activation function.
 
-```{r}
+```{r, eval = keras_available}
 hidden1 <- keras3::layer_concatenate(
   keras3::layer_normalization(nnet_inputs[[1L]]),
   nnet_inputs[[2L]]
@@ -998,7 +999,7 @@ nnet$model
 For stability reasons, the default weight initialization is not optimal.
 To circumvent this, we estimate a global exponential distribution fit on the observations and initialize the final layer weights such that the global fit is the initial prediction of the network.
 
-```{r}
+```{r, eval = keras_available}
 str(predict(nnet, dat$x))
 global_fit <- fit(dist, dat$y)
 tf_initialise_model(nnet, params = global_fit$params, mode = "zero")
@@ -1007,7 +1008,7 @@ str(predict(nnet, dat$x))
 
 Finally, we can train the network and visualize the predictions.
 
-```{r}
+```{r, eval = keras_available}
 nnet_fit <- fit(
   nnet,
   x = dat$x,
@@ -1027,7 +1028,7 @@ ovarian$expected_lifetime <- 1.0 / predict(nnet, dat$x)$rate
 A plot of expected lifetime by $(\mathtt{age}, \mathtt{rx})$ shows that the network learned longer expected lifetimes for lower $\mathtt{age}$ and for treatment group ($\mathtt{rx}$) 2.
 The global fit is included as a dashed blue line.
 
-```{r echo = FALSE}
+```{r, echo = FALSE, eval = keras_available}
 ggplot(ovarian, aes(x = age, y = expected_lifetime, color = factor(rx))) +
   geom_point() +
   geom_hline(yintercept = 1.0 / global_fit$params$rate, color = "blue", linetype = "dotted") +
@@ -1036,7 +1037,7 @@ ggplot(ovarian, aes(x = age, y = expected_lifetime, color = factor(rx))) +
 
 Individual predictions and observations can also be plotted on a subject level.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = keras_available}
 ggplot(ovarian[order(ovarian$futime), ], aes(x = seq_len(nrow(ovarian)))) +
   geom_linerange(aes(ymin = futime, ymax = ifelse(fustat == 1, futime, Inf)), show.legend = FALSE) +
   geom_point(aes(y = futime, shape = ifelse(fustat == 1, "observed", "censored"))) +
