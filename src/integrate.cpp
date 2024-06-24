@@ -171,7 +171,9 @@ Rcpp::List do_integrate_gk(const Rcpp::Function fun, const arma::vec& lower, con
     info = new arma::cube();
   }
   arma::vec res(lower.n_elem, arma::fill::zeros);
-  integrate_impl(fun, lower, upper, params, tolerance, max_iter, res, *info);
+  if (lower.n_elem > 0) {
+    integrate_impl(fun, lower, upper, params, tolerance, max_iter, res, *info);
+  }
 
   Rcpp::NumericVector r_res = Rcpp::wrap(res);
   r_res.attr("dim") = R_NilValue;
