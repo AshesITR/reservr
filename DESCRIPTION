@@ -1,7 +1,7 @@
 Package: reservr
 Title: Fit Distributions and Neural Networks to Censored and Truncated
     Data
-Version: 0.0.3
+Version: 0.0.3.9000
 Authors@R: 
     person(given = "Alexander",
            family = "Rosenstock",

@@ -1,3 +1,5 @@
+# reservr (development version)
+
 # reservr 0.0.3
 
 * Fixed segfaults on r-devel caused by zero-length input to C++ routines.
